@@ -74,7 +74,7 @@ This README provides a high-level overview of Lybic's capabilities. For detailed
 
 ## 🤝 Contributing
 
-We welcome contributions from the community! Please see our [Contributing Guidelines](https://github.com/lybic/lybic-sdk-python/blob/main/CONTRIBUTING.md) for more details on how to get involved.
+We welcome contributions from the community! Please see our [Contributing Guidelines](https://github.com/lybic/lybic-sdk-go/blob/main/CONTRIBUTING.md) for more details on how to get involved.
 
 ## 📄 License
 
