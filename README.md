@@ -158,6 +158,7 @@ func main() {
     // Create a new Lybic client configuration
     config := lybic.NewConfig()
     config.OrgId = "your-org-id"
+    config.ApiKey = "your-api-key"
     config.Logger = customLogger // Set the custom logger
 
     // Initialize the client
