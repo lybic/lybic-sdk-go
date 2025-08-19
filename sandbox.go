@@ -1,3 +1,25 @@
+// Copyright (c) 2019-2025   Beijing Tingyu Technology Co., Ltd.
+// Copyright (c) 2025        Lybic Development Team <team@lybic.ai, lybic@tingyutech.com>
+// Copyright (c) 2025        Lu Yicheng <luyicheng@tingyutech.com>
+//
+// These Terms of Service ("Terms") set forth the rules governing your access to and use of the website lybic.ai
+// ("Website"), our web applications, and other services (collectively, the "Services") provided by Beijing Tingyu
+// Technology Co., Ltd. ("Company," "we," "us," or "our"), a company registered in Haidian District, Beijing. Any
+// breach of these Terms may result in the suspension or termination of your access to the Services.
+// By accessing and using the Services and/or the Website, you represent that you are at least 18 years old,
+// acknowledge that you have read and understood these Terms, and agree to be bound by them. By using or accessing
+// the Services and/or the Website, you further represent and warrant that you have the legal capacity and authority
+// to agree to these Terms, whether as an individual or on behalf of a company. If you do not agree to all of these
+// Terms, do not access or use the Website or Services.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+
 package lybic
 
 import (
@@ -8,7 +30,7 @@ import (
 )
 
 // ListSandboxes returns a list of sandboxes for the organization.
-func (c *Client) ListSandboxes(ctx context.Context) ([]GetSandboxResponseDtoSandbox, error) {
+func (c *client) ListSandboxes(ctx context.Context) ([]GetSandboxResponseDtoSandbox, error) {
 	c.config.Logger.Info("Listing sandboxes")
 
 	url := fmt.Sprintf("/api/orgs/%s/sandboxes", c.config.OrgId)
@@ -31,7 +53,7 @@ func (c *Client) ListSandboxes(ctx context.Context) ([]GetSandboxResponseDtoSand
 }
 
 // CreateSandbox creates a new sandbox.
-func (c *Client) CreateSandbox(ctx context.Context, dto CreateSandboxDto) (*GetSandboxResponseDto, error) {
+func (c *client) CreateSandbox(ctx context.Context, dto CreateSandboxDto) (*GetSandboxResponseDto, error) {
 	c.config.Logger.Info("Creating sandbox", "dto:", dto)
 
 	url := fmt.Sprintf("/api/orgs/%s/sandboxes", c.config.OrgId)
@@ -54,7 +76,7 @@ func (c *Client) CreateSandbox(ctx context.Context, dto CreateSandboxDto) (*GetS
 }
 
 // GetSandbox retrieves the details of a sandbox by its ID.
-func (c *Client) GetSandbox(ctx context.Context, sandboxId string) (*GetSandboxResponseDto, error) {
+func (c *client) GetSandbox(ctx context.Context, sandboxId string) (*GetSandboxResponseDto, error) {
 	c.config.Logger.Info("Getting sandbox info", "sandboxId:", sandboxId)
 
 	url := fmt.Sprintf("/api/orgs/%s/sandboxes/%s", c.config.OrgId, sandboxId)
@@ -77,7 +99,7 @@ func (c *Client) GetSandbox(ctx context.Context, sandboxId string) (*GetSandboxR
 }
 
 // DeleteSandbox deletes a sandbox by its ID.
-func (c *Client) DeleteSandbox(ctx context.Context, sandboxId string) error {
+func (c *client) DeleteSandbox(ctx context.Context, sandboxId string) error {
 	c.config.Logger.Info("Deleting sandbox", "sandboxId:", sandboxId)
 
 	url := fmt.Sprintf("/api/orgs/%s/sandboxes/%s", c.config.OrgId, sandboxId)
@@ -95,7 +117,7 @@ func (c *Client) DeleteSandbox(ctx context.Context, sandboxId string) error {
 }
 
 // ExtendSandbox extends a sandbox's expiration time by its ID.
-func (c *Client) ExtendSandbox(ctx context.Context, sandboxId string, dto ExtendSandboxDto) error {
+func (c *client) ExtendSandbox(ctx context.Context, sandboxId string, dto ExtendSandboxDto) error {
 	c.config.Logger.Info("Extending sandbox", "sandboxId:", sandboxId, "dto:", dto)
 
 	url := fmt.Sprintf("/api/orgs/%s/sandboxes/%s/extend", c.config.OrgId, sandboxId)
@@ -113,7 +135,7 @@ func (c *Client) ExtendSandbox(ctx context.Context, sandboxId string, dto Extend
 }
 
 // ExecuteComputerUseAction executes a computer use action on the sandbox.
-func (c *Client) ExecuteComputerUseAction(ctx context.Context, sandboxId string, dto ComputerUseActionDto) (*SandboxActionResponseDto, error) {
+func (c *client) ExecuteComputerUseAction(ctx context.Context, sandboxId string, dto ComputerUseActionDto) (*SandboxActionResponseDto, error) {
 	c.config.Logger.Info("Executing computer use action", "sandboxId:", sandboxId)
 
 	url := fmt.Sprintf("/api/orgs/%s/sandboxes/%s/actions/computer-use", c.config.OrgId, sandboxId)
@@ -136,7 +158,7 @@ func (c *Client) ExecuteComputerUseAction(ctx context.Context, sandboxId string,
 }
 
 // PreviewSandbox takes a screenshot and gets the cursor position of the sandbox.
-func (c *Client) PreviewSandbox(ctx context.Context, sandboxId string) (*SandboxActionResponseDto, error) {
+func (c *client) PreviewSandbox(ctx context.Context, sandboxId string) (*SandboxActionResponseDto, error) {
 	c.config.Logger.Info("Previewing sandbox", "sandboxId:", sandboxId)
 
 	url := fmt.Sprintf("/api/orgs/%s/sandboxes/%s/preview", c.config.OrgId, sandboxId)
