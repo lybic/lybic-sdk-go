@@ -9,10 +9,12 @@ on:
     branches: ['main']
     paths:
       - '**/*.go'
+      - 'go.mod'
   pull_request:
     branches: ['main']
     paths:
       - '**/*.go'
+      - 'go.mod'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
