@@ -11,9 +11,3 @@ updates:
     schedule:
       interval: "monthly"
       timezone: "Asia/Shanghai"
-  - package-ecosystem: "docker"
-    directory: "/"
-    schedule:
-      interval: "monthly"
-      timezone: "Asia/Shanghai"
-
