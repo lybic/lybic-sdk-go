@@ -133,7 +133,6 @@ func (m *mcpClient) SetMcpServerToSandbox(ctx context.Context, mcpServerId strin
 
 type mcpClient struct {
 	session *mcp.ClientSession
-	close   func() error
 	client  *client
 }
 
@@ -162,12 +161,11 @@ func newMcpClient(ctx context.Context, client *client, address *string) (*mcpCli
 	}
 
 	m.session = session
-	m.close = session.Close
 	return m, nil
 }
 
 func (m *mcpClient) Close() error {
-	return m.close()
+	return m.session.Close()
 }
 
 func (m *mcpClient) CallTools(ctx context.Context, args map[string]any, service *string) (*mcp.CallToolResult, error) {

@@ -168,8 +168,13 @@ func NewMcpClient(ctx context.Context, opt McpOption) (Mcp, error) {
 		if err != nil {
 			return nil, err
 		}
+	} else {
+		var ok bool
+		c, ok = opt.UsingClient.(*client)
+		if !ok {
+			return nil, errors.New("invalid client type: UsingClient must be of type *lybic.client")
+		}
 	}
-	c = opt.UsingClient.(*client)
 
 	var mcpServerAddress *string
 	if opt.DoNotUsingDefaultServer != nil && *opt.DoNotUsingDefaultServer {
@@ -189,6 +194,6 @@ type McpOption struct {
 
 	// DoNotUsingDefaultServer If this option is specified and is true, UsingSpecificMcpServerId must be specified
 	DoNotUsingDefaultServer *bool
-	// UsingSpecificMcpServerId // If this option is specified, the MCP client will use the specified MCP server ID.
+	// UsingSpecificMcpServerId If this option is specified, the MCP client will use the specified MCP server ID.
 	UsingSpecificMcpServerId *string
 }
