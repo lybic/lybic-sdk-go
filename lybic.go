@@ -72,6 +72,7 @@ func (t *headerTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	return t.base.RoundTrip(&newReq)
 }
 
+// NewClient creates a new Lybic API HTTPClient with the provided configuration.
 func newClient(config *Config) (*client, error) {
 	if config == nil {
 		config = NewConfig()

@@ -28,7 +28,11 @@ package lybic
 
 import (
 	"context"
+	"errors"
 	"net/http"
+	"strings"
+
+	"github.com/modelcontextprotocol/go-sdk/mcp"
 )
 
 // Client defines the interface for interacting with the Lybic API.
@@ -72,21 +76,6 @@ type Client interface {
 
 	// ParseComputerUse parses and validates computer use actions
 	ParseComputerUse(ctx context.Context, dto ComputerUseParseRequestDto) (*ComputerUseActionResponseDto, error)
-
-	// ListMcpServers retrieves a list of all available MCP servers
-	ListMcpServers(ctx context.Context) ([]McpServerResponseDto, error)
-
-	// CreateMcpServer creates a new MCP server with the specified configuration
-	CreateMcpServer(ctx context.Context, dto CreateMcpServerDto) (*McpServerResponseDto, error)
-
-	// GetDefaultMcpServer retrieves the default MCP server configuration
-	GetDefaultMcpServer(ctx context.Context) (*McpServerResponseDto, error)
-
-	// DeleteMcpServer removes a specific MCP server by its ID
-	DeleteMcpServer(ctx context.Context, mcpServerId string) error
-
-	// SetMcpServerToSandbox associates an MCP server with a sandbox
-	SetMcpServerToSandbox(ctx context.Context, mcpServerId string, dto SetMcpServerToSandboxResponseDto) error
 }
 
 // NewClient creates a new instance of the Lybic client with the provided configuration.
@@ -131,4 +120,81 @@ func NewConfig() *Config {
 		Endpoint: getEnv(envEndpoint, defaultEndpoint),
 		Timeout:  defaultTimeout,
 	}
+}
+
+// Mcp defines the interface for interacting with the lybic Model Context Protocol (MCP) services.
+type Mcp interface {
+	// ListMcpServers retrieves a list of all available MCP servers
+	ListMcpServers(ctx context.Context) ([]McpServerResponseDto, error)
+
+	// CreateMcpServer creates a new MCP server with the specified configuration
+	CreateMcpServer(ctx context.Context, dto CreateMcpServerDto) (*McpServerResponseDto, error)
+
+	// GetDefaultMcpServer retrieves the default MCP server configuration
+	GetDefaultMcpServer(ctx context.Context) (*McpServerResponseDto, error)
+
+	// DeleteMcpServer removes a specific MCP server by its ID
+	DeleteMcpServer(ctx context.Context, mcpServerId string) error
+
+	// SetMcpServerToSandbox associates an MCP server with a sandbox
+	SetMcpServerToSandbox(ctx context.Context, mcpServerId string, dto SetMcpServerToSandboxResponseDto) error
+
+	// CallTools calls the specified tool service with the given arguments.
+	//
+	//	args: MCP request content map[string]any
+	//	service: "computer-use","mobile-use"
+	//	If no service is specified, it defaults to "computer-use".
+	CallTools(ctx context.Context, args map[string]any, service *string) (*mcp.CallToolResult, error)
+
+	// Close releases any resources held by the MCP client
+	Close() error
+}
+
+var (
+	ErrNeedConfig       = errors.New("please specify a configuration(LybicClient Config) for the MCP client initialization")
+	ErrNeedMcpServerId  = errors.New("please specify a MCP server ID when DoNotUsingDefaultServer is true")
+	ErrInvalidMcpClient = errors.New("invalid client type: UsingClient must be a client created by this SDK")
+)
+
+// NewMcpClient creates a new lybic MCP client with the specified options.
+func NewMcpClient(ctx context.Context, opt McpOption) (Mcp, error) {
+	if opt.UsingClientConfig == nil && opt.UsingClient == nil {
+		return nil, ErrNeedConfig
+	}
+
+	var c *client
+	var err error
+	if opt.UsingClient == nil {
+		c, err = newClient(opt.UsingClientConfig)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		var ok bool
+		c, ok = opt.UsingClient.(*client)
+		if !ok {
+			return nil, ErrInvalidMcpClient
+		}
+	}
+
+	var mcpServerAddress *string
+	if opt.DoNotUsingDefaultServer != nil && *opt.DoNotUsingDefaultServer {
+		if opt.UsingSpecificMcpServerId == nil || strings.TrimSpace(*opt.UsingSpecificMcpServerId) == "" {
+			return nil, ErrNeedMcpServerId
+		} else {
+			mcpServerAddress = opt.UsingSpecificMcpServerId
+		}
+	}
+	return newMcpClient(ctx, c, mcpServerAddress)
+}
+
+// McpOption holds options for configuring the lybic MCP client.
+type McpOption struct {
+	UsingClientConfig *Config
+	UsingClient       Client
+
+	// DoNotUsingDefaultServer If this option is specified and is true, UsingSpecificMcpServerId must be specified
+	DoNotUsingDefaultServer *bool
+	// UsingSpecificMcpServerId If this option is specified, the MCP client will use the specified MCP server ID.
+	UsingSpecificMcpServerId *string
 }

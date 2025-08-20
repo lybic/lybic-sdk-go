@@ -27,13 +27,15 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+
+	"github.com/modelcontextprotocol/go-sdk/mcp"
 )
 
 // ListMcpServers returns a list of MCP servers for the organization.
-func (c *client) ListMcpServers(ctx context.Context) ([]McpServerResponseDto, error) {
-	c.config.Logger.Info("Listing mcp servers", "servers:", c.config.OrgId)
-	url := fmt.Sprintf("/api/orgs/%s/mcp-servers", c.config.OrgId)
-	resp, err := c.request(ctx, http.MethodGet, url, nil, nil)
+func (m *mcpClient) ListMcpServers(ctx context.Context) ([]McpServerResponseDto, error) {
+	m.client.config.Logger.Info("Listing mcp servers", "servers:", m.client.config.OrgId)
+	url := fmt.Sprintf("/api/orgs/%s/mcp-servers", m.client.config.OrgId)
+	resp, err := m.client.request(ctx, http.MethodGet, url, nil, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -52,10 +54,10 @@ func (c *client) ListMcpServers(ctx context.Context) ([]McpServerResponseDto, er
 }
 
 // CreateMcpServer creates a new MCP server.
-func (c *client) CreateMcpServer(ctx context.Context, dto CreateMcpServerDto) (*McpServerResponseDto, error) {
-	c.config.Logger.Info("Creating mcp server", "dto:", dto)
-	url := fmt.Sprintf("/api/orgs/%s/mcp-servers", c.config.OrgId)
-	resp, err := c.request(ctx, http.MethodPost, url, nil, dto)
+func (m *mcpClient) CreateMcpServer(ctx context.Context, dto CreateMcpServerDto) (*McpServerResponseDto, error) {
+	m.client.config.Logger.Info("Creating mcp server", "dto:", dto)
+	url := fmt.Sprintf("/api/orgs/%s/mcp-servers", m.client.config.OrgId)
+	resp, err := m.client.request(ctx, http.MethodPost, url, nil, dto)
 	if err != nil {
 		return nil, err
 	}
@@ -74,10 +76,10 @@ func (c *client) CreateMcpServer(ctx context.Context, dto CreateMcpServerDto) (*
 }
 
 // GetDefaultMcpServer returns the default MCP server for the organization.
-func (c *client) GetDefaultMcpServer(ctx context.Context) (*McpServerResponseDto, error) {
-	c.config.Logger.Info("Getting default mcp server", "servers:", c.config.OrgId)
-	url := fmt.Sprintf("/api/orgs/%s/mcp-servers/default", c.config.OrgId)
-	resp, err := c.request(ctx, http.MethodGet, url, nil, nil)
+func (m *mcpClient) GetDefaultMcpServer(ctx context.Context) (*McpServerResponseDto, error) {
+	m.client.config.Logger.Info("Getting default mcp server", "servers:", m.client.config.OrgId)
+	url := fmt.Sprintf("/api/orgs/%s/mcp-servers/default", m.client.config.OrgId)
+	resp, err := m.client.request(ctx, http.MethodGet, url, nil, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -96,10 +98,10 @@ func (c *client) GetDefaultMcpServer(ctx context.Context) (*McpServerResponseDto
 }
 
 // DeleteMcpServer deletes an MCP server by its ID.
-func (c *client) DeleteMcpServer(ctx context.Context, mcpServerId string) error {
-	c.config.Logger.Info("Deleting mcp server", "server:", mcpServerId)
-	url := fmt.Sprintf("/api/orgs/%s/mcp-servers/%s", c.config.OrgId, mcpServerId)
-	resp, err := c.request(ctx, http.MethodDelete, url, nil, nil)
+func (m *mcpClient) DeleteMcpServer(ctx context.Context, mcpServerId string) error {
+	m.client.config.Logger.Info("Deleting mcp server", "server:", mcpServerId)
+	url := fmt.Sprintf("/api/orgs/%s/mcp-servers/%s", m.client.config.OrgId, mcpServerId)
+	resp, err := m.client.request(ctx, http.MethodDelete, url, nil, nil)
 	if err != nil {
 		return err
 	}
@@ -113,10 +115,10 @@ func (c *client) DeleteMcpServer(ctx context.Context, mcpServerId string) error 
 }
 
 // SetMcpServerToSandbox sets the specified MCP server to the given Sandbox.
-func (c *client) SetMcpServerToSandbox(ctx context.Context, mcpServerId string, dto SetMcpServerToSandboxResponseDto) error {
-	c.config.Logger.Info("Setting mcp server to sandbox", "server:", mcpServerId)
-	url := fmt.Sprintf("/api/orgs/%s/mcp-servers/%s/sandbox", c.config.OrgId, mcpServerId)
-	resp, err := c.request(ctx, http.MethodPost, url, nil, dto)
+func (m *mcpClient) SetMcpServerToSandbox(ctx context.Context, mcpServerId string, dto SetMcpServerToSandboxResponseDto) error {
+	m.client.config.Logger.Info("Setting mcp server to sandbox", "server:", mcpServerId)
+	url := fmt.Sprintf("/api/orgs/%s/mcp-servers/%s/sandbox", m.client.config.OrgId, mcpServerId)
+	resp, err := m.client.request(ctx, http.MethodPost, url, nil, dto)
 	if err != nil {
 		return err
 	}
@@ -127,4 +129,57 @@ func (c *client) SetMcpServerToSandbox(ctx context.Context, mcpServerId string, 
 	}
 
 	return nil
+}
+
+type mcpClient struct {
+	session *mcp.ClientSession
+	client  *client
+}
+
+func newMcpClient(ctx context.Context, client *client, address *string) (*mcpClient, error) {
+	m := &mcpClient{client: client}
+
+	var serverAddress string
+	if address == nil {
+		// use default server
+		mcpServer, err := m.GetDefaultMcpServer(ctx)
+		if err != nil {
+			return nil, fmt.Errorf("failed to get default MCP server: %w", err)
+		}
+		serverAddress = fmt.Sprintf("%s/api/mcp/%s", m.client.config.Endpoint, mcpServer.Id)
+	} else {
+		serverAddress = fmt.Sprintf("%s/api/mcp/%s", m.client.config.Endpoint, *address)
+		m.client.config.Logger.Infof("Using specific MCP server address: %s", serverAddress)
+	}
+
+	cli := mcp.NewClient(&mcp.Implementation{Name: "mcp-client/lybic-sdk-go", Version: "v0.0.2"}, nil)
+	transport := mcp.NewStreamableClientTransport(serverAddress, &mcp.StreamableClientTransportOptions{HTTPClient: client.client})
+
+	session, err := cli.Connect(ctx, transport)
+	if err != nil {
+		return nil, fmt.Errorf("failed to connect to MCP server: %w", err)
+	}
+
+	m.session = session
+	return m, nil
+}
+
+func (m *mcpClient) Close() error {
+	return m.session.Close()
+}
+
+func (m *mcpClient) CallTools(ctx context.Context, args map[string]any, service *string) (*mcp.CallToolResult, error) {
+	if service == nil {
+		defaultService := "computer-use"
+		service = &defaultService
+	}
+
+	response, err := m.session.CallTool(ctx, &mcp.CallToolParams{
+		Name:      *service,
+		Arguments: args,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to call tools: %w", err)
+	}
+	return response, nil
 }
