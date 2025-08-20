@@ -64,10 +64,12 @@ type headerTransport struct {
 }
 
 func (t *headerTransport) RoundTrip(req *http.Request) (*http.Response, error) {
+	newReq := *req
+	newReq.Header = req.Header.Clone()
 	for key, value := range t.headers {
-		req.Header.Set(key, value)
+		newReq.Header.Set(key, value)
 	}
-	return t.base.RoundTrip(req)
+	return t.base.RoundTrip(&newReq)
 }
 
 func newClient(config *Config) (*client, error) {
