@@ -17,7 +17,7 @@ import (
 // SandboxActionResponseDto struct for SandboxActionResponseDto
 type SandboxActionResponseDto struct {
 	// The screenshot of the sandbox after the action is executed.
-	ScreenShot *string `json:"screenShot,omitempty"`
+	ScreenShot     *string                                 `json:"screenShot,omitempty"`
 	CursorPosition *SandboxActionResponseDtoCursorPosition `json:"cursorPosition,omitempty"`
 }
 

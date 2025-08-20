@@ -16,17 +16,17 @@ import (
 
 // SingleProjectResponseDto struct for SingleProjectResponseDto
 type SingleProjectResponseDto struct {
-	Id string `json:"id"`
-	Name string `json:"name"`
-	CreatedAt string `json:"createdAt"`
-	DefaultProject bool `json:"defaultProject"`
+	Id             string `json:"id"`
+	Name           string `json:"name"`
+	CreatedAt      string `json:"createdAt"`
+	DefaultProject bool   `json:"defaultProject"`
 }
 
 // NewSingleProjectResponseDto instantiates a new SingleProjectResponseDto object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewSingleProjectResponseDto(id string, name string, createdAt string, defaultProject bool, ) *SingleProjectResponseDto {
+func NewSingleProjectResponseDto(id string, name string, createdAt string, defaultProject bool) *SingleProjectResponseDto {
 	this := SingleProjectResponseDto{}
 	this.Id = id
 	this.Name = name
@@ -45,7 +45,7 @@ func NewSingleProjectResponseDtoWithDefaults() *SingleProjectResponseDto {
 
 // GetId returns the Id field value
 func (o *SingleProjectResponseDto) GetId() string {
-	if o == nil  {
+	if o == nil {
 		var ret string
 		return ret
 	}
@@ -56,7 +56,7 @@ func (o *SingleProjectResponseDto) GetId() string {
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
 func (o *SingleProjectResponseDto) GetIdOk() (*string, bool) {
-	if o == nil  {
+	if o == nil {
 		return nil, false
 	}
 	return &o.Id, true
@@ -69,7 +69,7 @@ func (o *SingleProjectResponseDto) SetId(v string) {
 
 // GetName returns the Name field value
 func (o *SingleProjectResponseDto) GetName() string {
-	if o == nil  {
+	if o == nil {
 		var ret string
 		return ret
 	}
@@ -80,7 +80,7 @@ func (o *SingleProjectResponseDto) GetName() string {
 // GetNameOk returns a tuple with the Name field value
 // and a boolean to check if the value has been set.
 func (o *SingleProjectResponseDto) GetNameOk() (*string, bool) {
-	if o == nil  {
+	if o == nil {
 		return nil, false
 	}
 	return &o.Name, true
@@ -93,7 +93,7 @@ func (o *SingleProjectResponseDto) SetName(v string) {
 
 // GetCreatedAt returns the CreatedAt field value
 func (o *SingleProjectResponseDto) GetCreatedAt() string {
-	if o == nil  {
+	if o == nil {
 		var ret string
 		return ret
 	}
@@ -104,7 +104,7 @@ func (o *SingleProjectResponseDto) GetCreatedAt() string {
 // GetCreatedAtOk returns a tuple with the CreatedAt field value
 // and a boolean to check if the value has been set.
 func (o *SingleProjectResponseDto) GetCreatedAtOk() (*string, bool) {
-	if o == nil  {
+	if o == nil {
 		return nil, false
 	}
 	return &o.CreatedAt, true
@@ -117,7 +117,7 @@ func (o *SingleProjectResponseDto) SetCreatedAt(v string) {
 
 // GetDefaultProject returns the DefaultProject field value
 func (o *SingleProjectResponseDto) GetDefaultProject() bool {
-	if o == nil  {
+	if o == nil {
 		var ret bool
 		return ret
 	}
@@ -128,7 +128,7 @@ func (o *SingleProjectResponseDto) GetDefaultProject() bool {
 // GetDefaultProjectOk returns a tuple with the DefaultProject field value
 // and a boolean to check if the value has been set.
 func (o *SingleProjectResponseDto) GetDefaultProjectOk() (*bool, bool) {
-	if o == nil  {
+	if o == nil {
 		return nil, false
 	}
 	return &o.DefaultProject, true

@@ -17,18 +17,18 @@ import (
 
 // GetSandboxResponseDtoSandbox struct for GetSandboxResponseDtoSandbox
 type GetSandboxResponseDtoSandbox struct {
-	Id string `json:"id"`
-	Name string `json:"name"`
+	Id        string    `json:"id"`
+	Name      string    `json:"name"`
 	ExpiredAt time.Time `json:"expiredAt"`
 	CreatedAt time.Time `json:"createdAt"`
-	ProjectId string `json:"projectId"`
+	ProjectId string    `json:"projectId"`
 }
 
 // NewGetSandboxResponseDtoSandbox instantiates a new GetSandboxResponseDtoSandbox object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewGetSandboxResponseDtoSandbox(id string, name string, expiredAt time.Time, createdAt time.Time, projectId string, ) *GetSandboxResponseDtoSandbox {
+func NewGetSandboxResponseDtoSandbox(id string, name string, expiredAt time.Time, createdAt time.Time, projectId string) *GetSandboxResponseDtoSandbox {
 	this := GetSandboxResponseDtoSandbox{}
 	this.Id = id
 	this.Name = name
@@ -48,7 +48,7 @@ func NewGetSandboxResponseDtoSandboxWithDefaults() *GetSandboxResponseDtoSandbox
 
 // GetId returns the Id field value
 func (o *GetSandboxResponseDtoSandbox) GetId() string {
-	if o == nil  {
+	if o == nil {
 		var ret string
 		return ret
 	}
@@ -59,7 +59,7 @@ func (o *GetSandboxResponseDtoSandbox) GetId() string {
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
 func (o *GetSandboxResponseDtoSandbox) GetIdOk() (*string, bool) {
-	if o == nil  {
+	if o == nil {
 		return nil, false
 	}
 	return &o.Id, true
@@ -72,7 +72,7 @@ func (o *GetSandboxResponseDtoSandbox) SetId(v string) {
 
 // GetName returns the Name field value
 func (o *GetSandboxResponseDtoSandbox) GetName() string {
-	if o == nil  {
+	if o == nil {
 		var ret string
 		return ret
 	}
@@ -83,7 +83,7 @@ func (o *GetSandboxResponseDtoSandbox) GetName() string {
 // GetNameOk returns a tuple with the Name field value
 // and a boolean to check if the value has been set.
 func (o *GetSandboxResponseDtoSandbox) GetNameOk() (*string, bool) {
-	if o == nil  {
+	if o == nil {
 		return nil, false
 	}
 	return &o.Name, true
@@ -96,7 +96,7 @@ func (o *GetSandboxResponseDtoSandbox) SetName(v string) {
 
 // GetExpiredAt returns the ExpiredAt field value
 func (o *GetSandboxResponseDtoSandbox) GetExpiredAt() time.Time {
-	if o == nil  {
+	if o == nil {
 		var ret time.Time
 		return ret
 	}
@@ -107,7 +107,7 @@ func (o *GetSandboxResponseDtoSandbox) GetExpiredAt() time.Time {
 // GetExpiredAtOk returns a tuple with the ExpiredAt field value
 // and a boolean to check if the value has been set.
 func (o *GetSandboxResponseDtoSandbox) GetExpiredAtOk() (*time.Time, bool) {
-	if o == nil  {
+	if o == nil {
 		return nil, false
 	}
 	return &o.ExpiredAt, true
@@ -120,7 +120,7 @@ func (o *GetSandboxResponseDtoSandbox) SetExpiredAt(v time.Time) {
 
 // GetCreatedAt returns the CreatedAt field value
 func (o *GetSandboxResponseDtoSandbox) GetCreatedAt() time.Time {
-	if o == nil  {
+	if o == nil {
 		var ret time.Time
 		return ret
 	}
@@ -131,7 +131,7 @@ func (o *GetSandboxResponseDtoSandbox) GetCreatedAt() time.Time {
 // GetCreatedAtOk returns a tuple with the CreatedAt field value
 // and a boolean to check if the value has been set.
 func (o *GetSandboxResponseDtoSandbox) GetCreatedAtOk() (*time.Time, bool) {
-	if o == nil  {
+	if o == nil {
 		return nil, false
 	}
 	return &o.CreatedAt, true
@@ -144,7 +144,7 @@ func (o *GetSandboxResponseDtoSandbox) SetCreatedAt(v time.Time) {
 
 // GetProjectId returns the ProjectId field value
 func (o *GetSandboxResponseDtoSandbox) GetProjectId() string {
-	if o == nil  {
+	if o == nil {
 		var ret string
 		return ret
 	}
@@ -155,7 +155,7 @@ func (o *GetSandboxResponseDtoSandbox) GetProjectId() string {
 // GetProjectIdOk returns a tuple with the ProjectId field value
 // and a boolean to check if the value has been set.
 func (o *GetSandboxResponseDtoSandbox) GetProjectIdOk() (*string, bool) {
-	if o == nil  {
+	if o == nil {
 		return nil, false
 	}
 	return &o.ProjectId, true

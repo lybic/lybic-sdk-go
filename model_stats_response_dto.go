@@ -28,7 +28,7 @@ type StatsResponseDto struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewStatsResponseDto(mcpServers float32, sandboxes float32, projects float32, ) *StatsResponseDto {
+func NewStatsResponseDto(mcpServers float32, sandboxes float32, projects float32) *StatsResponseDto {
 	this := StatsResponseDto{}
 	this.McpServers = mcpServers
 	this.Sandboxes = sandboxes
@@ -46,7 +46,7 @@ func NewStatsResponseDtoWithDefaults() *StatsResponseDto {
 
 // GetMcpServers returns the McpServers field value
 func (o *StatsResponseDto) GetMcpServers() float32 {
-	if o == nil  {
+	if o == nil {
 		var ret float32
 		return ret
 	}
@@ -57,7 +57,7 @@ func (o *StatsResponseDto) GetMcpServers() float32 {
 // GetMcpServersOk returns a tuple with the McpServers field value
 // and a boolean to check if the value has been set.
 func (o *StatsResponseDto) GetMcpServersOk() (*float32, bool) {
-	if o == nil  {
+	if o == nil {
 		return nil, false
 	}
 	return &o.McpServers, true
@@ -70,7 +70,7 @@ func (o *StatsResponseDto) SetMcpServers(v float32) {
 
 // GetSandboxes returns the Sandboxes field value
 func (o *StatsResponseDto) GetSandboxes() float32 {
-	if o == nil  {
+	if o == nil {
 		var ret float32
 		return ret
 	}
@@ -81,7 +81,7 @@ func (o *StatsResponseDto) GetSandboxes() float32 {
 // GetSandboxesOk returns a tuple with the Sandboxes field value
 // and a boolean to check if the value has been set.
 func (o *StatsResponseDto) GetSandboxesOk() (*float32, bool) {
-	if o == nil  {
+	if o == nil {
 		return nil, false
 	}
 	return &o.Sandboxes, true
@@ -94,7 +94,7 @@ func (o *StatsResponseDto) SetSandboxes(v float32) {
 
 // GetProjects returns the Projects field value
 func (o *StatsResponseDto) GetProjects() float32 {
-	if o == nil  {
+	if o == nil {
 		var ret float32
 		return ret
 	}
@@ -105,7 +105,7 @@ func (o *StatsResponseDto) GetProjects() float32 {
 // GetProjectsOk returns a tuple with the Projects field value
 // and a boolean to check if the value has been set.
 func (o *StatsResponseDto) GetProjectsOk() (*float32, bool) {
-	if o == nil  {
+	if o == nil {
 		return nil, false
 	}
 	return &o.Projects, true

@@ -27,7 +27,7 @@ type ComputerUseActionResponseDto struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewComputerUseActionResponseDto(actions []ComputerUseActionResponseDtoActionsOneOf, ) *ComputerUseActionResponseDto {
+func NewComputerUseActionResponseDto(actions []ComputerUseActionResponseDtoActionsOneOf) *ComputerUseActionResponseDto {
 	this := ComputerUseActionResponseDto{}
 	this.Actions = actions
 	return &this
@@ -43,7 +43,7 @@ func NewComputerUseActionResponseDtoWithDefaults() *ComputerUseActionResponseDto
 
 // GetActions returns the Actions field value
 func (o *ComputerUseActionResponseDto) GetActions() []ComputerUseActionResponseDtoActionsOneOf {
-	if o == nil  {
+	if o == nil {
 		var ret []ComputerUseActionResponseDtoActionsOneOf
 		return ret
 	}
@@ -54,7 +54,7 @@ func (o *ComputerUseActionResponseDto) GetActions() []ComputerUseActionResponseD
 // GetActionsOk returns a tuple with the Actions field value
 // and a boolean to check if the value has been set.
 func (o *ComputerUseActionResponseDto) GetActionsOk() (*[]ComputerUseActionResponseDtoActionsOneOf, bool) {
-	if o == nil  {
+	if o == nil {
 		return nil, false
 	}
 	return &o.Actions, true

@@ -24,7 +24,7 @@ type CreateProjectDto struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCreateProjectDto(name string, ) *CreateProjectDto {
+func NewCreateProjectDto(name string) *CreateProjectDto {
 	this := CreateProjectDto{}
 	this.Name = name
 	return &this
@@ -40,7 +40,7 @@ func NewCreateProjectDtoWithDefaults() *CreateProjectDto {
 
 // GetName returns the Name field value
 func (o *CreateProjectDto) GetName() string {
-	if o == nil  {
+	if o == nil {
 		var ret string
 		return ret
 	}
@@ -51,7 +51,7 @@ func (o *CreateProjectDto) GetName() string {
 // GetNameOk returns a tuple with the Name field value
 // and a boolean to check if the value has been set.
 func (o *CreateProjectDto) GetNameOk() (*string, bool) {
-	if o == nil  {
+	if o == nil {
 		return nil, false
 	}
 	return &o.Name, true

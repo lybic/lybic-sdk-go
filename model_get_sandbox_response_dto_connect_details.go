@@ -16,17 +16,17 @@ import (
 
 // GetSandboxResponseDtoConnectDetails struct for GetSandboxResponseDtoConnectDetails
 type GetSandboxResponseDtoConnectDetails struct {
-	GatewayAddresses []GetSandboxResponseDtoConnectDetailsGatewayAddresses `json:"gatewayAddresses"`
-	CertificateHashBase64 string `json:"certificateHashBase64"`
-	EndUserToken string `json:"endUserToken"`
-	RoomId string `json:"roomId"`
+	GatewayAddresses      []GetSandboxResponseDtoConnectDetailsGatewayAddresses `json:"gatewayAddresses"`
+	CertificateHashBase64 string                                                `json:"certificateHashBase64"`
+	EndUserToken          string                                                `json:"endUserToken"`
+	RoomId                string                                                `json:"roomId"`
 }
 
 // NewGetSandboxResponseDtoConnectDetails instantiates a new GetSandboxResponseDtoConnectDetails object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewGetSandboxResponseDtoConnectDetails(gatewayAddresses []GetSandboxResponseDtoConnectDetailsGatewayAddresses, certificateHashBase64 string, endUserToken string, roomId string, ) *GetSandboxResponseDtoConnectDetails {
+func NewGetSandboxResponseDtoConnectDetails(gatewayAddresses []GetSandboxResponseDtoConnectDetailsGatewayAddresses, certificateHashBase64 string, endUserToken string, roomId string) *GetSandboxResponseDtoConnectDetails {
 	this := GetSandboxResponseDtoConnectDetails{}
 	this.GatewayAddresses = gatewayAddresses
 	this.CertificateHashBase64 = certificateHashBase64
@@ -45,7 +45,7 @@ func NewGetSandboxResponseDtoConnectDetailsWithDefaults() *GetSandboxResponseDto
 
 // GetGatewayAddresses returns the GatewayAddresses field value
 func (o *GetSandboxResponseDtoConnectDetails) GetGatewayAddresses() []GetSandboxResponseDtoConnectDetailsGatewayAddresses {
-	if o == nil  {
+	if o == nil {
 		var ret []GetSandboxResponseDtoConnectDetailsGatewayAddresses
 		return ret
 	}
@@ -56,7 +56,7 @@ func (o *GetSandboxResponseDtoConnectDetails) GetGatewayAddresses() []GetSandbox
 // GetGatewayAddressesOk returns a tuple with the GatewayAddresses field value
 // and a boolean to check if the value has been set.
 func (o *GetSandboxResponseDtoConnectDetails) GetGatewayAddressesOk() (*[]GetSandboxResponseDtoConnectDetailsGatewayAddresses, bool) {
-	if o == nil  {
+	if o == nil {
 		return nil, false
 	}
 	return &o.GatewayAddresses, true
@@ -69,7 +69,7 @@ func (o *GetSandboxResponseDtoConnectDetails) SetGatewayAddresses(v []GetSandbox
 
 // GetCertificateHashBase64 returns the CertificateHashBase64 field value
 func (o *GetSandboxResponseDtoConnectDetails) GetCertificateHashBase64() string {
-	if o == nil  {
+	if o == nil {
 		var ret string
 		return ret
 	}
@@ -80,7 +80,7 @@ func (o *GetSandboxResponseDtoConnectDetails) GetCertificateHashBase64() string 
 // GetCertificateHashBase64Ok returns a tuple with the CertificateHashBase64 field value
 // and a boolean to check if the value has been set.
 func (o *GetSandboxResponseDtoConnectDetails) GetCertificateHashBase64Ok() (*string, bool) {
-	if o == nil  {
+	if o == nil {
 		return nil, false
 	}
 	return &o.CertificateHashBase64, true
@@ -93,7 +93,7 @@ func (o *GetSandboxResponseDtoConnectDetails) SetCertificateHashBase64(v string)
 
 // GetEndUserToken returns the EndUserToken field value
 func (o *GetSandboxResponseDtoConnectDetails) GetEndUserToken() string {
-	if o == nil  {
+	if o == nil {
 		var ret string
 		return ret
 	}
@@ -104,7 +104,7 @@ func (o *GetSandboxResponseDtoConnectDetails) GetEndUserToken() string {
 // GetEndUserTokenOk returns a tuple with the EndUserToken field value
 // and a boolean to check if the value has been set.
 func (o *GetSandboxResponseDtoConnectDetails) GetEndUserTokenOk() (*string, bool) {
-	if o == nil  {
+	if o == nil {
 		return nil, false
 	}
 	return &o.EndUserToken, true
@@ -117,7 +117,7 @@ func (o *GetSandboxResponseDtoConnectDetails) SetEndUserToken(v string) {
 
 // GetRoomId returns the RoomId field value
 func (o *GetSandboxResponseDtoConnectDetails) GetRoomId() string {
-	if o == nil  {
+	if o == nil {
 		var ret string
 		return ret
 	}
@@ -128,7 +128,7 @@ func (o *GetSandboxResponseDtoConnectDetails) GetRoomId() string {
 // GetRoomIdOk returns a tuple with the RoomId field value
 // and a boolean to check if the value has been set.
 func (o *GetSandboxResponseDtoConnectDetails) GetRoomIdOk() (*string, bool) {
-	if o == nil  {
+	if o == nil {
 		return nil, false
 	}
 	return &o.RoomId, true

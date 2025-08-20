@@ -26,7 +26,7 @@ type ComputerUseParseRequestDto struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewComputerUseParseRequestDto(model string, textContent string, ) *ComputerUseParseRequestDto {
+func NewComputerUseParseRequestDto(model string, textContent string) *ComputerUseParseRequestDto {
 	this := ComputerUseParseRequestDto{}
 	this.Model = model
 	this.TextContent = textContent
@@ -43,7 +43,7 @@ func NewComputerUseParseRequestDtoWithDefaults() *ComputerUseParseRequestDto {
 
 // GetModel returns the Model field value
 func (o *ComputerUseParseRequestDto) GetModel() string {
-	if o == nil  {
+	if o == nil {
 		var ret string
 		return ret
 	}
@@ -54,7 +54,7 @@ func (o *ComputerUseParseRequestDto) GetModel() string {
 // GetModelOk returns a tuple with the Model field value
 // and a boolean to check if the value has been set.
 func (o *ComputerUseParseRequestDto) GetModelOk() (*string, bool) {
-	if o == nil  {
+	if o == nil {
 		return nil, false
 	}
 	return &o.Model, true
@@ -67,7 +67,7 @@ func (o *ComputerUseParseRequestDto) SetModel(v string) {
 
 // GetTextContent returns the TextContent field value
 func (o *ComputerUseParseRequestDto) GetTextContent() string {
-	if o == nil  {
+	if o == nil {
 		var ret string
 		return ret
 	}
@@ -78,7 +78,7 @@ func (o *ComputerUseParseRequestDto) GetTextContent() string {
 // GetTextContentOk returns a tuple with the TextContent field value
 // and a boolean to check if the value has been set.
 func (o *ComputerUseParseRequestDto) GetTextContentOk() (*string, bool) {
-	if o == nil  {
+	if o == nil {
 		return nil, false
 	}
 	return &o.TextContent, true

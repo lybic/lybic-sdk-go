@@ -16,18 +16,18 @@ import (
 
 // GetSandboxResponseDtoConnectDetailsGatewayAddresses struct for GetSandboxResponseDtoConnectDetailsGatewayAddresses
 type GetSandboxResponseDtoConnectDetailsGatewayAddresses struct {
-	Address string `json:"address"`
-	Port float32 `json:"port"`
-	Name string `json:"name"`
+	Address            string   `json:"address"`
+	Port               float32  `json:"port"`
+	Name               string   `json:"name"`
 	PreferredProviders []string `json:"preferredProviders"`
-	GatewayType string `json:"gatewayType"`
+	GatewayType        string   `json:"gatewayType"`
 }
 
 // NewGetSandboxResponseDtoConnectDetailsGatewayAddresses instantiates a new GetSandboxResponseDtoConnectDetailsGatewayAddresses object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewGetSandboxResponseDtoConnectDetailsGatewayAddresses(address string, port float32, name string, preferredProviders []string, gatewayType string, ) *GetSandboxResponseDtoConnectDetailsGatewayAddresses {
+func NewGetSandboxResponseDtoConnectDetailsGatewayAddresses(address string, port float32, name string, preferredProviders []string, gatewayType string) *GetSandboxResponseDtoConnectDetailsGatewayAddresses {
 	this := GetSandboxResponseDtoConnectDetailsGatewayAddresses{}
 	this.Address = address
 	this.Port = port
@@ -47,7 +47,7 @@ func NewGetSandboxResponseDtoConnectDetailsGatewayAddressesWithDefaults() *GetSa
 
 // GetAddress returns the Address field value
 func (o *GetSandboxResponseDtoConnectDetailsGatewayAddresses) GetAddress() string {
-	if o == nil  {
+	if o == nil {
 		var ret string
 		return ret
 	}
@@ -58,7 +58,7 @@ func (o *GetSandboxResponseDtoConnectDetailsGatewayAddresses) GetAddress() strin
 // GetAddressOk returns a tuple with the Address field value
 // and a boolean to check if the value has been set.
 func (o *GetSandboxResponseDtoConnectDetailsGatewayAddresses) GetAddressOk() (*string, bool) {
-	if o == nil  {
+	if o == nil {
 		return nil, false
 	}
 	return &o.Address, true
@@ -71,7 +71,7 @@ func (o *GetSandboxResponseDtoConnectDetailsGatewayAddresses) SetAddress(v strin
 
 // GetPort returns the Port field value
 func (o *GetSandboxResponseDtoConnectDetailsGatewayAddresses) GetPort() float32 {
-	if o == nil  {
+	if o == nil {
 		var ret float32
 		return ret
 	}
@@ -82,7 +82,7 @@ func (o *GetSandboxResponseDtoConnectDetailsGatewayAddresses) GetPort() float32 
 // GetPortOk returns a tuple with the Port field value
 // and a boolean to check if the value has been set.
 func (o *GetSandboxResponseDtoConnectDetailsGatewayAddresses) GetPortOk() (*float32, bool) {
-	if o == nil  {
+	if o == nil {
 		return nil, false
 	}
 	return &o.Port, true
@@ -95,7 +95,7 @@ func (o *GetSandboxResponseDtoConnectDetailsGatewayAddresses) SetPort(v float32)
 
 // GetName returns the Name field value
 func (o *GetSandboxResponseDtoConnectDetailsGatewayAddresses) GetName() string {
-	if o == nil  {
+	if o == nil {
 		var ret string
 		return ret
 	}
@@ -106,7 +106,7 @@ func (o *GetSandboxResponseDtoConnectDetailsGatewayAddresses) GetName() string {
 // GetNameOk returns a tuple with the Name field value
 // and a boolean to check if the value has been set.
 func (o *GetSandboxResponseDtoConnectDetailsGatewayAddresses) GetNameOk() (*string, bool) {
-	if o == nil  {
+	if o == nil {
 		return nil, false
 	}
 	return &o.Name, true
@@ -119,7 +119,7 @@ func (o *GetSandboxResponseDtoConnectDetailsGatewayAddresses) SetName(v string) 
 
 // GetPreferredProviders returns the PreferredProviders field value
 func (o *GetSandboxResponseDtoConnectDetailsGatewayAddresses) GetPreferredProviders() []string {
-	if o == nil  {
+	if o == nil {
 		var ret []string
 		return ret
 	}
@@ -130,7 +130,7 @@ func (o *GetSandboxResponseDtoConnectDetailsGatewayAddresses) GetPreferredProvid
 // GetPreferredProvidersOk returns a tuple with the PreferredProviders field value
 // and a boolean to check if the value has been set.
 func (o *GetSandboxResponseDtoConnectDetailsGatewayAddresses) GetPreferredProvidersOk() (*[]string, bool) {
-	if o == nil  {
+	if o == nil {
 		return nil, false
 	}
 	return &o.PreferredProviders, true
@@ -143,7 +143,7 @@ func (o *GetSandboxResponseDtoConnectDetailsGatewayAddresses) SetPreferredProvid
 
 // GetGatewayType returns the GatewayType field value
 func (o *GetSandboxResponseDtoConnectDetailsGatewayAddresses) GetGatewayType() string {
-	if o == nil  {
+	if o == nil {
 		var ret string
 		return ret
 	}
@@ -154,7 +154,7 @@ func (o *GetSandboxResponseDtoConnectDetailsGatewayAddresses) GetGatewayType() s
 // GetGatewayTypeOk returns a tuple with the GatewayType field value
 // and a boolean to check if the value has been set.
 func (o *GetSandboxResponseDtoConnectDetailsGatewayAddresses) GetGatewayTypeOk() (*string, bool) {
-	if o == nil  {
+	if o == nil {
 		return nil, false
 	}
 	return &o.GatewayType, true

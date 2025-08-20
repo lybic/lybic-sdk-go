@@ -32,7 +32,7 @@ type SandboxActionResponseDtoCursorPosition struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewSandboxActionResponseDtoCursorPosition(x float32, y float32, screenWidth float32, screenHeight float32, screenIndex float32, ) *SandboxActionResponseDtoCursorPosition {
+func NewSandboxActionResponseDtoCursorPosition(x float32, y float32, screenWidth float32, screenHeight float32, screenIndex float32) *SandboxActionResponseDtoCursorPosition {
 	this := SandboxActionResponseDtoCursorPosition{}
 	this.X = x
 	this.Y = y
@@ -52,7 +52,7 @@ func NewSandboxActionResponseDtoCursorPositionWithDefaults() *SandboxActionRespo
 
 // GetX returns the X field value
 func (o *SandboxActionResponseDtoCursorPosition) GetX() float32 {
-	if o == nil  {
+	if o == nil {
 		var ret float32
 		return ret
 	}
@@ -63,7 +63,7 @@ func (o *SandboxActionResponseDtoCursorPosition) GetX() float32 {
 // GetXOk returns a tuple with the X field value
 // and a boolean to check if the value has been set.
 func (o *SandboxActionResponseDtoCursorPosition) GetXOk() (*float32, bool) {
-	if o == nil  {
+	if o == nil {
 		return nil, false
 	}
 	return &o.X, true
@@ -76,7 +76,7 @@ func (o *SandboxActionResponseDtoCursorPosition) SetX(v float32) {
 
 // GetY returns the Y field value
 func (o *SandboxActionResponseDtoCursorPosition) GetY() float32 {
-	if o == nil  {
+	if o == nil {
 		var ret float32
 		return ret
 	}
@@ -87,7 +87,7 @@ func (o *SandboxActionResponseDtoCursorPosition) GetY() float32 {
 // GetYOk returns a tuple with the Y field value
 // and a boolean to check if the value has been set.
 func (o *SandboxActionResponseDtoCursorPosition) GetYOk() (*float32, bool) {
-	if o == nil  {
+	if o == nil {
 		return nil, false
 	}
 	return &o.Y, true
@@ -100,7 +100,7 @@ func (o *SandboxActionResponseDtoCursorPosition) SetY(v float32) {
 
 // GetScreenWidth returns the ScreenWidth field value
 func (o *SandboxActionResponseDtoCursorPosition) GetScreenWidth() float32 {
-	if o == nil  {
+	if o == nil {
 		var ret float32
 		return ret
 	}
@@ -111,7 +111,7 @@ func (o *SandboxActionResponseDtoCursorPosition) GetScreenWidth() float32 {
 // GetScreenWidthOk returns a tuple with the ScreenWidth field value
 // and a boolean to check if the value has been set.
 func (o *SandboxActionResponseDtoCursorPosition) GetScreenWidthOk() (*float32, bool) {
-	if o == nil  {
+	if o == nil {
 		return nil, false
 	}
 	return &o.ScreenWidth, true
@@ -124,7 +124,7 @@ func (o *SandboxActionResponseDtoCursorPosition) SetScreenWidth(v float32) {
 
 // GetScreenHeight returns the ScreenHeight field value
 func (o *SandboxActionResponseDtoCursorPosition) GetScreenHeight() float32 {
-	if o == nil  {
+	if o == nil {
 		var ret float32
 		return ret
 	}
@@ -135,7 +135,7 @@ func (o *SandboxActionResponseDtoCursorPosition) GetScreenHeight() float32 {
 // GetScreenHeightOk returns a tuple with the ScreenHeight field value
 // and a boolean to check if the value has been set.
 func (o *SandboxActionResponseDtoCursorPosition) GetScreenHeightOk() (*float32, bool) {
-	if o == nil  {
+	if o == nil {
 		return nil, false
 	}
 	return &o.ScreenHeight, true
@@ -148,7 +148,7 @@ func (o *SandboxActionResponseDtoCursorPosition) SetScreenHeight(v float32) {
 
 // GetScreenIndex returns the ScreenIndex field value
 func (o *SandboxActionResponseDtoCursorPosition) GetScreenIndex() float32 {
-	if o == nil  {
+	if o == nil {
 		var ret float32
 		return ret
 	}
@@ -159,7 +159,7 @@ func (o *SandboxActionResponseDtoCursorPosition) GetScreenIndex() float32 {
 // GetScreenIndexOk returns a tuple with the ScreenIndex field value
 // and a boolean to check if the value has been set.
 func (o *SandboxActionResponseDtoCursorPosition) GetScreenIndexOk() (*float32, bool) {
-	if o == nil  {
+	if o == nil {
 		return nil, false
 	}
 	return &o.ScreenIndex, true
