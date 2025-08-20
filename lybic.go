@@ -57,6 +57,19 @@ func (c *client) GetConfig() *Config {
 	return c.config
 }
 
+// headerTransport is custom transport to add headers to all requests.
+type headerTransport struct {
+	base    http.RoundTripper
+	headers map[string]string
+}
+
+func (t *headerTransport) RoundTrip(req *http.Request) (*http.Response, error) {
+	for key, value := range t.headers {
+		req.Header.Set(key, value)
+	}
+	return t.base.RoundTrip(req)
+}
+
 func newClient(config *Config) (*client, error) {
 	if config == nil {
 		config = NewConfig()
@@ -78,9 +91,28 @@ func newClient(config *Config) (*client, error) {
 	// Remove trailing slash from endpoint
 	config.Endpoint = strings.TrimSuffix(config.Endpoint, "/")
 
+	// Prepare headers for the custom transport
+	headers := make(map[string]string)
+	if config.ApiKey != "" {
+		headers["x-api-key"] = config.ApiKey
+	}
+	for k, v := range config.ExtraHeaders {
+		config.Logger.Debugf("Setting persistent header `%s: %s`", k, v)
+		headers[k] = v
+	}
+
+	var transport http.RoundTripper
+	if len(headers) > 0 {
+		transport = &headerTransport{
+			base:    http.DefaultTransport,
+			headers: headers,
+		}
+	}
+
 	return &client{
 		client: &http.Client{
-			Timeout: time.Duration(config.Timeout) * time.Second,
+			Timeout:   time.Duration(config.Timeout) * time.Second,
+			Transport: transport,
 		},
 		config: config,
 	}, nil
@@ -109,14 +141,7 @@ func (c *client) request(ctx context.Context, method, url string, params map[str
 	if method == http.MethodPost {
 		req.Header.Set("Content-Type", "application/json")
 	}
-	if c.config.ApiKey != "" {
-		req.Header.Set("x-api-key", c.config.ApiKey)
-	}
-	// Add extra headers if any
-	for k, v := range c.config.ExtraHeaders {
-		c.config.Logger.Debugf("Setting header `%s: %s`", k, v)
-		req.Header.Set(k, v)
-	}
+	// ApiKey and ExtraHeaders are now handled by the custom transport.
 
 	// Add query parameters
 	q := req.URL.Query()
