@@ -101,10 +101,17 @@ func newClient(config *Config) (*client, error) {
 		headers[k] = v
 	}
 
+	var baseTransport http.RoundTripper
+	if config.HttpTransport != nil {
+		baseTransport = config.HttpTransport
+	} else {
+		baseTransport = http.DefaultTransport
+	}
+
 	var transport http.RoundTripper
 	if len(headers) > 0 {
 		transport = &headerTransport{
-			base:    http.DefaultTransport,
+			base:    baseTransport,
 			headers: headers,
 		}
 	}
