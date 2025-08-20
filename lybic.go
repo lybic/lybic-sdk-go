@@ -20,152 +20,181 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+// Package lybic provides a set of utilities and functions for working with the Lybic API.
+//
+//	It offers comprehensive client functionality for managing sandboxes, projects, MCP servers,
+//	and various other Lybic platform features.
 package lybic
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
 	"errors"
-	"io"
 	"net/http"
-	"os"
 	"strings"
-	"time"
+
+	"github.com/modelcontextprotocol/go-sdk/mcp"
 )
 
-const (
-	envOrgId    = "LYBIC_ORG_ID"
-	envApiKey   = "LYBIC_API_KEY"
-	envEndpoint = "LYBIC_API_ENDPOINT"
+// Client defines the interface for interacting with the Lybic API.
+// It provides methods for managing sandboxes, projects, MCP servers and other platform resources.
+type Client interface {
+	// GetConfig returns the current configuration of the client
+	GetConfig() *Config
 
-	defaultEndpoint = "https://api.lybic.cn"
-	defaultTimeout  = 10 // seconds
-)
+	// ListSandboxes retrieves a list of all available sandboxes
+	ListSandboxes(ctx context.Context) ([]GetSandboxResponseDtoSandbox, error)
+
+	// CreateSandbox creates a new sandbox with the specified configuration
+	CreateSandbox(ctx context.Context, dto CreateSandboxDto) (*GetSandboxResponseDto, error)
+
+	// GetSandbox retrieves detailed information about a specific sandbox
+	GetSandbox(ctx context.Context, sandboxId string) (*GetSandboxResponseDto, error)
+
+	// DeleteSandbox removes a specific sandbox by its ID
+	DeleteSandbox(ctx context.Context, sandboxId string) error
+
+	// ExtendSandbox extends the duration or modifies settings of an existing sandbox
+	ExtendSandbox(ctx context.Context, sandboxId string, dto ExtendSandboxDto) error
+
+	// ExecuteComputerUseAction performs a specified action on a sandbox
+	ExecuteComputerUseAction(ctx context.Context, sandboxId string, dto ComputerUseActionDto) (*SandboxActionResponseDto, error)
+
+	// PreviewSandbox generates a preview of the sandbox state
+	PreviewSandbox(ctx context.Context, sandboxId string) (*SandboxActionResponseDto, error)
+
+	// ListProjects returns a list of all available projects
+	ListProjects(ctx context.Context) ([]SingleProjectResponseDto, error)
+
+	// CreateProject creates a new project with the specified configuration
+	CreateProject(ctx context.Context, dto CreateProjectDto) (*SingleProjectResponseDto, error)
+
+	// DeleteProject removes a specific project by its ID
+	DeleteProject(ctx context.Context, projectId string) error
+
+	// GetStats retrieves current platform statistics
+	GetStats(ctx context.Context) (*StatsResponseDto, error)
+
+	// ParseComputerUse parses and validates computer use actions
+	ParseComputerUse(ctx context.Context, dto ComputerUseParseRequestDto) (*ComputerUseActionResponseDto, error)
+}
+
+// NewClient creates a new instance of the Lybic client with the provided configuration.
+// It returns an error if the configuration is invalid or the client cannot be initialized.
+//
+//	if config is nil, it initializes a new Config with default values and environment variables.
+func NewClient(config *Config) (Client, error) {
+	return newClient(config)
+}
+
+// Config holds the configuration parameters for the Lybic client.
+type Config struct {
+	// OrgId is the organization ID required for API access
+	OrgId string
+
+	// ApiKey is the authentication key for API access (optional)
+	ApiKey string
+
+	// Endpoint is the API endpoint URL, defaults to "https://api.lybic.cn"
+	Endpoint string
+
+	// Timeout specifies the duration in seconds for HTTP requests, defaults to 10 seconds
+	Timeout uint8
+
+	// ExtraHeaders contains additional HTTP headers to be included in each request
+	ExtraHeaders map[string]string
+
+	// Logger provides an interface for logging operations, can be nil to disable logging
+	Logger Logger
+
+	// HttpTransport allows customization of the HTTP transport layer, can be nil to use the default transport
+	HttpTransport http.RoundTripper
+}
+
+// NewConfig creates a new Config instance with default values and environment variables.
+// It initializes the configuration with values from environment variables if available,
+// otherwise uses default values.
+func NewConfig() *Config {
+	return &Config{
+		OrgId:    getEnv(envOrgId, ""),
+		ApiKey:   getEnv(envApiKey, ""),
+		Endpoint: getEnv(envEndpoint, defaultEndpoint),
+		Timeout:  defaultTimeout,
+	}
+}
+
+// Mcp defines the interface for interacting with the lybic Model Context Protocol (MCP) services.
+type Mcp interface {
+	// ListMcpServers retrieves a list of all available MCP servers
+	ListMcpServers(ctx context.Context) ([]McpServerResponseDto, error)
+
+	// CreateMcpServer creates a new MCP server with the specified configuration
+	CreateMcpServer(ctx context.Context, dto CreateMcpServerDto) (*McpServerResponseDto, error)
+
+	// GetDefaultMcpServer retrieves the default MCP server configuration
+	GetDefaultMcpServer(ctx context.Context) (*McpServerResponseDto, error)
+
+	// DeleteMcpServer removes a specific MCP server by its ID
+	DeleteMcpServer(ctx context.Context, mcpServerId string) error
+
+	// SetMcpServerToSandbox associates an MCP server with a sandbox
+	SetMcpServerToSandbox(ctx context.Context, mcpServerId string, dto SetMcpServerToSandboxResponseDto) error
+
+	// CallTools calls the specified tool service with the given arguments.
+	//
+	//	args: MCP request content map[string]any
+	//	service: "computer-use","mobile-use"
+	//	If no service is specified, it defaults to "computer-use".
+	CallTools(ctx context.Context, args map[string]any, service *string) (*mcp.CallToolResult, error)
+
+	// Close releases any resources held by the MCP client
+	Close() error
+}
 
 var (
-	ErrNeedOrgId    = errors.New("please specify an organization")
-	ErrNeedEndpoint = errors.New("please specify an API endpoint")
+	ErrNeedConfig       = errors.New("please specify a configuration(LybicClient Config) for the MCP client initialization")
+	ErrNeedMcpServerId  = errors.New("please specify a MCP server ID when DoNotUsingDefaultServer is true")
+	ErrInvalidMcpClient = errors.New("invalid client type: UsingClient must be a client created by this SDK")
 )
 
-type client struct {
-	client *http.Client
-	config *Config
-}
-
-func (c *client) GetConfig() *Config {
-	return c.config
-}
-
-// headerTransport is custom transport to add headers to all requests.
-type headerTransport struct {
-	base    http.RoundTripper
-	headers map[string]string
-}
-
-func (t *headerTransport) RoundTrip(req *http.Request) (*http.Response, error) {
-	newReq := *req
-	newReq.Header = req.Header.Clone()
-	for key, value := range t.headers {
-		newReq.Header.Set(key, value)
-	}
-	return t.base.RoundTrip(&newReq)
-}
-
-// NewClient creates a new Lybic API HTTPClient with the provided configuration.
-func newClient(config *Config) (*client, error) {
-	if config == nil {
-		config = NewConfig()
+// NewMcpClient creates a new lybic MCP client with the specified options.
+func NewMcpClient(ctx context.Context, opt McpOption) (Mcp, error) {
+	if opt.UsingClientConfig == nil && opt.UsingClient == nil {
+		return nil, ErrNeedConfig
 	}
 
-	if config.Logger == nil {
-		config.Logger = &emptyLogger{}
-	}
-
-	if config.Endpoint == "" {
-		config.Logger.Errorf("API endpoint is not set, please specify it in config or set the %s environment variable", envEndpoint)
-		return nil, ErrNeedEndpoint
-	}
-	if config.OrgId == "" {
-		config.Logger.Errorf("organization id is not set, please specify it in config or set the %s environment variable", envOrgId)
-		return nil, ErrNeedOrgId
-	}
-
-	// Remove trailing slash from endpoint
-	config.Endpoint = strings.TrimSuffix(config.Endpoint, "/")
-
-	// Prepare headers for the custom transport
-	headers := make(map[string]string)
-	if config.ApiKey != "" {
-		headers["x-api-key"] = config.ApiKey
-	}
-	for k, v := range config.ExtraHeaders {
-		config.Logger.Debugf("Setting persistent header `%s: %s`", k, v)
-		headers[k] = v
-	}
-
-	var baseTransport http.RoundTripper
-	if config.HttpTransport != nil {
-		baseTransport = config.HttpTransport
-	} else {
-		baseTransport = http.DefaultTransport
-	}
-
-	var transport http.RoundTripper
-	if len(headers) > 0 {
-		transport = &headerTransport{
-			base:    baseTransport,
-			headers: headers,
-		}
-	}
-
-	return &client{
-		client: &http.Client{
-			Timeout:   time.Duration(config.Timeout) * time.Second,
-			Transport: transport,
-		},
-		config: config,
-	}, nil
-}
-
-func (c *client) request(ctx context.Context, method, url string, params map[string]string, bodyDto any) (*http.Response, error) {
-	var body io.Reader
-	if bodyDto != nil {
-		data, err := json.Marshal(bodyDto)
+	var c *client
+	var err error
+	if opt.UsingClient == nil {
+		c, err = newClient(opt.UsingClientConfig)
 		if err != nil {
-			c.config.Logger.Errorf("failed to marshal request body: %v", err)
 			return nil, err
 		}
-
-		c.config.Logger.Debugf("request body: %s", string(data))
-		body = bytes.NewReader(data)
+	} else {
+		var ok bool
+		c, ok = opt.UsingClient.(*client)
+		if !ok {
+			return nil, ErrInvalidMcpClient
+		}
 	}
 
-	req, err := http.NewRequestWithContext(ctx, method, c.config.Endpoint+url, body)
-	if err != nil {
-		c.config.Logger.Errorf("failed to create request: %v", err)
-		return nil, err
+	var mcpServerAddress *string
+	if opt.DoNotUsingDefaultServer != nil && *opt.DoNotUsingDefaultServer {
+		if opt.UsingSpecificMcpServerId == nil || strings.TrimSpace(*opt.UsingSpecificMcpServerId) == "" {
+			return nil, ErrNeedMcpServerId
+		} else {
+			mcpServerAddress = opt.UsingSpecificMcpServerId
+		}
 	}
-
-	// Set common headers
-	if method == http.MethodPost {
-		req.Header.Set("Content-Type", "application/json")
-	}
-	// ApiKey and ExtraHeaders are now handled by the custom transport.
-
-	// Add query parameters
-	q := req.URL.Query()
-	for k, v := range params {
-		q.Add(k, v)
-	}
-	req.URL.RawQuery = q.Encode()
-
-	return c.client.Do(req)
+	return newMcpClient(ctx, c, mcpServerAddress)
 }
 
-func getEnv(key string, defaultVal string) string {
-	if v, ok := os.LookupEnv(key); ok {
-		return v
-	}
-	return defaultVal
+// McpOption holds options for configuring the lybic MCP client.
+type McpOption struct {
+	UsingClientConfig *Config
+	UsingClient       Client
+
+	// DoNotUsingDefaultServer If this option is specified and is true, UsingSpecificMcpServerId must be specified
+	DoNotUsingDefaultServer *bool
+	// UsingSpecificMcpServerId If this option is specified, the MCP client will use the specified MCP server ID.
+	UsingSpecificMcpServerId *string
 }
