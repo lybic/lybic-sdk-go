@@ -92,7 +92,7 @@ The client can be configured with the following options, either through the `Con
 | `ExtraHeaders`   | -                      | A map of extra HTTP headers to send with each request.    | `nil`                |
 | `Logger`         | -                      | A custom logger instance. See the [Logging](#-logging) section. | `nil` (disabled)     |
 
-## ✨ Features
+## ✨ Platform API Features
 
 The Lybic SDK provides a comprehensive client for interacting with all major platform features.
 
@@ -112,16 +112,77 @@ The Lybic SDK provides a comprehensive client for interacting with all major pla
 - `CreateProject(ctx, dto)`: Create a new project.
 - `DeleteProject(ctx, projectId)`: Delete a project.
 
-### MCP Server Management
+### Other Utilities
+- `GetStats(ctx)`: Retrieve current platform statistics.
+- `ParseComputerUse(ctx, dto)`: Parse and validate computer use actions.
+
+## 🤖 Using the MCP Client
+
+For interacting with the Model Context Protocol (MCP), which enables tool calling, you need to initialize a separate `McpClient`.
+
+### MCP Client Initialization
+
+The `NewMcpClient` function creates a client for MCP services. It requires an `McpOption` struct, which can be configured in several ways.
+
+#### Example 1: Initialize with a Lybic Config
+
+You can initialize the `McpClient` directly from a `lybic.Config` object. The client will be created internally.
+
+```go
+import (
+    "context"
+
+    "github.com/lybic/lybic-sdk-go"
+)
+
+func main() {
+    // Config can be loaded from environment variables
+    lybicConfig := lybic.NewConfig()
+
+    mcpOpt := lybic.McpOption{
+        UsingClientConfig: lybicConfig,
+    }
+    mcpClient, err := lybic.NewMcpClient(context.Background(), mcpOpt)
+    if err != nil {
+        panic(err)
+    }
+    defer mcpClient.Close()
+    
+    // ... use the mcpClient
+}
+```
+
+#### Example 2: Initialize with an Existing Lybic Client
+
+If you already have an instance of the main `lybic.Client`, you can reuse it.
+
+```go
+client, err := lybic.NewClient(nil) // Main client
+if err != nil {
+    panic(err)
+}
+
+mcpOpt := lybic.McpOption{
+    UsingClient: client,
+}
+mcpClient, err := lybic.NewMcpClient(context.Background(), mcpOpt)
+if err != nil {
+    panic(err)
+}
+defer mcpClient.Close()
+```
+
+### MCP Client Features
+
+#### Tool Calling
+- `CallTools(ctx, args, service)`: Call a tool service like `computer-use` with the specified arguments.
+
+#### MCP Server Management
 - `ListMcpServers(ctx)`: Get a list of all MCP servers.
 - `CreateMcpServer(ctx, dto)`: Create a new MCP server.
 - `GetDefaultMcpServer(ctx)`: Retrieve the default MCP server.
 - `DeleteMcpServer(ctx, mcpServerId)`: Delete an MCP server.
 - `SetMcpServerToSandbox(ctx, mcpServerId, dto)`: Associate an MCP server with a sandbox.
-
-### Other Utilities
-- `GetStats(ctx)`: Retrieve current platform statistics.
-- `ParseComputerUse(ctx, dto)`: Parse and validate computer use actions.
 
 ## 📝 Logging
 
