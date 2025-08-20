@@ -28,6 +28,7 @@ package lybic
 
 import (
 	"context"
+	"net/http"
 )
 
 // Client defines the interface for interacting with the Lybic API.
@@ -115,6 +116,9 @@ type Config struct {
 
 	// Logger provides an interface for logging operations, can be nil to disable logging
 	Logger Logger
+
+	// HttpTransport allows customization of the HTTP transport layer, can be nil to use the default transport
+	HttpTransport http.RoundTripper
 }
 
 // NewConfig creates a new Config instance with default values and environment variables.
