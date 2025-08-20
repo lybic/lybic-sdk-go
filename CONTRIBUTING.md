@@ -12,7 +12,7 @@ If your changes involve alterations to the existing apis of the SDK, please **ca
 
 Because the changes you make may have an impact on our developers.
 
-If you're interested in seeing a new feature in Lybic(or the underlying services), the best approach is to create an [issue](https://github.com/lybic/lybic-sdk-python/issues) (or comment on an existing issue if there is one) requesting the feature and describing specific use cases for it.
+If you're interested in seeing a new feature in Lybic(or the underlying services), the best approach is to create an [issue](https://github.com/lybic/lybic-sdk-go/issues) (or comment on an existing issue if there is one) requesting the feature and describing specific use cases for it.
 
 If the feature has merit, it will go through a thorough process of API design and review. Any code should come after this.
 
@@ -30,4 +30,4 @@ Some examples of types of pull requests that are immediately helpful:
 
 ## Contributor License Agreement
 
-Contributions to our any project are assumed to be under the [MIT](https://github.com/lybic/lybic-sdk-python/blob/master/LICENSE).
+Contributions to our any project are assumed to be under the [MIT](https://github.com/lybic/lybic-sdk-go/blob/main/LICENSE).
