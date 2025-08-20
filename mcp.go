@@ -137,18 +137,33 @@ type mcpClient struct {
 	client  *client
 }
 
-func newMcpClient(ctx context.Context, serverAddress string) (*mcpClient, error) {
+func newMcpClient(ctx context.Context, client *client, address *string) (*mcpClient, error) {
+	m := &mcpClient{client: client}
+
+	var serverAddress string
+	if address == nil {
+		// use default server
+		mcpServer, err := m.GetDefaultMcpServer(ctx)
+		if err != nil {
+			return nil, fmt.Errorf("failed to get default MCP server: %w", err)
+		}
+		serverAddress = fmt.Sprintf("%s/api/mcp/%s", m.client.config.Endpoint, mcpServer.Id)
+	} else {
+		serverAddress = fmt.Sprintf("%s/api/mcp/%s", m.client.config.Endpoint, *address)
+		m.client.config.Logger.Infof("Using specific MCP server address: %s", serverAddress)
+	}
+
 	cli := mcp.NewClient(&mcp.Implementation{Name: "mcp-client/lybic-sdk-go", Version: "v0.0.2"}, nil)
-	transport := mcp.NewStreamableClientTransport(serverAddress, &mcp.StreamableClientTransportOptions{})
+	transport := mcp.NewStreamableClientTransport(serverAddress, &mcp.StreamableClientTransportOptions{HTTPClient: client.client})
 
 	session, err := cli.Connect(ctx, transport)
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to MCP server: %w", err)
 	}
-	return &mcpClient{
-		session: session,
-		close:   session.Close,
-	}, nil
+
+	m.session = session
+	m.close = session.Close
+	return m, nil
 }
 
 func (m *mcpClient) Close() error {

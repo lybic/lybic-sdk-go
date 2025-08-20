@@ -30,6 +30,7 @@ import (
 	"context"
 	"errors"
 	"net/http"
+	"strings"
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 )
@@ -75,21 +76,6 @@ type Client interface {
 
 	// ParseComputerUse parses and validates computer use actions
 	ParseComputerUse(ctx context.Context, dto ComputerUseParseRequestDto) (*ComputerUseActionResponseDto, error)
-
-	// ListMcpServers retrieves a list of all available MCP servers
-	ListMcpServers(ctx context.Context) ([]McpServerResponseDto, error)
-
-	// CreateMcpServer creates a new MCP server with the specified configuration
-	CreateMcpServer(ctx context.Context, dto CreateMcpServerDto) (*McpServerResponseDto, error)
-
-	// GetDefaultMcpServer retrieves the default MCP server configuration
-	GetDefaultMcpServer(ctx context.Context) (*McpServerResponseDto, error)
-
-	// DeleteMcpServer removes a specific MCP server by its ID
-	DeleteMcpServer(ctx context.Context, mcpServerId string) error
-
-	// SetMcpServerToSandbox associates an MCP server with a sandbox
-	SetMcpServerToSandbox(ctx context.Context, mcpServerId string, dto SetMcpServerToSandboxResponseDto) error
 }
 
 // NewClient creates a new instance of the Lybic client with the provided configuration.
@@ -165,19 +151,41 @@ type Mcp interface {
 }
 
 var (
-	ErrNeedConfig = errors.New("please specify a configuration(LybicConfig or LybicClient) for the MCP client")
+	ErrNeedConfig      = errors.New("please specify a configuration(LybicClient Config) for the MCP client initialization")
+	ErrNeedMcpServerId = errors.New("please specify a MCP server ID when DoNotUsingDefaultServer is true")
 )
 
-func NewMcpClient(ctx context.Context, opt *McpOption) (Mcp, error) {
-	if opt == nil || (opt.Config == nil && opt.UsingClient == nil) {
+// NewMcpClient creates a new lybic MCP client with the specified options.
+func NewMcpClient(ctx context.Context, opt McpOption) (Mcp, error) {
+	if opt.UsingClientConfig == nil && opt.UsingClient == nil {
 		return nil, ErrNeedConfig
 	}
-	//todo
+
+	var c *client
+	var err error
+	if opt.UsingClient == nil {
+		c, err = newClient(opt.UsingClientConfig)
+		if err != nil {
+			return nil, err
+		}
+	}
+	c = opt.UsingClient.(*client)
+
+	var mcpServerAddress *string
+	if opt.DoNotUsingDefaultServer != nil && *opt.DoNotUsingDefaultServer {
+		if opt.UsingSpecificMcpServerId == nil || strings.TrimSpace(*opt.UsingSpecificMcpServerId) == "" {
+			return nil, ErrNeedMcpServerId
+		} else {
+			mcpServerAddress = opt.UsingSpecificMcpServerId
+		}
+	}
+	return newMcpClient(ctx, c, mcpServerAddress)
 }
 
+// McpOption holds options for configuring the lybic MCP client.
 type McpOption struct {
-	*Config
-	UsingClient Client
+	UsingClientConfig *Config
+	UsingClient       Client
 
 	// DoNotUsingDefaultServer If this option is specified and is true, UsingSpecificMcpServerId must be specified
 	DoNotUsingDefaultServer *bool
