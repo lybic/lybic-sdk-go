@@ -170,8 +170,8 @@ func (m *mcpClient) Close() error {
 
 func (m *mcpClient) CallTools(ctx context.Context, args map[string]any, service *string) (*mcp.CallToolResult, error) {
 	if service == nil {
-		service = new(string)
-		*service = "computer-use"
+		defaultService := "computer-use"
+		service = &defaultService
 	}
 
 	response, err := m.session.CallTool(ctx, &mcp.CallToolParams{

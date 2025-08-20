@@ -151,8 +151,9 @@ type Mcp interface {
 }
 
 var (
-	ErrNeedConfig      = errors.New("please specify a configuration(LybicClient Config) for the MCP client initialization")
-	ErrNeedMcpServerId = errors.New("please specify a MCP server ID when DoNotUsingDefaultServer is true")
+	ErrNeedConfig       = errors.New("please specify a configuration(LybicClient Config) for the MCP client initialization")
+	ErrNeedMcpServerId  = errors.New("please specify a MCP server ID when DoNotUsingDefaultServer is true")
+	ErrInvalidMcpClient = errors.New("invalid client type: UsingClient must be a client created by this SDK")
 )
 
 // NewMcpClient creates a new lybic MCP client with the specified options.
@@ -172,7 +173,7 @@ func NewMcpClient(ctx context.Context, opt McpOption) (Mcp, error) {
 		var ok bool
 		c, ok = opt.UsingClient.(*client)
 		if !ok {
-			return nil, errors.New("invalid client type: UsingClient must be of type *lybic.client")
+			return nil, ErrInvalidMcpClient
 		}
 	}
 
