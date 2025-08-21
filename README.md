@@ -10,6 +10,7 @@
   <a href="https://github.com/lybic/lybic-sdk-go/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/pypi/l/lybic"></a>
   <a href="https://lybic.ai/docs"><img alt="Documentation" src="https://img.shields.io/badge/documentation-Lybic-orange"></a>
   <a href="https://github.com/lybic/lybic-sdk-go/actions/workflows/quality.yml"><img alt="Golanglint" src="https://github.com/lybic/lybic-sdk-go/actions/workflows/quality.yml/badge.svg"></a>
+  <a href="https://github.com/lybic/lybic-sdk-go/releases"><img alt="GitHub Release" src="https://img.shields.io/github/v/release/lybic/lybic-sdk-go?display_name=tag&sort=semver"></a>
 </p>
 
 Developing, testing, and deploying GUI-based AI agents is complex. Developers waste precious time wrestling with cloud instances, VNC servers, and environment configurations instead of focusing on what matters: building intelligent agents.
