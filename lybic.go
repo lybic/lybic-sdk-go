@@ -45,7 +45,7 @@ type Client interface {
 	ListSandboxes(ctx context.Context) ([]GetSandboxResponseDtoSandbox, error)
 
 	// CreateSandbox creates a new sandbox with the specified configuration
-	CreateSandbox(ctx context.Context, dto CreateSandboxDto) (*GetSandboxResponseDto, error)
+	CreateSandbox(ctx context.Context, dto CreateSandboxDto) (*GetSandboxResponseDtoSandbox, error)
 
 	// GetSandbox retrieves detailed information about a specific sandbox
 	GetSandbox(ctx context.Context, sandboxId string) (*GetSandboxResponseDto, error)

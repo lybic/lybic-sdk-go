@@ -53,7 +53,7 @@ func (c *client) ListSandboxes(ctx context.Context) ([]GetSandboxResponseDtoSand
 }
 
 // CreateSandbox creates a new sandbox.
-func (c *client) CreateSandbox(ctx context.Context, dto CreateSandboxDto) (*GetSandboxResponseDto, error) {
+func (c *client) CreateSandbox(ctx context.Context, dto CreateSandboxDto) (*GetSandboxResponseDtoSandbox, error) {
 	c.config.Logger.Info("Creating sandbox", "dto:", dto)
 
 	url := fmt.Sprintf("/api/orgs/%s/sandboxes", c.config.OrgId)
@@ -63,11 +63,11 @@ func (c *client) CreateSandbox(ctx context.Context, dto CreateSandboxDto) (*GetS
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
+	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusCreated {
 		return nil, fmt.Errorf("failed to create sandbox: %s", resp.Status)
 	}
 
-	var sandbox GetSandboxResponseDto
+	var sandbox GetSandboxResponseDtoSandbox
 	if err := json.NewDecoder(resp.Body).Decode(&sandbox); err != nil {
 		return nil, err
 	}
@@ -168,7 +168,7 @@ func (c *client) PreviewSandbox(ctx context.Context, sandboxId string) (*Sandbox
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
+	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusCreated {
 		return nil, fmt.Errorf("failed to preview sandbox: %s", resp.Status)
 	}
 
