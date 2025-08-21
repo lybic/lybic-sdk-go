@@ -161,7 +161,7 @@ fmt.Printf("Previewed sandbox: %+v\n", previewSandbox)
 Extend the lifetime of a running sandbox.
 
 ```go
-var _maxLife float32 = 86400 // 24 hours in seconds
+var maxLife float32 = 86400 // 24 hours in seconds
 err = client.ExtendSandbox(ctx, "sandbox_id", lybic.ExtendSandboxDto{
     MaxLifeSeconds: &_maxLife,
 })
