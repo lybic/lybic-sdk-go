@@ -109,7 +109,7 @@ Retrieve detailed information for a specific sandbox.
 ```go
 sandbox, err := client.GetSandbox(ctx, "sandbox-id")
 if err != nil {
-    fmt.Printf("Error geting sandbox: %v\n", err)
+    fmt.Printf("Error getting sandbox: %v\n", err)
     return
 }
 fmt.Printf("Sandbox info: %+v\n", sandbox)
