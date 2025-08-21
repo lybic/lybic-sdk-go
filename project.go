@@ -41,7 +41,7 @@ func (c *client) ListProjects(ctx context.Context) ([]SingleProjectResponseDto, 
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusCreated {
+	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("failed to list projects: %s", resp.Status)
 	}
 
@@ -62,7 +62,7 @@ func (c *client) CreateProject(ctx context.Context, dto CreateProjectDto) (*Sing
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusCreated {
+	if resp.StatusCode != http.StatusCreated {
 		return nil, fmt.Errorf("failed to create project: %s", resp.Status)
 	}
 

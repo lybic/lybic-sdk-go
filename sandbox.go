@@ -63,7 +63,7 @@ func (c *client) CreateSandbox(ctx context.Context, dto CreateSandboxDto) (*GetS
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusCreated {
+	if resp.StatusCode != http.StatusCreated {
 		return nil, fmt.Errorf("failed to create sandbox: %s", resp.Status)
 	}
 
@@ -145,7 +145,7 @@ func (c *client) ExecuteComputerUseAction(ctx context.Context, sandboxId string,
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
+	if resp.StatusCode != http.StatusCreated {
 		return nil, fmt.Errorf("failed to execute computer use action: %s", resp.Status)
 	}
 
