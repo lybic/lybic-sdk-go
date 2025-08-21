@@ -72,6 +72,7 @@ Sandboxes are on-demand, isolated environments for running your GUI-based agents
 Retrieve a list of all your available sandboxes.
 
 ```go
+ctx := context.Background()
 sandboxes, err := client.ListSandboxes(ctx)
 if err != nil {
     fmt.Printf("Error listing sandboxes: %v", err)
