@@ -25,6 +25,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/lybic/lybic-sdk-go"
 )
 
 func main() {
