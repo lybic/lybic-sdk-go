@@ -270,20 +270,18 @@ The primary function of the MCP client is to call tools, such as the `computer-u
 ```go
 // This example assumes you have an MCP server associated with a sandbox.
 args := map[string]any{
-    "action": "click",
-    "x": 120,
-    "y": 240,
+    "action": "doubleClick",
+    "x":      120,
+    "y":      240,
 }
 service := "computer-use"
 
 result, err := mcpClient.CallTools(context.Background(), args, &service)
 if err != nil {
-    fmt.Printf("Error calling tool: %v
-", err)
+    fmt.Printf("Error calling tool: %v", err)
     return
 }
-fmt.Printf("Tool call result: %+v
-", result)
+fmt.Printf("Tool call result: %+v\n", result)
 ```
 
 ### MCP Server Management
@@ -305,16 +303,13 @@ for _, server := range servers {
 
 #### Create an MCP Server
 ```go
-mcpDto := lybic.CreateMcpServerDto{
-    Name: "MyAgentServer",
-    // Add other configuration as needed
-}
-server, err := mcpClient.CreateMcpServer(context.Background(), mcpDto)
+m, err := mcpClient.CreateMcpServer(ctx, lybic.CreateMcpServerDto{
+    Name: "MCP-server-01",
+})
 if err != nil {
-    fmt.Printf("Error creating MCP server: %v
-", err)
+    fmt.Println("Error creating MCP server:", err)
     return
 }
-fmt.Printf("Successfully created MCP server with ID: %s
-", server.Id)
+fmt.Println("Created MCP Server:")
+fmt.Printf("ID: %s, Name: %s\n", m.Id, m.Name)
 ```
