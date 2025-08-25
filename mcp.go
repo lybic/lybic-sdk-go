@@ -153,9 +153,13 @@ func newMcpClient(ctx context.Context, client *client, address *string) (*mcpCli
 	}
 
 	cli := mcp.NewClient(&mcp.Implementation{Name: "mcp-client/lybic-sdk-go", Version: "v0.0.2"}, nil)
-	transport := mcp.NewStreamableClientTransport(serverAddress, &mcp.StreamableClientTransportOptions{HTTPClient: client.client})
+	transport := &mcp.StreamableClientTransport{
+		Endpoint:   serverAddress,
+		HTTPClient: client.client,
+		MaxRetries: 3,
+	}
 
-	session, err := cli.Connect(ctx, transport)
+	session, err := cli.Connect(ctx, transport, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to MCP server: %w", err)
 	}
