@@ -24,9 +24,10 @@ package lybic
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
+
+	"github.com/lybic/lybic-sdk-go/pkg/json"
 )
 
 // ListSandboxes returns a list of sandboxes for the organization.

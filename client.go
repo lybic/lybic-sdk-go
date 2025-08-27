@@ -25,13 +25,14 @@ package lybic
 import (
 	"bytes"
 	"context"
-	"encoding/json"
 	"errors"
 	"io"
 	"net/http"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/lybic/lybic-sdk-go/pkg/json"
 )
 
 const (

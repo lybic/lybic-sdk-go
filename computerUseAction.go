@@ -24,10 +24,11 @@ package lybic
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
+
+	"github.com/lybic/lybic-sdk-go/pkg/json"
 )
 
 // ParseComputerUse parses the output text of a computer use model and returns the parsed actions.
