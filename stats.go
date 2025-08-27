@@ -39,16 +39,9 @@ func (c *client) GetStats(ctx context.Context) (*StatsResponseDto, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		c.config.Logger.Errorf("failed to get stats: %s", resp.Status)
-		return nil, fmt.Errorf("failed to get stats: %s", resp.Status)
-	}
 
 	var stats StatsResponseDto
-	if err := json.NewDecoder(resp.Body).Decode(&stats); err != nil {
-		c.config.Logger.Errorf("failed to decode stats response: %v", err)
+	if err := tryToGetDto[StatsResponseDto](resp, &stats); err != nil {
 		return nil, err
 	}
 

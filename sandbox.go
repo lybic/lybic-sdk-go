@@ -39,14 +39,9 @@ func (c *client) ListSandboxes(ctx context.Context) ([]GetSandboxResponseDtoSand
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("failed to list sandboxes: %s", resp.Status)
-	}
 
 	var sandboxes []GetSandboxResponseDtoSandbox
-	if err := json.NewDecoder(resp.Body).Decode(&sandboxes); err != nil {
+	if err := tryToGetDto[[]GetSandboxResponseDtoSandbox](resp, &sandboxes); err != nil {
 		return nil, err
 	}
 
@@ -62,14 +57,9 @@ func (c *client) CreateSandbox(ctx context.Context, dto CreateSandboxDto) (*GetS
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusCreated {
-		return nil, fmt.Errorf("failed to create sandbox: %s", resp.Status)
-	}
 
 	var sandbox GetSandboxResponseDtoSandbox
-	if err := json.NewDecoder(resp.Body).Decode(&sandbox); err != nil {
+	if err := tryToGetDto[GetSandboxResponseDtoSandbox](resp, &sandbox); err != nil {
 		return nil, err
 	}
 
@@ -85,14 +75,9 @@ func (c *client) GetSandbox(ctx context.Context, sandboxId string) (*GetSandboxR
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("failed to get sandbox: %s", resp.Status)
-	}
 
 	var sandbox GetSandboxResponseDto
-	if err := json.NewDecoder(resp.Body).Decode(&sandbox); err != nil {
+	if err := tryToGetDto[GetSandboxResponseDto](resp, &sandbox); err != nil {
 		return nil, err
 	}
 
@@ -108,13 +93,8 @@ func (c *client) DeleteSandbox(ctx context.Context, sandboxId string) error {
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("failed to delete sandbox: %s", resp.Status)
-	}
-
-	return nil
+	return tryToGetDto[any](resp, nil)
 }
 
 // ExtendSandbox extends a sandbox's expiration time by its ID.
@@ -126,13 +106,8 @@ func (c *client) ExtendSandbox(ctx context.Context, sandboxId string, dto Extend
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusCreated {
-		return fmt.Errorf("failed to extend sandbox: %s", resp.Status)
-	}
-
-	return nil
+	return tryToGetDto[any](resp, nil)
 }
 
 // ExecuteComputerUseAction executes a computer use action on the sandbox.
@@ -144,14 +119,9 @@ func (c *client) ExecuteComputerUseAction(ctx context.Context, sandboxId string,
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusCreated {
-		return nil, fmt.Errorf("failed to execute computer use action: %s", resp.Status)
-	}
 
 	var actionResponse SandboxActionResponseDto
-	if err := json.NewDecoder(resp.Body).Decode(&actionResponse); err != nil {
+	if err := tryToGetDto[SandboxActionResponseDto](resp, &actionResponse); err != nil {
 		return nil, err
 	}
 
@@ -167,14 +137,9 @@ func (c *client) PreviewSandbox(ctx context.Context, sandboxId string) (*Sandbox
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusCreated {
-		return nil, fmt.Errorf("failed to preview sandbox: %s", resp.Status)
-	}
 
 	var preview SandboxActionResponseDto
-	if err := json.NewDecoder(resp.Body).Decode(&preview); err != nil {
+	if err := tryToGetDto[SandboxActionResponseDto](resp, &preview); err != nil {
 		return nil, err
 	}
 

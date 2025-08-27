@@ -39,14 +39,9 @@ func (m *mcpClient) ListMcpServers(ctx context.Context) ([]McpServerResponseDto,
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("failed to list mcp servers: %s", resp.Status)
-	}
 
 	var mcpServers []McpServerResponseDto
-	if err := json.NewDecoder(resp.Body).Decode(&mcpServers); err != nil {
+	if err := tryToGetDto[[]McpServerResponseDto](resp, &mcpServers); err != nil {
 		return nil, err
 	}
 
@@ -61,14 +56,9 @@ func (m *mcpClient) CreateMcpServer(ctx context.Context, dto CreateMcpServerDto)
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("failed to create mcp server: %s", resp.Status)
-	}
 
 	var mcpServer McpServerResponseDto
-	if err := json.NewDecoder(resp.Body).Decode(&mcpServer); err != nil {
+	if err := tryToGetDto[McpServerResponseDto](resp, &mcpServer); err != nil {
 		return nil, err
 	}
 
@@ -83,14 +73,9 @@ func (m *mcpClient) GetDefaultMcpServer(ctx context.Context) (*McpServerResponse
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("failed to get default mcp server: %s", resp.Status)
-	}
 
 	var mcpServer McpServerResponseDto
-	if err := json.NewDecoder(resp.Body).Decode(&mcpServer); err != nil {
+	if err := tryToGetDto[McpServerResponseDto](resp, &mcpServer); err != nil {
 		return nil, err
 	}
 
@@ -105,13 +90,8 @@ func (m *mcpClient) DeleteMcpServer(ctx context.Context, mcpServerId string) err
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("failed to delete mcp server: %s", resp.Status)
-	}
-
-	return nil
+	return tryToGetDto[any](resp, nil)
 }
 
 // SetMcpServerToSandbox sets the specified MCP server to the given Sandbox.
@@ -122,13 +102,8 @@ func (m *mcpClient) SetMcpServerToSandbox(ctx context.Context, mcpServerId strin
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusCreated {
-		return fmt.Errorf("failed to set mcp server to sandbox: %s", resp.Status)
-	}
-
-	return nil
+	return tryToGetDto[any](resp, nil)
 }
 
 type mcpClient struct {
