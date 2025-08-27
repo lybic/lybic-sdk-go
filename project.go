@@ -26,8 +26,6 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-
-	"github.com/lybic/lybic-sdk-go/pkg/json"
 )
 
 // ListProjectsResponseDto is the response DTO for listing projects.

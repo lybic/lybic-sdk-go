@@ -11,8 +11,8 @@
 package lybic
 
 import (
-	"encoding/json"
 	"fmt"
+	"github.com/lybic/lybic-sdk-go/pkg/json"
 )
 
 // ComputerUseActionDtoActionOneOf struct for ComputerUseActionDtoActionOneOf

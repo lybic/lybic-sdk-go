@@ -10,7 +10,7 @@
 package lybic
 
 import (
-	"encoding/json"
+	"github.com/lybic/lybic-sdk-go/pkg/json"
 )
 
 // GetSandboxResponseDto struct for GetSandboxResponseDto

@@ -1,9 +1,10 @@
 package lybic
 
 import (
-	"encoding/json"
 	"net/http"
 	"strconv"
+
+	"github.com/lybic/lybic-sdk-go/pkg/json"
 )
 
 func tryToGetDto[T any](resp *http.Response, dto *T) error {

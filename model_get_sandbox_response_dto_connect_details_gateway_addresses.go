@@ -11,7 +11,7 @@
 package lybic
 
 import (
-	"encoding/json"
+	"github.com/lybic/lybic-sdk-go/pkg/json"
 )
 
 // GetSandboxResponseDtoConnectDetailsGatewayAddresses struct for GetSandboxResponseDtoConnectDetailsGatewayAddresses
