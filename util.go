@@ -20,7 +20,7 @@ func tryToGetDto[T any](resp *http.Response, dto *T) error {
 	if err := json.NewDecoder(resp.Body).Decode(&apiErr); err != nil {
 		return Error{
 			Code:    strconv.Itoa(resp.StatusCode),
-			Message: "Failed to parse backend error response:" + err.Error(),
+			Message: "request failed with status " + resp.Status + ", and could not decode error response body: " + err.Error(),
 		}
 	}
 	return apiErr
