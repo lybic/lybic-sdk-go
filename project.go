@@ -24,7 +24,6 @@ package lybic
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
 )
@@ -39,14 +38,9 @@ func (c *client) ListProjects(ctx context.Context) ([]SingleProjectResponseDto, 
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("failed to list projects: %s", resp.Status)
-	}
 
 	var projects []SingleProjectResponseDto
-	if err := json.NewDecoder(resp.Body).Decode(&projects); err != nil {
+	if err := tryToGetDto[[]SingleProjectResponseDto](resp, &projects); err != nil {
 		return nil, err
 	}
 
@@ -60,14 +54,9 @@ func (c *client) CreateProject(ctx context.Context, dto CreateProjectDto) (*Sing
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusCreated {
-		return nil, fmt.Errorf("failed to create project: %s", resp.Status)
-	}
 
 	var project SingleProjectResponseDto
-	if err := json.NewDecoder(resp.Body).Decode(&project); err != nil {
+	if err := tryToGetDto[SingleProjectResponseDto](resp, &project); err != nil {
 		return nil, err
 	}
 
@@ -81,11 +70,6 @@ func (c *client) DeleteProject(ctx context.Context, projectId string) error {
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("failed to delete project: %s", resp.Status)
-	}
-
-	return nil
+	return tryToGetDto[any](resp, nil)
 }
