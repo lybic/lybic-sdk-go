@@ -22,6 +22,10 @@
 
 package lybic
 
+import (
+	"github.com/lybic/lybic-sdk-go/pkg/json"
+)
+
 // ComputerUseActionDtoActionOneOf is an interface for types that can be used as lybic computer-use action
 //
 //	Implementations:
@@ -53,6 +57,14 @@ type ComputerUseActionDtoActionOneOf interface {
 
 	// _internalComputerUseActionDtoActionOneOf is a dummy method to prevent external implementations
 	_internalComputerUseActionDtoActionOneOf()
+}
+
+func TryUnmarshalToComputerUseActionDtoActionOneOf(data map[string]any) (ComputerUseActionDtoActionOneOf, error) {
+	marshal, err := json.Marshal(data)
+	if err != nil {
+		return nil, err
+	}
+	return rawMessageToComputerUseActionDtoActionOneOf(marshal)
 }
 
 // Length is an interface for types that can be used as lybic computer-use Length
