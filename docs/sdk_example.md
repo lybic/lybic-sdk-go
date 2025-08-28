@@ -117,43 +117,209 @@ fmt.Printf("Sandbox info: %+v\n", sandbox)
 
 #### Interact with a Sandbox
 
-You can perform actions like mouse clicks or keyboard inputs, and take screenshots (previews).
+You can perform actions like mouse clicks or keyboard inputs, and take screenshots. The following examples demonstrate how to use various actions available in the SDK.
 
-<!-- todo: The serializable structure is not ready yet and needs to wait for the DTO component to be updated. Please visit the official website to view the currently supported parameters. --->
-
-**Execute an Action:**
+**Execute a Mouse Click Action:**
 ```go
+// Create a mouse click action at position (100, 200) with the left mouse button.
+action := lybic.NewMouseClickAction(
+    lybic.NewPixelLength(100),
+    lybic.NewPixelLength(200),
+    1, // 1 for left button
+)
+
 actionResult, err := client.ExecuteComputerUseAction(ctx, "sandbox-Id", lybic.ComputerUseActionDto{
-    Action: lybic.ComputerUseActionDtoActionOneOf{
-        ComputerUseActionDtoActionOneOfInterface: map[string]any{
-            "type": "mouse:click",
-            "x": map[string]any{
-                "type":  "px",
-                "value": 10,
-            },
-            "y": map[string]any{
-                "type":  "px",
-                "value": 10,
-            },
-            "button": 1,
-        },
-    },
+    Action: action,
 })
 if err != nil {
-    fmt.Println("Error executing computer use action:", err.Error())
+    fmt.Println("Error executing mouse click action:", err.Error())
     return
 }
 fmt.Println("Action executed successfully:", actionResult)
 ```
 
-**Get a Preview (Screenshot):**
+**Execute a Mouse Double-Click Action:**
 ```go
-previewSandbox, err := client.PreviewSandbox(ctx, "sandbox-Id")
+// Create a mouse double-click action at the center of the screen.
+action := lybic.NewMouseDoubleClickAction(
+    lybic.NewFractionalLength(1, 2), // 1/2 of screen width
+    lybic.NewFractionalLength(1, 2), // 1/2 of screen height
+    1, // 1 for left button
+)
+
+actionResult, err := client.ExecuteComputerUseAction(ctx, "sandbox-Id", lybic.ComputerUseActionDto{
+    Action: action,
+})
 if err != nil {
-    fmt.Printf("Error previewing sandbox: %v\n", err)
+    fmt.Println("Error executing mouse double-click action:", err.Error())
     return
 }
-fmt.Printf("Previewed sandbox: %+v\n", previewSandbox)
+fmt.Println("Action executed successfully:", actionResult)
+```
+
+**Execute a Mouse Move Action:**
+```go
+// Move the mouse to position (300, 400).
+action := lybic.NewMouseMoveAction(
+    lybic.NewPixelLength(300),
+    lybic.NewPixelLength(400),
+)
+
+actionResult, err := client.ExecuteComputerUseAction(ctx, "sandbox-Id", lybic.ComputerUseActionDto{
+    Action: action,
+})
+if err != nil {
+    fmt.Println("Error executing mouse move action:", err.Error())
+    return
+}
+fmt.Println("Action executed successfully:", actionResult)
+```
+
+**Execute a Mouse Scroll Action:**
+```go
+// Scroll vertically by 10 steps at position (300, 400).
+action := lybic.NewMouseScrollAction(
+    lybic.NewPixelLength(300), // x position
+    lybic.NewPixelLength(400), // y position
+    10,  // vertical scroll steps
+    0,   // horizontal scroll steps
+)
+
+actionResult, err := client.ExecuteComputerUseAction(ctx, "sandbox-Id", lybic.ComputerUseActionDto{
+    Action: action,
+})
+if err != nil {
+    fmt.Println("Error executing mouse scroll action:", err.Error())
+    return
+}
+fmt.Println("Action executed successfully:", actionResult)
+```
+
+**Execute a Mouse Drag Action:**
+```go
+// Drag the mouse from (100, 100) to (500, 500).
+action := lybic.NewMouseDragAction(
+    lybic.NewPixelLength(100),
+    lybic.NewPixelLength(100),
+    lybic.NewPixelLength(500),
+    lybic.NewPixelLength(500),
+)
+
+actionResult, err := client.ExecuteComputerUseAction(ctx, "sandbox-Id", lybic.ComputerUseActionDto{
+    Action: action,
+})
+if err != nil {
+    fmt.Println("Error executing mouse drag action:", err.Error())
+    return
+}
+fmt.Println("Action executed successfully:", actionResult)
+```
+
+**Execute a Keyboard Type Action:**
+```go
+// Create a keyboard type action to type "Hello, Lybic!".
+action := lybic.NewKeyboardTypeAction("Hello, Lybic!", false)
+
+actionResult, err := client.ExecuteComputerUseAction(ctx, "sandbox-Id", lybic.ComputerUseActionDto{
+    Action: action,
+})
+if err != nil {
+    fmt.Println("Error executing keyboard type action:", err.Error())
+    return
+}
+fmt.Println("Action executed successfully:", actionResult)
+```
+
+**Execute a Keyboard Hotkey Action:**
+```go
+// Press Ctrl+C.
+action := lybic.NewKeyboardHotkeyAction("ctrl+c")
+
+actionResult, err := client.ExecuteComputerUseAction(ctx, "sandbox-Id", lybic.ComputerUseActionDto{
+    Action: action,
+})
+if err != nil {
+    fmt.Println("Error executing keyboard hotkey action:", err.Error())
+    return
+}
+fmt.Println("Action executed successfully:", actionResult)
+```
+
+**Take a Screenshot:**
+```go
+// Take a screenshot of the sandbox.
+action := lybic.NewScreenshotAction()
+
+actionResult, err := client.ExecuteComputerUseAction(ctx, "sandbox-Id", lybic.ComputerUseActionDto{
+    Action: action,
+})
+if err != nil {
+    fmt.Println("Error taking screenshot:", err.Error())
+    return
+}
+// The screenshot data will be in actionResult.
+fmt.Println("Screenshot taken successfully:", actionResult)
+```
+
+**Get a Preview (Convenience Method for Screenshot):**
+```go
+// This is a helper function that wraps the screenshot action.
+previewSandbox, err := client.PreviewSandbox(ctx, "sandbox-Id")
+if err != nil {
+    fmt.Printf("Error previewing sandbox: %v
+", err)
+    return
+}
+fmt.Printf("Previewed sandbox: %+v", previewSandbox)
+```
+
+**Execute a Wait Action:**
+```go
+// Wait for 5 seconds (5000 milliseconds).
+action := lybic.NewWaitAction(5000)
+
+actionResult, err := client.ExecuteComputerUseAction(ctx, "sandbox-Id", lybic.ComputerUseActionDto{
+    Action: action,
+})
+if err != nil {
+    fmt.Println("Error executing wait action:", err.Error())
+    return
+}
+fmt.Println("Wait action completed successfully:", actionResult)
+```
+
+**Signal Task Finished:**
+```go
+// Signal that the task is finished successfully.
+action := lybic.NewFinishedAction()
+// Optionally, you can add a message.
+// action.Message = "Task completed with flying colors!"
+
+actionResult, err := client.ExecuteComputerUseAction(ctx, "sandbox-Id", lybic.ComputerUseActionDto{
+    Action: action,
+})
+if err != nil {
+    fmt.Println("Error sending finished signal:", err.Error())
+    return
+}
+fmt.Println("Finished signal sent successfully:", actionResult)
+```
+
+**Signal Task Failed:**
+```go
+// Signal that the task has failed.
+action := lybic.NewFailedAction()
+// Optionally, you can add a message.
+// action.Message = "Something went wrong."
+
+actionResult, err := client.ExecuteComputerUseAction(ctx, "sandbox-Id", lybic.ComputerUseActionDto{
+    Action: action,
+})
+if err != nil {
+    fmt.Println("Error sending failed signal:", err.Error())
+    return
+}
+fmt.Println("Failed signal sent successfully:", actionResult)
 ```
 
 #### Extend a Sandbox
