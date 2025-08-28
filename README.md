@@ -97,6 +97,8 @@ The client can be configured with the following options, either through the `Con
 
 The Lybic SDK provides a comprehensive client for interacting with all major platform features.
 
+All examples are available in the [examples.md](docs/sdk_example.md)
+
 ### Sandbox Management
 - `ListSandboxes(ctx)`: Retrieve a list of all available sandboxes.
 - `CreateSandbox(ctx, dto)`: Create a new sandbox.

@@ -30,12 +30,12 @@
 //	json.NewDecoder = jsoniter.NewDecoder
 //	json.NewEncoder = jsoniter.NewEncoder
 //	example2: use sonic (github.com/bytedance/sonic) instead of the standard library.
-//	json = sonic.ConfigStd
-//	json.Marshal = json.Marshal
-//	json.Unmarshal = json.Unmarshal
-//	json.MarshalIndent = json.MarshalIndent
-//	json.NewDecoder = json.NewDecoder
-//	json.NewEncoder = json.NewEncoder
+//	so = sonic.ConfigStd
+//	json.Marshal = so.Marshal
+//	json.Unmarshal = so.Unmarshal
+//	json.MarshalIndent = so.MarshalIndent
+//	json.NewDecoder = so.NewDecoder
+//	json.NewEncoder = so.NewEncoder
 package json
 
 import "encoding/json"
@@ -51,4 +51,8 @@ var (
 	NewDecoder = json.NewDecoder
 	// NewEncoder is exported by pkg/json package.
 	NewEncoder = json.NewEncoder
+)
+
+type (
+	RawMessage = json.RawMessage
 )
