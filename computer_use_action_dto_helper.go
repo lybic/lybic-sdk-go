@@ -24,6 +24,7 @@ package lybic
 
 import (
 	"fmt"
+
 	"github.com/lybic/lybic-sdk-go/pkg/json"
 )
 
@@ -38,24 +39,22 @@ func unmarshalLength(data interface{}) (Length, error) {
 		return nil, fmt.Errorf("missing 'type' in Length object")
 	}
 
-	raw, err := json.Marshal(lengthMap)
-	if err != nil {
-		return nil, err
-	}
-
 	switch typeVal {
 	case "/":
-		var fracLen FractionalLength
-		if err := json.Unmarshal(raw, &fracLen); err != nil {
-			return nil, err
+		fracLen := &FractionalLength{Type: typeVal}
+		if v, ok := lengthMap["numerator"].(float64); ok {
+			fracLen.Numerator = int(v)
 		}
-		return &fracLen, nil
+		if v, ok := lengthMap["denominator"].(float64); ok {
+			fracLen.Denominator = int(v)
+		}
+		return fracLen, nil
 	case "px":
-		var pixLen PixelLength
-		if err := json.Unmarshal(raw, &pixLen); err != nil {
-			return nil, err
+		pixLen := &PixelLength{Type: typeVal}
+		if v, ok := lengthMap["value"].(float64); ok {
+			pixLen.Value = int(v)
 		}
-		return &pixLen, nil
+		return pixLen, nil
 	default:
 		return nil, fmt.Errorf("unknown Length type: %s", typeVal)
 	}
