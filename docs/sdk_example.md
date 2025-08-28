@@ -266,8 +266,7 @@ fmt.Println("Screenshot taken successfully:", actionResult)
 // This is a helper function that wraps the screenshot action.
 previewSandbox, err := client.PreviewSandbox(ctx, "sandbox-Id")
 if err != nil {
-    fmt.Printf("Error previewing sandbox: %v
-", err)
+    fmt.Printf("Error previewing sandbox: %v\n", err)
     return
 }
 fmt.Printf("Previewed sandbox: %+v", previewSandbox)
