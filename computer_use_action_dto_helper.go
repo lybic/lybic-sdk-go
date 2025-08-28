@@ -564,3 +564,45 @@ func (f *FailedAction) UnmarshalJSON(src []byte) error {
 }
 
 func (FailedAction) _internalComputerUseActionDtoActionOneOf() {}
+func rawMessageToComputerUseActionDtoActionOneOf(rawAction json.RawMessage) (ComputerUseActionDtoActionOneOf, error) {
+	var base struct {
+		Type string `json:"type"`
+	}
+	if err := json.Unmarshal(rawAction, &base); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal action type: %w", err)
+	}
+
+	var action ComputerUseActionDtoActionOneOf
+	switch base.Type {
+	case "mouse:click":
+		action = &MouseClickAction{}
+	case "mouse:doubleClick":
+		action = &MouseDoubleClickAction{}
+	case "mouse:move":
+		action = &MouseMoveAction{}
+	case "mouse:scroll":
+		action = &MouseScrollAction{}
+	case "mouse:drag":
+		action = &MouseDragAction{}
+	case "keyboard:type":
+		action = &KeyboardTypeAction{}
+	case "keyboard:hotkey":
+		action = &KeyboardHotkeyAction{}
+	case "screenshot":
+		action = &ScreenshotAction{}
+	case "wait":
+		action = &WaitAction{}
+	case "finished":
+		action = &FinishedAction{}
+	case "failed":
+		action = &FailedAction{}
+	default:
+		return nil, fmt.Errorf("unknown action type: %s", base.Type)
+	}
+
+	if err := json.Unmarshal(rawAction, action); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal action of type %s: %w",
+			base.Type, err)
+	}
+	return action, nil
+}
