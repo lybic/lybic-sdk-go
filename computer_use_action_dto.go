@@ -26,21 +26,32 @@ package lybic
 //
 //	Implementations:
 //
-// MouseClickAction
-// MouseDoubleClickAction
-// MouseMoveAction
-// MouseScrollAction
-// MouseDragAction
-// KeyboardTypeAction
-// KeyboardHotkeyAction
-// ScreenshotAction
-// WaitAction
-// FinishedAction
+// # MouseClickAction
+//
+// # MouseDoubleClickAction
+//
+// # MouseMoveAction
+//
+// # MouseScrollAction
+//
+// # MouseDragAction
+//
+// # KeyboardTypeAction
+//
+// # KeyboardHotkeyAction
+//
+// # ScreenshotAction
+//
+// # WaitAction
+//
+// # FinishedAction
+//
 // FailedAction
 type ComputerUseActionDtoActionOneOf interface {
 	MarshalJSON() ([]byte, error)
 	UnmarshalJSON(src []byte) error
 
+	// _internalComputerUseActionDtoActionOneOf is a dummy method to prevent external implementations
 	_internalComputerUseActionDtoActionOneOf()
 }
 
@@ -48,12 +59,12 @@ type ComputerUseActionDtoActionOneOf interface {
 //
 //	Implementations:
 //
-// FractionalLength
-// PixelLength
+// FractionalLength and PixelLength
 type Length interface {
 	MarshalJSON() ([]byte, error)
 	UnmarshalJSON(src []byte) error
 
+	// _internalLength is a dummy method to prevent external implementations
 	_internalLength()
 }
 type FractionalLength struct {
@@ -89,6 +100,7 @@ type mousePointActionBase struct {
 	HoldKey *string `json:"holdKey,omitempty"`
 	CallId  *string `json:"callId,omitempty"`
 }
+
 type MouseClickAction struct {
 	Type   string `json:"type"`   // set to mouse:click
 	Button int    `json:"button"` // Mouse button flag combination. 1: left, 2: right, 4: middle, 8: back, 16: forward; add them together to press multiple buttons at once.

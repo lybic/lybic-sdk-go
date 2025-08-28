@@ -28,6 +28,10 @@ import (
 	"github.com/lybic/lybic-sdk-go/pkg/json"
 )
 
+// unmarshalLength is a helper function to unmarshal data to Length interface
+//
+//	data: {"type":"","value":0}
+//	or {"type":"/","numerator":0,"denominator":0}
 func unmarshalLength(data interface{}) (Length, error) {
 	lengthMap, ok := data.(map[string]interface{})
 	if !ok {
@@ -60,6 +64,7 @@ func unmarshalLength(data interface{}) (Length, error) {
 	}
 }
 
+// mousePointActionBase is a helper struct for mouse actions that share common fields
 func unmarshalMousePointActionBase(value map[string]interface{}) (*mousePointActionBase, error) {
 	base := &mousePointActionBase{}
 	var err error
@@ -93,6 +98,7 @@ func (f FractionalLength) MarshalJSON() ([]byte, error) {
 	}
 	return json.Marshal(toSerialize)
 }
+
 func (f *FractionalLength) UnmarshalJSON(src []byte) error {
 	// This method is required to satisfy the Length interface.
 	// Unmarshalling is handled by the parent struct's UnmarshalJSON.
@@ -113,7 +119,9 @@ func (f *FractionalLength) UnmarshalJSON(src []byte) error {
 	}
 	return nil
 }
-func (f FractionalLength) _internalLength() {}
+
+func (FractionalLength) _internalLength() {}
+
 func (p PixelLength) MarshalJSON() ([]byte, error) {
 	var toSerialize map[string]interface{}
 	toSerialize = map[string]interface{}{
@@ -137,7 +145,8 @@ func (p *PixelLength) UnmarshalJSON(src []byte) error {
 	return nil
 }
 
-func (p PixelLength) _internalLength() {}
+func (PixelLength) _internalLength() {}
+
 func (m MouseClickAction) MarshalJSON() ([]byte, error) {
 	var toSerialize map[string]interface{}
 	toSerialize = map[string]interface{}{
@@ -528,6 +537,7 @@ func (f *FinishedAction) UnmarshalJSON(src []byte) error {
 	}
 	return nil
 }
+
 func (FinishedAction) _internalComputerUseActionDtoActionOneOf() {}
 
 func (f FailedAction) MarshalJSON() ([]byte, error) {
@@ -562,6 +572,7 @@ func (f *FailedAction) UnmarshalJSON(src []byte) error {
 }
 
 func (FailedAction) _internalComputerUseActionDtoActionOneOf() {}
+
 func rawMessageToComputerUseActionDtoActionOneOf(rawAction json.RawMessage) (ComputerUseActionDtoActionOneOf, error) {
 	var base struct {
 		Type string `json:"type"`
