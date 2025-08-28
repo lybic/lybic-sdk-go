@@ -39,26 +39,53 @@ func unmarshalLength(data interface{}) (Length, error) {
 		return nil, fmt.Errorf("missing 'type' in Length object")
 	}
 
+	raw, err := json.Marshal(lengthMap)
+	if err != nil {
+		return nil, err
+	}
+
 	switch typeVal {
 	case "/":
-		fracLen := &FractionalLength{Type: typeVal}
-		if v, ok := lengthMap["numerator"].(float64); ok {
-			fracLen.Numerator = int(v)
+		var fracLen FractionalLength
+		if err := json.Unmarshal(raw, &fracLen); err != nil {
+			return nil, err
 		}
-		if v, ok := lengthMap["denominator"].(float64); ok {
-			fracLen.Denominator = int(v)
-		}
-		return fracLen, nil
+		return &fracLen, nil
 	case "px":
-		pixLen := &PixelLength{Type: typeVal}
-		if v, ok := lengthMap["value"].(float64); ok {
-			pixLen.Value = int(v)
+		var pixLen PixelLength
+		if err := json.Unmarshal(raw, &pixLen); err != nil {
+			return nil, err
 		}
-		return pixLen, nil
+		return &pixLen, nil
 	default:
 		return nil, fmt.Errorf("unknown Length type: %s", typeVal)
 	}
 }
+
+func unmarshalMousePointActionBase(value map[string]interface{}) (*mousePointActionBase, error) {
+	base := &mousePointActionBase{}
+	var err error
+	if v, ok := value["x"]; ok {
+		base.X, err = unmarshalLength(v)
+		if err != nil {
+			return nil, err
+		}
+	}
+	if v, ok := value["y"]; ok {
+		base.Y, err = unmarshalLength(v)
+		if err != nil {
+			return nil, err
+		}
+	}
+	if v, ok := value["holdKey"].(string); ok {
+		base.HoldKey = &v
+	}
+	if v, ok := value["callId"].(string); ok {
+		base.CallId = &v
+	}
+	return base, nil
+}
+
 func (f FractionalLength) MarshalJSON() ([]byte, error) {
 	var toSerialize map[string]interface{}
 	toSerialize = map[string]interface{}{
@@ -69,6 +96,10 @@ func (f FractionalLength) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 func (f *FractionalLength) UnmarshalJSON(src []byte) error {
+	// This method is required to satisfy the Length interface.
+	// Unmarshalling is handled by the parent struct's UnmarshalJSON.
+	// todo: return nil?
+
 	var value map[string]interface{}
 	if err := json.Unmarshal(src, &value); err != nil {
 		return err
@@ -134,28 +165,16 @@ func (m *MouseClickAction) UnmarshalJSON(src []byte) error {
 	if v, ok := value["type"].(string); ok {
 		m.Type = v
 	}
-	if v, ok := value["x"]; ok {
-		x, err := unmarshalLength(v)
-		if err != nil {
-			return err
-		}
-		m.X = x
+	base, err := unmarshalMousePointActionBase(value)
+	if err != nil {
+		return err
 	}
-	if v, ok := value["y"]; ok {
-		y, err := unmarshalLength(v)
-		if err != nil {
-			return err
-		}
-		m.Y = y
-	}
+	m.X = base.X
+	m.Y = base.Y
+	m.HoldKey = base.HoldKey
+	m.CallId = base.CallId
 	if v, ok := value["button"].(float64); ok {
 		m.Button = int(v)
-	}
-	if v, ok := value["holdKey"].(string); ok {
-		m.HoldKey = &v
-	}
-	if v, ok := value["callId"].(string); ok {
-		m.CallId = &v
 	}
 	return nil
 }
@@ -187,28 +206,16 @@ func (m *MouseDoubleClickAction) UnmarshalJSON(src []byte) error {
 	if v, ok := value["type"].(string); ok {
 		m.Type = v
 	}
-	if v, ok := value["x"]; ok {
-		x, err := unmarshalLength(v)
-		if err != nil {
-			return err
-		}
-		m.X = x
+	base, err := unmarshalMousePointActionBase(value)
+	if err != nil {
+		return err
 	}
-	if v, ok := value["y"]; ok {
-		y, err := unmarshalLength(v)
-		if err != nil {
-			return err
-		}
-		m.Y = y
-	}
+	m.X = base.X
+	m.Y = base.Y
+	m.HoldKey = base.HoldKey
+	m.CallId = base.CallId
 	if v, ok := value["button"].(float64); ok {
 		m.Button = int(v)
-	}
-	if v, ok := value["holdKey"].(string); ok {
-		m.HoldKey = &v
-	}
-	if v, ok := value["callId"].(string); ok {
-		m.CallId = &v
 	}
 	return nil
 }
@@ -239,26 +246,14 @@ func (m *MouseMoveAction) UnmarshalJSON(src []byte) error {
 	if v, ok := value["type"].(string); ok {
 		m.Type = v
 	}
-	if v, ok := value["x"]; ok {
-		x, err := unmarshalLength(v)
-		if err != nil {
-			return err
-		}
-		m.X = x
+	base, err := unmarshalMousePointActionBase(value)
+	if err != nil {
+		return err
 	}
-	if v, ok := value["y"]; ok {
-		y, err := unmarshalLength(v)
-		if err != nil {
-			return err
-		}
-		m.Y = y
-	}
-	if v, ok := value["holdKey"].(string); ok {
-		m.HoldKey = &v
-	}
-	if v, ok := value["callId"].(string); ok {
-		m.CallId = &v
-	}
+	m.X = base.X
+	m.Y = base.Y
+	m.HoldKey = base.HoldKey
+	m.CallId = base.CallId
 	return nil
 }
 
@@ -290,31 +285,19 @@ func (m *MouseScrollAction) UnmarshalJSON(src []byte) error {
 	if v, ok := value["type"].(string); ok {
 		m.Type = v
 	}
-	if v, ok := value["x"]; ok {
-		x, err := unmarshalLength(v)
-		if err != nil {
-			return err
-		}
-		m.X = x
+	base, err := unmarshalMousePointActionBase(value)
+	if err != nil {
+		return err
 	}
-	if v, ok := value["y"]; ok {
-		y, err := unmarshalLength(v)
-		if err != nil {
-			return err
-		}
-		m.Y = y
-	}
+	m.X = base.X
+	m.Y = base.Y
+	m.HoldKey = base.HoldKey
+	m.CallId = base.CallId
 	if v, ok := value["stepVertical"].(float64); ok {
 		m.StepVertical = int(v)
 	}
 	if v, ok := value["stepHorizontal"].(float64); ok {
 		m.StepHorizontal = int(v)
-	}
-	if v, ok := value["holdKey"].(string); ok {
-		m.HoldKey = &v
-	}
-	if v, ok := value["callId"].(string); ok {
-		m.CallId = &v
 	}
 	return nil
 }
@@ -581,45 +564,3 @@ func (f *FailedAction) UnmarshalJSON(src []byte) error {
 }
 
 func (FailedAction) _internalComputerUseActionDtoActionOneOf() {}
-
-func rawMessageToComputerUseActionDtoActionOneOf(rawAction json.RawMessage) (ComputerUseActionDtoActionOneOf, error) {
-	var base struct {
-		Type string `json:"type"`
-	}
-	if err := json.Unmarshal(rawAction, &base); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal action type: %w", err)
-	}
-
-	var action ComputerUseActionDtoActionOneOf
-	switch base.Type {
-	case "mouse:click":
-		action = &MouseClickAction{}
-	case "mouse:doubleClick":
-		action = &MouseDoubleClickAction{}
-	case "mouse:move":
-		action = &MouseMoveAction{}
-	case "mouse:scroll":
-		action = &MouseScrollAction{}
-	case "mouse:drag":
-		action = &MouseDragAction{}
-	case "keyboard:type":
-		action = &KeyboardTypeAction{}
-	case "keyboard:hotkey":
-		action = &KeyboardHotkeyAction{}
-	case "screenshot":
-		action = &ScreenshotAction{}
-	case "wait":
-		action = &WaitAction{}
-	case "finished":
-		action = &FinishedAction{}
-	case "failed":
-		action = &FailedAction{}
-	default:
-		return nil, fmt.Errorf("unknown action type: %s", base.Type)
-	}
-
-	if err := json.Unmarshal(rawAction, action); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal action of type %s: %w", base.Type, err)
-	}
-	return action, nil
-}
