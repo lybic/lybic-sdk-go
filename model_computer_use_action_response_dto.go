@@ -16,7 +16,7 @@ import (
 
 // ComputerUseActionResponseDto struct for ComputerUseActionResponseDto
 type ComputerUseActionResponseDto struct {
-	Actions []ComputerUseActionResponseDtoActionsOneOf `json:"actions"`
+	Actions []ComputerUseActionDtoActionOneOf `json:"actions"`
 	// Unknown text that is not thoughts nor actions, commonly due to the misformat of model output
 	Unknown *string `json:"unknown,omitempty"`
 	// Thoughts that are not parsed
@@ -27,7 +27,7 @@ type ComputerUseActionResponseDto struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewComputerUseActionResponseDto(actions []ComputerUseActionResponseDtoActionsOneOf) *ComputerUseActionResponseDto {
+func NewComputerUseActionResponseDto(actions []ComputerUseActionDtoActionOneOf) *ComputerUseActionResponseDto {
 	this := ComputerUseActionResponseDto{}
 	this.Actions = actions
 	return &this
@@ -42,9 +42,9 @@ func NewComputerUseActionResponseDtoWithDefaults() *ComputerUseActionResponseDto
 }
 
 // GetActions returns the Actions field value
-func (o *ComputerUseActionResponseDto) GetActions() []ComputerUseActionResponseDtoActionsOneOf {
+func (o *ComputerUseActionResponseDto) GetActions() []ComputerUseActionDtoActionOneOf {
 	if o == nil {
-		var ret []ComputerUseActionResponseDtoActionsOneOf
+		var ret []ComputerUseActionDtoActionOneOf
 		return ret
 	}
 
@@ -53,7 +53,7 @@ func (o *ComputerUseActionResponseDto) GetActions() []ComputerUseActionResponseD
 
 // GetActionsOk returns a tuple with the Actions field value
 // and a boolean to check if the value has been set.
-func (o *ComputerUseActionResponseDto) GetActionsOk() (*[]ComputerUseActionResponseDtoActionsOneOf, bool) {
+func (o *ComputerUseActionResponseDto) GetActionsOk() (*[]ComputerUseActionDtoActionOneOf, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -61,7 +61,7 @@ func (o *ComputerUseActionResponseDto) GetActionsOk() (*[]ComputerUseActionRespo
 }
 
 // SetActions sets field value
-func (o *ComputerUseActionResponseDto) SetActions(v []ComputerUseActionResponseDtoActionsOneOf) {
+func (o *ComputerUseActionResponseDto) SetActions(v []ComputerUseActionDtoActionOneOf) {
 	o.Actions = v
 }
 
