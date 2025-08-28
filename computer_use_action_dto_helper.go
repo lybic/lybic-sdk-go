@@ -23,9 +23,16 @@
 package lybic
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/lybic/lybic-sdk-go/pkg/json"
+)
+
+var (
+	ErrRequiresNumeratorDenominator = errors.New("FractionalLength requires 'numerator' and 'denominator' fields")
+	ErrPixelLengthMissingValue      = errors.New("PixelLength requires 'value' field")
+	ErrLengthMissingType            = errors.New("length requires 'type' field")
 )
 
 // unmarshalLength is a helper function to unmarshal data to Length interface
@@ -40,25 +47,32 @@ func unmarshalLength(data interface{}) (Length, error) {
 
 	typeVal, ok := lengthMap["type"].(string)
 	if !ok {
-		return nil, fmt.Errorf("missing 'type' in Length object")
+		return nil, ErrLengthMissingType
 	}
 
 	switch typeVal {
 	case "/":
-		fracLen := &FractionalLength{Type: typeVal}
-		if v, ok := lengthMap["numerator"].(float64); ok {
-			fracLen.Numerator = int(v)
+		num, numOK := lengthMap["numerator"]
+		den, denOK := lengthMap["denominator"]
+		if !numOK || !denOK {
+			return nil, ErrRequiresNumeratorDenominator
 		}
-		if v, ok := lengthMap["denominator"].(float64); ok {
-			fracLen.Denominator = int(v)
+		numF, numOkF := num.(float64)
+		denF, denOkF := den.(float64)
+		if !numOkF || !denOkF {
+			return nil, fmt.Errorf("FractionalLength 'numerator' and 'denominator' must be numbers, got %T and %T", num, den)
 		}
-		return fracLen, nil
+		return &FractionalLength{Type: typeVal, Numerator: int(numF), Denominator: int(denF)}, nil
 	case "px":
-		pixLen := &PixelLength{Type: typeVal}
-		if v, ok := lengthMap["value"].(float64); ok {
-			pixLen.Value = int(v)
+		val, valOK := lengthMap["value"]
+		if !valOK {
+			return nil, ErrPixelLengthMissingValue
 		}
-		return pixLen, nil
+		valF, valOkF := val.(float64)
+		if !valOkF {
+			return nil, fmt.Errorf("PixelLength 'value' must be a number, got %T", val)
+		}
+		return &PixelLength{Type: typeVal, Value: int(valF)}, nil
 	default:
 		return nil, fmt.Errorf("unknown Length type: %s", typeVal)
 	}
