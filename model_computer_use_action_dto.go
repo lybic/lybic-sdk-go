@@ -24,6 +24,28 @@ type ComputerUseActionDto struct {
 	IncludeCursorPosition *bool `json:"includeCursorPosition,omitempty"`
 }
 
+func (o *ComputerUseActionDto) UnmarshalJSON(data []byte) error {
+	var temp struct {
+		Action                json.RawMessage `json:"action"`
+		IncludeScreenShot     *bool           `json:"includeScreenShot,omitempty"`
+		IncludeCursorPosition *bool           `json:"includeCursorPosition,omitempty"`
+	}
+
+	if err := json.Unmarshal(data, &temp); err != nil {
+		return err
+	}
+
+	action, err := rawMessageToComputerUseActionDtoActionOneOf(temp.Action)
+	if err != nil {
+		return err
+	}
+	o.Action = action
+	o.IncludeScreenShot = temp.IncludeScreenShot
+	o.IncludeCursorPosition = temp.IncludeCursorPosition
+
+	return nil
+}
+
 // NewComputerUseActionDto instantiates a new ComputerUseActionDto object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments

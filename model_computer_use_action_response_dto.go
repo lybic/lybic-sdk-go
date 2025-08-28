@@ -11,6 +11,8 @@
 package lybic
 
 import (
+	"fmt"
+
 	"github.com/lybic/lybic-sdk-go/pkg/json"
 )
 
@@ -21,6 +23,32 @@ type ComputerUseActionResponseDto struct {
 	Unknown *string `json:"unknown,omitempty"`
 	// Thoughts that are not parsed
 	Thoughts *string `json:"thoughts,omitempty"`
+}
+
+func (o *ComputerUseActionResponseDto) UnmarshalJSON(data []byte) error {
+	// Use a temporary struct with Actions as a slice of json.RawMessage to avoid recursion.
+	var temp struct {
+		Actions  []json.RawMessage `json:"actions"`
+		Unknown  *string           `json:"unknown,omitempty"`
+		Thoughts *string           `json:"thoughts,omitempty"`
+	}
+
+	if err := json.Unmarshal(data, &temp); err != nil {
+		return err
+	}
+
+	o.Unknown = temp.Unknown
+	o.Thoughts = temp.Thoughts
+	o.Actions = make([]ComputerUseActionDtoActionOneOf, len(temp.Actions))
+
+	for i, rawAction := range temp.Actions {
+		action, err := rawMessageToComputerUseActionDtoActionOneOf(rawAction)
+		if err != nil {
+			return fmt.Errorf("error unmarshaling action at index %d: %w", i, err)
+		}
+		o.Actions[i] = action
+	}
+	return nil
 }
 
 // NewComputerUseActionResponseDto instantiates a new ComputerUseActionResponseDto object
