@@ -22,8 +22,6 @@
 
 package lybic
 
-import "github.com/lybic/lybic-sdk-go/pkg/json"
-
 // ComputerUseActionDtoActionOneOf is an interface for types that can be used as lybic computer-use action
 //
 //	Implementations:
@@ -64,32 +62,6 @@ type FractionalLength struct {
 	Denominator int    `json:"denominator"`
 }
 
-func (f FractionalLength) MarshalJSON() ([]byte, error) {
-	var toSerialize map[string]interface{}
-	toSerialize = map[string]interface{}{
-		"type":        "/",
-		"numerator":   f.Numerator,
-		"denominator": f.Denominator,
-	}
-	return json.Marshal(toSerialize)
-}
-func (f *FractionalLength) UnmarshalJSON(src []byte) error {
-	var value map[string]interface{}
-	if err := json.Unmarshal(src, &value); err != nil {
-		return err
-	}
-	if v, ok := value["type"].(string); ok {
-		f.Type = v
-	}
-	if v, ok := value["numerator"].(float64); ok {
-		f.Numerator = int(v)
-	}
-	if v, ok := value["denominator"].(float64); ok {
-		f.Denominator = int(v)
-	}
-	return nil
-}
-func (f FractionalLength) _internalLength() {}
 func NewPixelLength(value int) *PixelLength {
 	return &PixelLength{
 		Type:  "px",
@@ -102,30 +74,6 @@ type PixelLength struct {
 	Value int    `json:"value"`
 }
 
-func (p PixelLength) MarshalJSON() ([]byte, error) {
-	var toSerialize map[string]interface{}
-	toSerialize = map[string]interface{}{
-		"type":  "px",
-		"value": p.Value,
-	}
-	return json.Marshal(toSerialize)
-}
-
-func (p *PixelLength) UnmarshalJSON(src []byte) error {
-	var value map[string]interface{}
-	if err := json.Unmarshal(src, &value); err != nil {
-		return err
-	}
-	if v, ok := value["type"].(string); ok {
-		p.Type = v
-	}
-	if v, ok := value["value"].(float64); ok {
-		p.Value = int(v)
-	}
-	return nil
-}
-
-func (p PixelLength) _internalLength() {}
 func NewFractionalLength(numerator int, denominator int) *FractionalLength {
 	return &FractionalLength{
 		Type:        "/",
@@ -143,80 +91,6 @@ type MouseClickAction struct {
 	CallId  *string `json:"callId,omitempty"`
 }
 
-func (m MouseClickAction) MarshalJSON() ([]byte, error) {
-	var toSerialize map[string]interface{}
-	toSerialize = map[string]interface{}{
-		"type":   "mouse:click",
-		"x":      m.X,
-		"y":      m.Y,
-		"button": m.Button,
-	}
-	if m.HoldKey != nil {
-		toSerialize["holdKey"] = *m.HoldKey
-	}
-	if m.CallId != nil {
-		toSerialize["callId"] = *m.CallId
-	}
-	return json.Marshal(toSerialize)
-}
-
-func (m *MouseClickAction) UnmarshalJSON(src []byte) error {
-	var value map[string]interface{}
-	if err := json.Unmarshal(src, &value); err != nil {
-		return err
-	}
-	if v, ok := value["type"].(string); ok {
-		m.Type = v
-	}
-	if v, ok := value["x"].(map[string]interface{}); ok {
-		if typeVal, ok := v["type"].(string); ok {
-			switch typeVal {
-			case "/":
-				var fracLen FractionalLength
-				if err := json.Unmarshal(src, &fracLen); err != nil {
-					return err
-				}
-				m.X = &fracLen
-			case "px":
-				var pixLen PixelLength
-				if err := json.Unmarshal(src, &pixLen); err != nil {
-					return err
-				}
-				m.X = &pixLen
-			}
-		}
-	}
-	if v, ok := value["y"].(map[string]interface{}); ok {
-		if typeVal, ok := v["type"].(string); ok {
-			switch typeVal {
-			case "/":
-				var fracLen FractionalLength
-				if err := json.Unmarshal(src, &fracLen); err != nil {
-					return err
-				}
-				m.Y = &fracLen
-			case "px":
-				var pixLen PixelLength
-				if err := json.Unmarshal(src, &pixLen); err != nil {
-					return err
-				}
-				m.Y = &pixLen
-			}
-		}
-	}
-	if v, ok := value["button"].(float64); ok {
-		m.Button = int(v)
-	}
-	if v, ok := value["holdKey"].(string); ok {
-		m.HoldKey = &v
-	}
-	if v, ok := value["callId"].(string); ok {
-		m.CallId = &v
-	}
-	return nil
-}
-
-func (MouseClickAction) _internalComputerUseActionDtoActionOneOf() {}
 func NewMouseClickAction(x Length, y Length, button int) *MouseClickAction {
 	return &MouseClickAction{
 		Type:   "mouse:click",
@@ -235,80 +109,6 @@ type MouseDoubleClickAction struct {
 	CallId  *string `json:"callId,omitempty"`
 }
 
-func (m MouseDoubleClickAction) MarshalJSON() ([]byte, error) {
-	var toSerialize map[string]interface{}
-	toSerialize = map[string]interface{}{
-		"type":   "mouse:doubleClick",
-		"x":      m.X,
-		"y":      m.Y,
-		"button": m.Button,
-	}
-	if m.HoldKey != nil {
-		toSerialize["holdKey"] = *m.HoldKey
-	}
-	if m.CallId != nil {
-		toSerialize["callId"] = *m.CallId
-	}
-	return json.Marshal(toSerialize)
-}
-
-func (m *MouseDoubleClickAction) UnmarshalJSON(src []byte) error {
-	var value map[string]interface{}
-	if err := json.Unmarshal(src, &value); err != nil {
-		return err
-	}
-	if v, ok := value["type"].(string); ok {
-		m.Type = v
-	}
-	if v, ok := value["x"].(map[string]interface{}); ok {
-		if typeVal, ok := v["type"].(string); ok {
-			switch typeVal {
-			case "/":
-				var fracLen FractionalLength
-				if err := json.Unmarshal(src, &fracLen); err != nil {
-					return err
-				}
-				m.X = &fracLen
-			case "px":
-				var pixLen PixelLength
-				if err := json.Unmarshal(src, &pixLen); err != nil {
-					return err
-				}
-				m.X = &pixLen
-			}
-		}
-	}
-	if v, ok := value["y"].(map[string]interface{}); ok {
-		if typeVal, ok := v["type"].(string); ok {
-			switch typeVal {
-			case "/":
-				var fracLen FractionalLength
-				if err := json.Unmarshal(src, &fracLen); err != nil {
-					return err
-				}
-				m.Y = &fracLen
-			case "px":
-				var pixLen PixelLength
-				if err := json.Unmarshal(src, &pixLen); err != nil {
-					return err
-				}
-				m.Y = &pixLen
-			}
-		}
-	}
-	if v, ok := value["button"].(float64); ok {
-		m.Button = int(v)
-	}
-	if v, ok := value["holdKey"].(string); ok {
-		m.HoldKey = &v
-	}
-	if v, ok := value["callId"].(string); ok {
-		m.CallId = &v
-	}
-	return nil
-}
-
-func (MouseDoubleClickAction) _internalComputerUseActionDtoActionOneOf() {}
 func NewMouseDoubleClickAction(x Length, y Length, button int) *MouseDoubleClickAction {
 	return &MouseDoubleClickAction{
 		Type:   "mouse:doubleClick",
@@ -326,76 +126,6 @@ type MouseMoveAction struct {
 	CallId  *string `json:"callId,omitempty"`
 }
 
-func (m MouseMoveAction) MarshalJSON() ([]byte, error) {
-	var toSerialize map[string]interface{}
-	toSerialize = map[string]interface{}{
-		"type": "mouse:move",
-		"x":    m.X,
-		"y":    m.Y,
-	}
-	if m.HoldKey != nil {
-		toSerialize["holdKey"] = *m.HoldKey
-	}
-	if m.CallId != nil {
-		toSerialize["callId"] = *m.CallId
-	}
-	return json.Marshal(toSerialize)
-}
-
-func (m *MouseMoveAction) UnmarshalJSON(src []byte) error {
-	var value map[string]interface{}
-	if err := json.Unmarshal(src, &value); err != nil {
-		return err
-	}
-	if v, ok := value["type"].(string); ok {
-		m.Type = v
-	}
-	if v, ok := value["x"].(map[string]interface{}); ok {
-		if typeVal, ok := v["type"].(string); ok {
-			switch typeVal {
-			case "/":
-				var fracLen FractionalLength
-				if err := json.Unmarshal(src, &fracLen); err != nil {
-					return err
-				}
-				m.X = &fracLen
-			case "px":
-				var pixLen PixelLength
-				if err := json.Unmarshal(src, &pixLen); err != nil {
-					return err
-				}
-				m.X = &pixLen
-			}
-		}
-	}
-	if v, ok := value["y"].(map[string]interface{}); ok {
-		if typeVal, ok := v["type"].(string); ok {
-			switch typeVal {
-			case "/":
-				var fracLen FractionalLength
-				if err := json.Unmarshal(src, &fracLen); err != nil {
-					return err
-				}
-				m.Y = &fracLen
-			case "px":
-				var pixLen PixelLength
-				if err := json.Unmarshal(src, &pixLen); err != nil {
-					return err
-				}
-				m.Y = &pixLen
-			}
-		}
-	}
-	if v, ok := value["holdKey"].(string); ok {
-		m.HoldKey = &v
-	}
-	if v, ok := value["callId"].(string); ok {
-		m.CallId = &v
-	}
-	return nil
-}
-
-func (MouseMoveAction) _internalComputerUseActionDtoActionOneOf() {}
 func NewMouseMoveAction(x Length, y Length) *MouseMoveAction {
 	return &MouseMoveAction{
 		Type: "mouse:move",
@@ -414,84 +144,6 @@ type MouseScrollAction struct {
 	CallId         *string `json:"callId,omitempty"`
 }
 
-func (m MouseScrollAction) MarshalJSON() ([]byte, error) {
-	var toSerialize map[string]interface{}
-	toSerialize = map[string]interface{}{
-		"type":           "mouse:scroll",
-		"x":              m.X,
-		"y":              m.Y,
-		"stepVertical":   m.StepVertical,
-		"stepHorizontal": m.StepHorizontal,
-	}
-	if m.HoldKey != nil {
-		toSerialize["holdKey"] = *m.HoldKey
-	}
-	if m.CallId != nil {
-		toSerialize["callId"] = *m.CallId
-	}
-	return json.Marshal(toSerialize)
-}
-
-func (m *MouseScrollAction) UnmarshalJSON(src []byte) error {
-	var value map[string]interface{}
-	if err := json.Unmarshal(src, &value); err != nil {
-		return err
-	}
-	if v, ok := value["type"].(string); ok {
-		m.Type = v
-	}
-	if v, ok := value["x"].(map[string]interface{}); ok {
-		if typeVal, ok := v["type"].(string); ok {
-			switch typeVal {
-			case "/":
-				var fracLen FractionalLength
-				if err := json.Unmarshal(src, &fracLen); err != nil {
-					return err
-				}
-				m.X = &fracLen
-			case "px":
-				var pixLen PixelLength
-				if err := json.Unmarshal(src, &pixLen); err != nil {
-					return err
-				}
-				m.X = &pixLen
-			}
-		}
-	}
-	if v, ok := value["y"].(map[string]interface{}); ok {
-		if typeVal, ok := v["type"].(string); ok {
-			switch typeVal {
-			case "/":
-				var fracLen FractionalLength
-				if err := json.Unmarshal(src, &fracLen); err != nil {
-					return err
-				}
-				m.Y = &fracLen
-			case "px":
-				var pixLen PixelLength
-				if err := json.Unmarshal(src, &pixLen); err != nil {
-					return err
-				}
-				m.Y = &pixLen
-			}
-		}
-	}
-	if v, ok := value["stepVertical"].(float64); ok {
-		m.StepVertical = int(v)
-	}
-	if v, ok := value["stepHorizontal"].(float64); ok {
-		m.StepHorizontal = int(v)
-	}
-	if v, ok := value["holdKey"].(string); ok {
-		m.HoldKey = &v
-	}
-	if v, ok := value["callId"].(string); ok {
-		m.CallId = &v
-	}
-	return nil
-}
-
-func (MouseScrollAction) _internalComputerUseActionDtoActionOneOf() {}
 func NewMouseScrollAction(x Length, y Length, stepVertical int, stepHorizontal int) *MouseScrollAction {
 	return &MouseScrollAction{
 		Type:           "mouse:scroll",
@@ -512,114 +164,6 @@ type MouseDragAction struct {
 	CallId  *string `json:"callId,omitempty"`
 }
 
-func (m MouseDragAction) MarshalJSON() ([]byte, error) {
-	var toSerialize map[string]interface{}
-	toSerialize = map[string]interface{}{
-		"type":   "mouse:drag",
-		"startX": m.StartX,
-		"startY": m.StartY,
-		"endX":   m.EndX,
-		"endY":   m.EndY,
-	}
-	if m.HoldKey != nil {
-		toSerialize["holdKey"] = *m.HoldKey
-	}
-	if m.CallId != nil {
-		toSerialize["callId"] = *m.CallId
-	}
-	return json.Marshal(toSerialize)
-}
-
-func (m *MouseDragAction) UnmarshalJSON(src []byte) error {
-	var value map[string]interface{}
-	if err := json.Unmarshal(src, &value); err != nil {
-		return err
-	}
-	if v, ok := value["type"].(string); ok {
-		m.Type = v
-	}
-	if v, ok := value["startX"].(map[string]interface{}); ok {
-		if typeVal, ok := v["type"].(string); ok {
-			switch typeVal {
-			case "/":
-				var fracLen FractionalLength
-				if err := json.Unmarshal(src, &fracLen); err != nil {
-					return err
-				}
-				m.StartX = &fracLen
-			case "px":
-				var pixLen PixelLength
-				if err := json.Unmarshal(src, &pixLen); err != nil {
-					return err
-				}
-				m.StartX = &pixLen
-			}
-		}
-	}
-	if v, ok := value["startY"].(map[string]interface{}); ok {
-		if typeVal, ok := v["type"].(string); ok {
-			switch typeVal {
-			case "/":
-				var fracLen FractionalLength
-				if err := json.Unmarshal(src, &fracLen); err != nil {
-					return err
-				}
-				m.StartY = &fracLen
-			case "px":
-				var pixLen PixelLength
-				if err := json.Unmarshal(src, &pixLen); err != nil {
-					return err
-				}
-				m.StartY = &pixLen
-			}
-		}
-	}
-	if v, ok := value["endX"].(map[string]interface{}); ok {
-		if typeVal, ok := v["type"].(string); ok {
-			switch typeVal {
-			case "/":
-				var fracLen FractionalLength
-				if err := json.Unmarshal(src, &fracLen); err != nil {
-					return err
-				}
-				m.EndX = &fracLen
-			case "px":
-				var pixLen PixelLength
-				if err := json.Unmarshal(src, &pixLen); err != nil {
-					return err
-				}
-				m.EndX = &pixLen
-			}
-		}
-	}
-	if v, ok := value["endY"].(map[string]interface{}); ok {
-		if typeVal, ok := v["type"].(string); ok {
-			switch typeVal {
-			case "/":
-				var fracLen FractionalLength
-				if err := json.Unmarshal(src, &fracLen); err != nil {
-					return err
-				}
-				m.EndY = &fracLen
-			case "px":
-				var pixLen PixelLength
-				if err := json.Unmarshal(src, &pixLen); err != nil {
-					return err
-				}
-				m.EndY = &pixLen
-			}
-		}
-	}
-	if v, ok := value["holdKey"].(string); ok {
-		m.HoldKey = &v
-	}
-	if v, ok := value["callId"].(string); ok {
-		m.CallId = &v
-	}
-	return nil
-}
-
-func (MouseDragAction) _internalComputerUseActionDtoActionOneOf() {}
 func NewMouseDragAction(startX Length, startY Length, endX Length, endY Length) *MouseDragAction {
 	return &MouseDragAction{
 		Type:   "mouse:drag",
@@ -637,40 +181,6 @@ type KeyboardTypeAction struct {
 	CallId              *string `json:"callId,omitempty"`
 }
 
-func (k KeyboardTypeAction) MarshalJSON() ([]byte, error) {
-	var toSerialize map[string]interface{}
-	toSerialize = map[string]interface{}{
-		"type":                "keyboard:type",
-		"content":             k.Content,
-		"treatNewLineAsEnter": k.TreatNewLineAsEnter,
-	}
-	if k.CallId != nil {
-		toSerialize["callId"] = *k.CallId
-	}
-	return json.Marshal(toSerialize)
-}
-
-func (k *KeyboardTypeAction) UnmarshalJSON(src []byte) error {
-	var value map[string]interface{}
-	if err := json.Unmarshal(src, &value); err != nil {
-		return err
-	}
-	if v, ok := value["type"].(string); ok {
-		k.Type = v
-	}
-	if v, ok := value["content"].(string); ok {
-		k.Content = v
-	}
-	if v, ok := value["treatNewLineAsEnter"].(bool); ok {
-		k.TreatNewLineAsEnter = v
-	}
-	if v, ok := value["callId"].(string); ok {
-		k.CallId = &v
-	}
-	return nil
-}
-
-func (KeyboardTypeAction) _internalComputerUseActionDtoActionOneOf() {}
 func NewKeyboardTypeAction(content string, treatNewLineAsEnter bool) *KeyboardTypeAction {
 	return &KeyboardTypeAction{
 		Type:                "keyboard:type",
@@ -686,43 +196,6 @@ type KeyboardHotkeyAction struct {
 	CallId   *string `json:"callId,omitempty"`
 }
 
-func (k KeyboardHotkeyAction) MarshalJSON() ([]byte, error) {
-	var toSerialize map[string]interface{}
-	toSerialize = map[string]interface{}{
-		"type": "keyboard:hotkey",
-		"keys": k.Keys,
-	}
-	if k.Duration != nil {
-		toSerialize["duration"] = *k.Duration
-	}
-	if k.CallId != nil {
-		toSerialize["callId"] = *k.CallId
-	}
-	return json.Marshal(toSerialize)
-}
-
-func (k *KeyboardHotkeyAction) UnmarshalJSON(src []byte) error {
-	var value map[string]interface{}
-	if err := json.Unmarshal(src, &value); err != nil {
-		return err
-	}
-	if v, ok := value["type"].(string); ok {
-		k.Type = v
-	}
-	if v, ok := value["keys"].(string); ok {
-		k.Keys = v
-	}
-	if v, ok := value["duration"].(float64); ok {
-		duration := int(v)
-		k.Duration = &duration
-	}
-	if v, ok := value["callId"].(string); ok {
-		k.CallId = &v
-	}
-	return nil
-}
-
-func (KeyboardHotkeyAction) _internalComputerUseActionDtoActionOneOf() {}
 func NewKeyboardHotkeyAction(keys string) *KeyboardHotkeyAction {
 	return &KeyboardHotkeyAction{
 		Type: "keyboard:hotkey",
@@ -735,32 +208,6 @@ type ScreenshotAction struct {
 	CallId *string `json:"callId,omitempty"`
 }
 
-func (s ScreenshotAction) MarshalJSON() ([]byte, error) {
-	var toSerialize map[string]interface{}
-	toSerialize = map[string]interface{}{
-		"type": "screenshot",
-	}
-	if s.CallId != nil {
-		toSerialize["callId"] = *s.CallId
-	}
-	return json.Marshal(toSerialize)
-}
-
-func (s *ScreenshotAction) UnmarshalJSON(src []byte) error {
-	var value map[string]interface{}
-	if err := json.Unmarshal(src, &value); err != nil {
-		return err
-	}
-	if v, ok := value["type"].(string); ok {
-		s.Type = v
-	}
-	if v, ok := value["callId"].(string); ok {
-		s.CallId = &v
-	}
-	return nil
-}
-
-func (ScreenshotAction) _internalComputerUseActionDtoActionOneOf() {}
 func NewScreenshotAction() *ScreenshotAction {
 	return &ScreenshotAction{
 		Type: "screenshot",
@@ -773,36 +220,6 @@ type WaitAction struct {
 	CallId   *string `json:"callId,omitempty"`
 }
 
-func (w WaitAction) MarshalJSON() ([]byte, error) {
-	var toSerialize map[string]interface{}
-	toSerialize = map[string]interface{}{
-		"type":     "wait",
-		"duration": w.Duration,
-	}
-	if w.CallId != nil {
-		toSerialize["callId"] = *w.CallId
-	}
-	return json.Marshal(toSerialize)
-}
-
-func (w *WaitAction) UnmarshalJSON(src []byte) error {
-	var value map[string]interface{}
-	if err := json.Unmarshal(src, &value); err != nil {
-		return err
-	}
-	if v, ok := value["type"].(string); ok {
-		w.Type = v
-	}
-	if v, ok := value["duration"].(float64); ok {
-		w.Duration = int(v)
-	}
-	if v, ok := value["callId"].(string); ok {
-		w.CallId = &v
-	}
-	return nil
-}
-
-func (WaitAction) _internalComputerUseActionDtoActionOneOf() {}
 func NewWaitAction(duration int) *WaitAction {
 	return &WaitAction{
 		Type:     "wait",
@@ -816,81 +233,17 @@ type FinishedAction struct {
 	CallId  *string `json:"callId,omitempty"`
 }
 
-func (f FinishedAction) MarshalJSON() ([]byte, error) {
-	var toSerialize map[string]interface{}
-	toSerialize = map[string]interface{}{
-		"type": "finished",
-	}
-	if f.Message != nil {
-		toSerialize["message"] = *f.Message
-	}
-	if f.CallId != nil {
-		toSerialize["callId"] = *f.CallId
-	}
-	return json.Marshal(toSerialize)
-}
-
-func (f *FinishedAction) UnmarshalJSON(src []byte) error {
-	var value map[string]interface{}
-	if err := json.Unmarshal(src, &value); err != nil {
-		return err
-	}
-	if v, ok := value["type"].(string); ok {
-		f.Type = v
-	}
-	if v, ok := value["message"].(string); ok {
-		f.Message = &v
-	}
-	if v, ok := value["callId"].(string); ok {
-		f.CallId = &v
-	}
-	return nil
-}
 func NewFinishedAction() *FinishedAction {
 	return &FinishedAction{
 		Type: "finished",
 	}
 }
-func (FinishedAction) _internalComputerUseActionDtoActionOneOf() {}
 
 type FailedAction struct {
 	Type    string  `json:"type"` // set to failed
 	Message *string `json:"message,omitempty"`
 	CallId  *string `json:"callId,omitempty"`
 }
-
-func (f FailedAction) MarshalJSON() ([]byte, error) {
-	var toSerialize map[string]interface{}
-	toSerialize = map[string]interface{}{
-		"type": "failed",
-	}
-	if f.Message != nil {
-		toSerialize["message"] = *f.Message
-	}
-	if f.CallId != nil {
-		toSerialize["callId"] = *f.CallId
-	}
-	return json.Marshal(toSerialize)
-}
-
-func (f *FailedAction) UnmarshalJSON(src []byte) error {
-	var value map[string]interface{}
-	if err := json.Unmarshal(src, &value); err != nil {
-		return err
-	}
-	if v, ok := value["type"].(string); ok {
-		f.Type = v
-	}
-	if v, ok := value["message"].(string); ok {
-		f.Message = &v
-	}
-	if v, ok := value["callId"].(string); ok {
-		f.CallId = &v
-	}
-	return nil
-}
-
-func (FailedAction) _internalComputerUseActionDtoActionOneOf() {}
 
 func NewFailedAction() *FailedAction {
 	return &FailedAction{
