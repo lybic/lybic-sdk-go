@@ -82,73 +82,76 @@ func NewFractionalLength(numerator int, denominator int) *FractionalLength {
 	}
 }
 
-type MouseClickAction struct {
-	Type    string  `json:"type"` // set to mouse:click
+// Common fields for actions involving a single point and hold keys
+type mousePointActionBase struct {
 	X       Length  `json:"x"`
 	Y       Length  `json:"y"`
-	Button  int     `json:"button"`            // Mouse button flag combination. 1: left, 2: right, 4: middle, 8: back, 16: forward; add them together to press multiple buttons at once.
-	HoldKey *string `json:"holdKey,omitempty"` // Key to hold down during click, in xdotool key syntax. Example: "ctrl", "alt", "alt+shift"
+	HoldKey *string `json:"holdKey,omitempty"`
 	CallId  *string `json:"callId,omitempty"`
+}
+type MouseClickAction struct {
+	Type   string `json:"type"`   // set to mouse:click
+	Button int    `json:"button"` // Mouse button flag combination. 1: left, 2: right, 4: middle, 8: back, 16: forward; add them together to press multiple buttons at once.
+	mousePointActionBase
 }
 
 func NewMouseClickAction(x Length, y Length, button int) *MouseClickAction {
 	return &MouseClickAction{
-		Type:   "mouse:click",
-		X:      x,
-		Y:      y,
+		Type: "mouse:click",
+		mousePointActionBase: mousePointActionBase{
+			X: x,
+			Y: y,
+		},
 		Button: button,
 	}
 }
 
 type MouseDoubleClickAction struct {
-	Type    string  `json:"type"` // set to mouse:doubleClick
-	X       Length  `json:"x"`
-	Y       Length  `json:"y"`
-	Button  int     `json:"button"`            // Mouse button flag combination. 1: left, 2: right, 4: middle, 8: back, 16: forward; add them together to press multiple buttons at once.
-	HoldKey *string `json:"holdKey,omitempty"` // Key to hold down during click, in xdotool key syntax. Example: "ctrl", "alt", "alt+shift"
-	CallId  *string `json:"callId,omitempty"`
+	Type   string `json:"type"`   // set to mouse:doubleClick
+	Button int    `json:"button"` // Mouse button flag combination. 1: left, 2: right, 4: middle, 8: back, 16: forward; add them together to press multiple buttons at once.
+	mousePointActionBase
 }
 
 func NewMouseDoubleClickAction(x Length, y Length, button int) *MouseDoubleClickAction {
 	return &MouseDoubleClickAction{
-		Type:   "mouse:doubleClick",
-		X:      x,
-		Y:      y,
+		Type: "mouse:doubleClick",
+		mousePointActionBase: mousePointActionBase{
+			X: x,
+			Y: y,
+		},
 		Button: button,
 	}
 }
 
 type MouseMoveAction struct {
-	Type    string  `json:"type"` // set to mouse:move
-	X       Length  `json:"x"`
-	Y       Length  `json:"y"`
-	HoldKey *string `json:"holdKey,omitempty"` // Key to hold down during click, in xdotool key syntax. Example: "ctrl", "alt", "alt+shift"
-	CallId  *string `json:"callId,omitempty"`
+	Type string `json:"type"` // set to mouse:move
+	mousePointActionBase
 }
 
 func NewMouseMoveAction(x Length, y Length) *MouseMoveAction {
 	return &MouseMoveAction{
 		Type: "mouse:move",
-		X:    x,
-		Y:    y,
+		mousePointActionBase: mousePointActionBase{
+			X: x,
+			Y: y,
+		},
 	}
 }
 
 type MouseScrollAction struct {
-	Type           string  `json:"type"` // set to mouse:scroll
-	X              Length  `json:"x"`
-	Y              Length  `json:"y"`
-	StepVertical   int     `json:"stepVertical"`
-	StepHorizontal int     `json:"stepHorizontal"`
-	HoldKey        *string `json:"holdKey,omitempty"` // Key to hold down during click, in xdotool key syntax. Example: "ctrl", "alt", "alt+shift"
-	CallId         *string `json:"callId,omitempty"`
+	Type           string `json:"type"` // set to mouse:scroll
+	StepVertical   int    `json:"stepVertical"`
+	StepHorizontal int    `json:"stepHorizontal"`
+	mousePointActionBase
 }
 
 func NewMouseScrollAction(x Length, y Length, stepVertical int, stepHorizontal int) *MouseScrollAction {
 	return &MouseScrollAction{
-		Type:           "mouse:scroll",
-		X:              x,
-		Y:              y,
+		Type: "mouse:scroll",
+		mousePointActionBase: mousePointActionBase{
+			X: x,
+			Y: y,
+		},
 		StepVertical:   stepVertical,
 		StepHorizontal: stepHorizontal,
 	}
