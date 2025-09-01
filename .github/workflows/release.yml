@@ -41,7 +41,7 @@ jobs:
           echo "" >> changelog.md
           echo "Release timestamp: $(date +%Y-%m-%d)" >> changelog.md
           echo "" >> changelog.md
-          gh api repos/${{ github.repository }}/compare/${PREVIOUS_TAG}...HEAD --jq '.commits[] | "- \(.commit.message | split(\"\\n\")[0]) (by @\(.author.login // .commit.author.name) in `\(.sha | tostring | .[0:7])`) "' >> changelog.md
+          gh api repos/${{ github.repository }}/compare/${PREVIOUS_TAG}...HEAD --jq '.commits[] | "- \(.commit.message | split("\n")[0]) (by @\(.author.login // .commit.author.name) in `\(.sha | tostring | .[0:7])`) "' >> changelog.md
           mkdir -p CHANGELOGS
           mv changelog.md CHANGELOGS/${NEW_TAG}-release.md
 
