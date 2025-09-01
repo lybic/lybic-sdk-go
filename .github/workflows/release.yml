@@ -41,9 +41,15 @@ jobs:
           echo "" >> changelog.md
           echo "Release timestamp: $(date +%Y-%m-%d)" >> changelog.md
           echo "" >> changelog.md
-          gh api repos/${{ github.repository }}/compare/${PREVIOUS_TAG}...HEAD --jq '.commits[] | "- \(.commit.message | split("\n")[0]) (by @\(.author.login // .commit.author.name) in `\(.sha | tostring | .[0:7])`) "' >> changelog.md
+          gh api repos/${{ github.repository }}/compare/${PREVIOUS_TAG}...HEAD --jq '.commits[] | "- \(.commit.message | split(\"\\n\")[0]) (by @\(.author.login // .commit.author.name) in `\(.sha | tostring | .[0:7])`) "' >> changelog.md
           mkdir -p CHANGELOGS
           mv changelog.md CHANGELOGS/${NEW_TAG}-release.md
+
+      - name: Update version in version.go
+        run: |
+          sed -i "s/Version = \".*\"/Version = \"${{ github.event.inputs.new_tag }}\"/" version.go
+          git add version.go
+          git commit -m "build: bump lybic-sdk-version to ${{ github.event.inputs.new_tag }}"
 
       - name: Commit and push changelog
         run: |
