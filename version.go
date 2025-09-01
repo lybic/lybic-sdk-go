@@ -1,0 +1,5 @@
+package lybic
+
+const (
+	Version = "v0.1.1"
+)
