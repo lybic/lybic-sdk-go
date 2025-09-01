@@ -126,7 +126,7 @@ func newMcpClient(ctx context.Context, client *client, address *string) (*mcpCli
 		m.client.config.Logger.Infof("Using specific MCP server address: %s", serverAddress)
 	}
 
-	cli := mcp.NewClient(&mcp.Implementation{Name: "mcp-client/lybic-sdk-go", Version: "v0.0.2"}, nil)
+	cli := mcp.NewClient(&mcp.Implementation{Name: "mcp-client/lybic-sdk-go", Version: Version}, nil)
 	transport := &mcp.StreamableClientTransport{
 		Endpoint:   serverAddress,
 		HTTPClient: client.client,
