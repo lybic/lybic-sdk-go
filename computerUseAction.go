@@ -33,7 +33,7 @@ import (
 
 // ParseComputerUse parses the output text of a computer use model and returns the parsed actions.
 func (c *client) ParseComputerUse(ctx context.Context, dto ComputerUseParseRequestDto) (*ComputerUseActionResponseDto, error) {
-	url := "/api/computer-use/parse"
+	url := fmt.Sprintf("/api/computer-use/parse/%s", dto.Model)
 	c.config.Logger.Info("Sending request to parse computer use action", "url:", url, "dto:", dto)
 	resp, err := c.request(ctx, http.MethodPost, url, nil, dto)
 	if err != nil {
