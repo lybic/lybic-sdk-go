@@ -176,7 +176,7 @@
           }
         },
         "responses": {
-          "201": {
+          "200": {
             "description": ""
           }
         },
@@ -367,7 +367,7 @@
           }
         },
         "responses": {
-          "201": {
+          "200": {
             "description": ""
           }
         },
@@ -579,7 +579,7 @@
     },
     "/api/computer-use/parse": {
       "post": {
-        "description": "Parses the output text of computer use model and returns the parsed actions.",
+        "description": "Deprecated, use parseModelTextOutput instead",
         "operationId": "parseModelOutput",
         "parameters": [],
         "requestBody": {
@@ -604,9 +604,73 @@
             }
           }
         },
-        "summary": "Parse LLM Output",
+        "summary": "Parse LLM Output (Deprecated)",
         "tags": [
           "ComputerUse"
+        ]
+      }
+    },
+    "/api/computer-use/parse/{type}": {
+      "post": {
+        "description": "Parses the output text of computer use model and returns the parsed actions.",
+        "operationId": "parseModelTextOutput",
+        "parameters": [
+          {
+            "name": "type",
+            "required": true,
+            "in": "path",
+            "description": "The type of the prompt to parse the input for",
+            "schema": {
+              "enum": [
+                "ui-tars",
+                "seed",
+                "glm-4.1v",
+                "glm-4.5v",
+                "qwen-2.5-vl"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ComputerUseParseTextRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ComputerUseActionResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Parse LLM Text Output",
+        "tags": [
+          "ComputerUse"
+        ]
+      }
+    },
+    "/api/healthz": {
+      "get": {
+        "operationId": "HealthCheckController_healthCheck",
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "HealthCheck"
         ]
       }
     },
@@ -876,6 +940,11 @@
               "type": "string"
             },
             "expiredAt": {
+              "description": "Deprecated, use `expiresAt` instead.",
+              "type": "string",
+              "format": "date-time"
+            },
+            "expiresAt": {
               "type": "string",
               "format": "date-time"
             },
@@ -891,6 +960,7 @@
             "id",
             "name",
             "expiredAt",
+            "expiresAt",
             "createdAt",
             "projectId"
           ]
@@ -940,6 +1010,11 @@
                 "type": "string"
               },
               "expiredAt": {
+                "description": "Deprecated, use `expiresAt` instead.",
+                "type": "string",
+                "format": "date-time"
+              },
+              "expiresAt": {
                 "type": "string",
                 "format": "date-time"
               },
@@ -955,6 +1030,7 @@
               "id",
               "name",
               "expiredAt",
+              "expiresAt",
               "createdAt",
               "projectId"
             ]
@@ -1058,11 +1134,11 @@
         "type": "object",
         "properties": {
           "maxLifeSeconds": {
-            "description": "The maximum life time of the sandbox in seconds. Default is 1 hour, max is 1 year.",
+            "description": "The new max life time of the sandbox (relative to the current time) in seconds. Should not less than 30 seconds or more than 24 hours. Note that the total maximum lifetime of a sandbox should not longer than 13 days.",
             "type": "number",
-            "minimum": 1,
+            "minimum": 30,
             "exclusiveMinimum": false,
-            "maximum": 31536000,
+            "maximum": 86400,
             "exclusiveMaximum": false,
             "default": 3600
           }
@@ -1072,7 +1148,7 @@
         "type": "object",
         "properties": {
           "action": {
-            "description": "All possible computer use actions",
+            "description": "All possible computer use actions, with optional callId",
             "oneOf": [
               {
                 "description": "Click the mouse at the specified coordinates",
@@ -1083,10 +1159,6 @@
                     "enum": [
                       "mouse:click"
                     ]
-                  },
-                  "callId": {
-                    "description": "Optional call identifier",
-                    "type": "string"
                   },
                   "x": {
                     "description": "X coordinate",
@@ -1101,10 +1173,6 @@
                             "enum": [
                               "px"
                             ]
-                          },
-                          "callId": {
-                            "description": "Optional call identifier",
-                            "type": "string"
                           },
                           "value": {
                             "description": "Length in pixels",
@@ -1125,10 +1193,6 @@
                             "enum": [
                               "/"
                             ]
-                          },
-                          "callId": {
-                            "description": "Optional call identifier",
-                            "type": "string"
                           },
                           "numerator": {
                             "description": "Numerator of the fraction",
@@ -1161,10 +1225,6 @@
                               "px"
                             ]
                           },
-                          "callId": {
-                            "description": "Optional call identifier",
-                            "type": "string"
-                          },
                           "value": {
                             "description": "Length in pixels",
                             "type": "number"
@@ -1184,10 +1244,6 @@
                             "enum": [
                               "/"
                             ]
-                          },
-                          "callId": {
-                            "description": "Optional call identifier",
-                            "type": "string"
                           },
                           "numerator": {
                             "description": "Numerator of the fraction",
@@ -1232,10 +1288,6 @@
                       "mouse:doubleClick"
                     ]
                   },
-                  "callId": {
-                    "description": "Optional call identifier",
-                    "type": "string"
-                  },
                   "x": {
                     "description": "X coordinate",
                     "oneOf": [
@@ -1249,10 +1301,6 @@
                             "enum": [
                               "px"
                             ]
-                          },
-                          "callId": {
-                            "description": "Optional call identifier",
-                            "type": "string"
                           },
                           "value": {
                             "description": "Length in pixels",
@@ -1273,10 +1321,6 @@
                             "enum": [
                               "/"
                             ]
-                          },
-                          "callId": {
-                            "description": "Optional call identifier",
-                            "type": "string"
                           },
                           "numerator": {
                             "description": "Numerator of the fraction",
@@ -1309,10 +1353,6 @@
                               "px"
                             ]
                           },
-                          "callId": {
-                            "description": "Optional call identifier",
-                            "type": "string"
-                          },
                           "value": {
                             "description": "Length in pixels",
                             "type": "number"
@@ -1332,10 +1372,6 @@
                             "enum": [
                               "/"
                             ]
-                          },
-                          "callId": {
-                            "description": "Optional call identifier",
-                            "type": "string"
                           },
                           "numerator": {
                             "description": "Numerator of the fraction",
@@ -1380,10 +1416,6 @@
                       "mouse:move"
                     ]
                   },
-                  "callId": {
-                    "description": "Optional call identifier",
-                    "type": "string"
-                  },
                   "x": {
                     "description": "X coordinate",
                     "oneOf": [
@@ -1397,10 +1429,6 @@
                             "enum": [
                               "px"
                             ]
-                          },
-                          "callId": {
-                            "description": "Optional call identifier",
-                            "type": "string"
                           },
                           "value": {
                             "description": "Length in pixels",
@@ -1421,10 +1449,6 @@
                             "enum": [
                               "/"
                             ]
-                          },
-                          "callId": {
-                            "description": "Optional call identifier",
-                            "type": "string"
                           },
                           "numerator": {
                             "description": "Numerator of the fraction",
@@ -1457,10 +1481,6 @@
                               "px"
                             ]
                           },
-                          "callId": {
-                            "description": "Optional call identifier",
-                            "type": "string"
-                          },
                           "value": {
                             "description": "Length in pixels",
                             "type": "number"
@@ -1480,10 +1500,6 @@
                             "enum": [
                               "/"
                             ]
-                          },
-                          "callId": {
-                            "description": "Optional call identifier",
-                            "type": "string"
                           },
                           "numerator": {
                             "description": "Numerator of the fraction",
@@ -1523,10 +1539,6 @@
                       "mouse:scroll"
                     ]
                   },
-                  "callId": {
-                    "description": "Optional call identifier",
-                    "type": "string"
-                  },
                   "x": {
                     "description": "X coordinate",
                     "oneOf": [
@@ -1540,10 +1552,6 @@
                             "enum": [
                               "px"
                             ]
-                          },
-                          "callId": {
-                            "description": "Optional call identifier",
-                            "type": "string"
                           },
                           "value": {
                             "description": "Length in pixels",
@@ -1564,10 +1572,6 @@
                             "enum": [
                               "/"
                             ]
-                          },
-                          "callId": {
-                            "description": "Optional call identifier",
-                            "type": "string"
                           },
                           "numerator": {
                             "description": "Numerator of the fraction",
@@ -1600,10 +1604,6 @@
                               "px"
                             ]
                           },
-                          "callId": {
-                            "description": "Optional call identifier",
-                            "type": "string"
-                          },
                           "value": {
                             "description": "Length in pixels",
                             "type": "number"
@@ -1623,10 +1623,6 @@
                             "enum": [
                               "/"
                             ]
-                          },
-                          "callId": {
-                            "description": "Optional call identifier",
-                            "type": "string"
                           },
                           "numerator": {
                             "description": "Numerator of the fraction",
@@ -1676,10 +1672,6 @@
                       "mouse:drag"
                     ]
                   },
-                  "callId": {
-                    "description": "Optional call identifier",
-                    "type": "string"
-                  },
                   "startX": {
                     "description": "Start X coordinate",
                     "oneOf": [
@@ -1693,10 +1685,6 @@
                             "enum": [
                               "px"
                             ]
-                          },
-                          "callId": {
-                            "description": "Optional call identifier",
-                            "type": "string"
                           },
                           "value": {
                             "description": "Length in pixels",
@@ -1717,10 +1705,6 @@
                             "enum": [
                               "/"
                             ]
-                          },
-                          "callId": {
-                            "description": "Optional call identifier",
-                            "type": "string"
                           },
                           "numerator": {
                             "description": "Numerator of the fraction",
@@ -1753,10 +1737,6 @@
                               "px"
                             ]
                           },
-                          "callId": {
-                            "description": "Optional call identifier",
-                            "type": "string"
-                          },
                           "value": {
                             "description": "Length in pixels",
                             "type": "number"
@@ -1776,10 +1756,6 @@
                             "enum": [
                               "/"
                             ]
-                          },
-                          "callId": {
-                            "description": "Optional call identifier",
-                            "type": "string"
                           },
                           "numerator": {
                             "description": "Numerator of the fraction",
@@ -1812,10 +1788,6 @@
                               "px"
                             ]
                           },
-                          "callId": {
-                            "description": "Optional call identifier",
-                            "type": "string"
-                          },
                           "value": {
                             "description": "Length in pixels",
                             "type": "number"
@@ -1835,10 +1807,6 @@
                             "enum": [
                               "/"
                             ]
-                          },
-                          "callId": {
-                            "description": "Optional call identifier",
-                            "type": "string"
                           },
                           "numerator": {
                             "description": "Numerator of the fraction",
@@ -1871,10 +1839,6 @@
                               "px"
                             ]
                           },
-                          "callId": {
-                            "description": "Optional call identifier",
-                            "type": "string"
-                          },
                           "value": {
                             "description": "Length in pixels",
                             "type": "number"
@@ -1894,10 +1858,6 @@
                             "enum": [
                               "/"
                             ]
-                          },
-                          "callId": {
-                            "description": "Optional call identifier",
-                            "type": "string"
                           },
                           "numerator": {
                             "description": "Numerator of the fraction",
@@ -1939,10 +1899,6 @@
                       "keyboard:type"
                     ]
                   },
-                  "callId": {
-                    "description": "Optional call identifier",
-                    "type": "string"
-                  },
                   "content": {
                     "description": "Text content to type",
                     "type": "string"
@@ -1969,10 +1925,6 @@
                     "enum": [
                       "keyboard:hotkey"
                     ]
-                  },
-                  "callId": {
-                    "description": "Optional call identifier",
-                    "type": "string"
                   },
                   "keys": {
                     "description": "Hotkey combination, in xdotool key syntax. Examples: \"a\", \"Return\", \"alt+Tab\", \"ctrl+s\", \"Up\", \"KP_0\" (for the numpad 0 key).",
@@ -2001,10 +1953,6 @@
                     "enum": [
                       "screenshot"
                     ]
-                  },
-                  "callId": {
-                    "description": "Optional call identifier",
-                    "type": "string"
                   }
                 },
                 "required": [
@@ -2020,10 +1968,6 @@
                     "enum": [
                       "wait"
                     ]
-                  },
-                  "callId": {
-                    "description": "Optional call identifier",
-                    "type": "string"
                   },
                   "duration": {
                     "description": "Duration in milliseconds",
@@ -2045,10 +1989,6 @@
                       "finished"
                     ]
                   },
-                  "callId": {
-                    "description": "Optional call identifier",
-                    "type": "string"
-                  },
                   "message": {
                     "description": "Completion message",
                     "type": "string"
@@ -2068,10 +2008,6 @@
                       "failed"
                     ]
                   },
-                  "callId": {
-                    "description": "Optional call identifier",
-                    "type": "string"
-                  },
                   "message": {
                     "description": "Failure message",
                     "type": "string"
@@ -2090,17 +2026,59 @@
                     "enum": [
                       "client:user-takeover"
                     ]
-                  },
-                  "callId": {
-                    "description": "Optional call identifier",
-                    "type": "string"
                   }
                 },
                 "required": [
                   "type"
                 ]
+              },
+              {
+                "description": "Press ONE key down, in xdotool key syntax. Only use this action if hotkey or type cannot satisfy your needs.",
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "key:down"
+                    ]
+                  },
+                  "key": {
+                    "description": "Key to press",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "type",
+                  "key"
+                ]
+              },
+              {
+                "description": "Release ONE key, in xdotool key syntax. Only use this action if keydown cannot satisfy your needs and only after a key down.",
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "key:up"
+                    ]
+                  },
+                  "key": {
+                    "description": "Key to release",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "type",
+                  "key"
+                ]
               }
-            ]
+            ],
+            "properties": {
+              "callId": {
+                "description": "Optional call identifier",
+                "type": "string"
+              }
+            }
           },
           "includeScreenShot": {
             "description": "Whether to include the screenshot url after action in the response",
@@ -2248,7 +2226,7 @@
           "actions": {
             "type": "array",
             "items": {
-              "description": "All possible computer use actions",
+              "description": "All possible computer use actions, with optional callId",
               "oneOf": [
                 {
                   "description": "Click the mouse at the specified coordinates",
@@ -2259,10 +2237,6 @@
                       "enum": [
                         "mouse:click"
                       ]
-                    },
-                    "callId": {
-                      "description": "Optional call identifier",
-                      "type": "string"
                     },
                     "x": {
                       "description": "X coordinate",
@@ -2277,10 +2251,6 @@
                               "enum": [
                                 "px"
                               ]
-                            },
-                            "callId": {
-                              "description": "Optional call identifier",
-                              "type": "string"
                             },
                             "value": {
                               "description": "Length in pixels",
@@ -2301,10 +2271,6 @@
                               "enum": [
                                 "/"
                               ]
-                            },
-                            "callId": {
-                              "description": "Optional call identifier",
-                              "type": "string"
                             },
                             "numerator": {
                               "description": "Numerator of the fraction",
@@ -2337,10 +2303,6 @@
                                 "px"
                               ]
                             },
-                            "callId": {
-                              "description": "Optional call identifier",
-                              "type": "string"
-                            },
                             "value": {
                               "description": "Length in pixels",
                               "type": "number"
@@ -2360,10 +2322,6 @@
                               "enum": [
                                 "/"
                               ]
-                            },
-                            "callId": {
-                              "description": "Optional call identifier",
-                              "type": "string"
                             },
                             "numerator": {
                               "description": "Numerator of the fraction",
@@ -2408,10 +2366,6 @@
                         "mouse:doubleClick"
                       ]
                     },
-                    "callId": {
-                      "description": "Optional call identifier",
-                      "type": "string"
-                    },
                     "x": {
                       "description": "X coordinate",
                       "oneOf": [
@@ -2425,10 +2379,6 @@
                               "enum": [
                                 "px"
                               ]
-                            },
-                            "callId": {
-                              "description": "Optional call identifier",
-                              "type": "string"
                             },
                             "value": {
                               "description": "Length in pixels",
@@ -2449,10 +2399,6 @@
                               "enum": [
                                 "/"
                               ]
-                            },
-                            "callId": {
-                              "description": "Optional call identifier",
-                              "type": "string"
                             },
                             "numerator": {
                               "description": "Numerator of the fraction",
@@ -2485,10 +2431,6 @@
                                 "px"
                               ]
                             },
-                            "callId": {
-                              "description": "Optional call identifier",
-                              "type": "string"
-                            },
                             "value": {
                               "description": "Length in pixels",
                               "type": "number"
@@ -2508,10 +2450,6 @@
                               "enum": [
                                 "/"
                               ]
-                            },
-                            "callId": {
-                              "description": "Optional call identifier",
-                              "type": "string"
                             },
                             "numerator": {
                               "description": "Numerator of the fraction",
@@ -2556,10 +2494,6 @@
                         "mouse:move"
                       ]
                     },
-                    "callId": {
-                      "description": "Optional call identifier",
-                      "type": "string"
-                    },
                     "x": {
                       "description": "X coordinate",
                       "oneOf": [
@@ -2573,10 +2507,6 @@
                               "enum": [
                                 "px"
                               ]
-                            },
-                            "callId": {
-                              "description": "Optional call identifier",
-                              "type": "string"
                             },
                             "value": {
                               "description": "Length in pixels",
@@ -2597,10 +2527,6 @@
                               "enum": [
                                 "/"
                               ]
-                            },
-                            "callId": {
-                              "description": "Optional call identifier",
-                              "type": "string"
                             },
                             "numerator": {
                               "description": "Numerator of the fraction",
@@ -2633,10 +2559,6 @@
                                 "px"
                               ]
                             },
-                            "callId": {
-                              "description": "Optional call identifier",
-                              "type": "string"
-                            },
                             "value": {
                               "description": "Length in pixels",
                               "type": "number"
@@ -2656,10 +2578,6 @@
                               "enum": [
                                 "/"
                               ]
-                            },
-                            "callId": {
-                              "description": "Optional call identifier",
-                              "type": "string"
                             },
                             "numerator": {
                               "description": "Numerator of the fraction",
@@ -2699,10 +2617,6 @@
                         "mouse:scroll"
                       ]
                     },
-                    "callId": {
-                      "description": "Optional call identifier",
-                      "type": "string"
-                    },
                     "x": {
                       "description": "X coordinate",
                       "oneOf": [
@@ -2716,10 +2630,6 @@
                               "enum": [
                                 "px"
                               ]
-                            },
-                            "callId": {
-                              "description": "Optional call identifier",
-                              "type": "string"
                             },
                             "value": {
                               "description": "Length in pixels",
@@ -2740,10 +2650,6 @@
                               "enum": [
                                 "/"
                               ]
-                            },
-                            "callId": {
-                              "description": "Optional call identifier",
-                              "type": "string"
                             },
                             "numerator": {
                               "description": "Numerator of the fraction",
@@ -2776,10 +2682,6 @@
                                 "px"
                               ]
                             },
-                            "callId": {
-                              "description": "Optional call identifier",
-                              "type": "string"
-                            },
                             "value": {
                               "description": "Length in pixels",
                               "type": "number"
@@ -2799,10 +2701,6 @@
                               "enum": [
                                 "/"
                               ]
-                            },
-                            "callId": {
-                              "description": "Optional call identifier",
-                              "type": "string"
                             },
                             "numerator": {
                               "description": "Numerator of the fraction",
@@ -2852,10 +2750,6 @@
                         "mouse:drag"
                       ]
                     },
-                    "callId": {
-                      "description": "Optional call identifier",
-                      "type": "string"
-                    },
                     "startX": {
                       "description": "Start X coordinate",
                       "oneOf": [
@@ -2869,10 +2763,6 @@
                               "enum": [
                                 "px"
                               ]
-                            },
-                            "callId": {
-                              "description": "Optional call identifier",
-                              "type": "string"
                             },
                             "value": {
                               "description": "Length in pixels",
@@ -2893,10 +2783,6 @@
                               "enum": [
                                 "/"
                               ]
-                            },
-                            "callId": {
-                              "description": "Optional call identifier",
-                              "type": "string"
                             },
                             "numerator": {
                               "description": "Numerator of the fraction",
@@ -2929,10 +2815,6 @@
                                 "px"
                               ]
                             },
-                            "callId": {
-                              "description": "Optional call identifier",
-                              "type": "string"
-                            },
                             "value": {
                               "description": "Length in pixels",
                               "type": "number"
@@ -2952,10 +2834,6 @@
                               "enum": [
                                 "/"
                               ]
-                            },
-                            "callId": {
-                              "description": "Optional call identifier",
-                              "type": "string"
                             },
                             "numerator": {
                               "description": "Numerator of the fraction",
@@ -2988,10 +2866,6 @@
                                 "px"
                               ]
                             },
-                            "callId": {
-                              "description": "Optional call identifier",
-                              "type": "string"
-                            },
                             "value": {
                               "description": "Length in pixels",
                               "type": "number"
@@ -3011,10 +2885,6 @@
                               "enum": [
                                 "/"
                               ]
-                            },
-                            "callId": {
-                              "description": "Optional call identifier",
-                              "type": "string"
                             },
                             "numerator": {
                               "description": "Numerator of the fraction",
@@ -3047,10 +2917,6 @@
                                 "px"
                               ]
                             },
-                            "callId": {
-                              "description": "Optional call identifier",
-                              "type": "string"
-                            },
                             "value": {
                               "description": "Length in pixels",
                               "type": "number"
@@ -3070,10 +2936,6 @@
                               "enum": [
                                 "/"
                               ]
-                            },
-                            "callId": {
-                              "description": "Optional call identifier",
-                              "type": "string"
                             },
                             "numerator": {
                               "description": "Numerator of the fraction",
@@ -3115,10 +2977,6 @@
                         "keyboard:type"
                       ]
                     },
-                    "callId": {
-                      "description": "Optional call identifier",
-                      "type": "string"
-                    },
                     "content": {
                       "description": "Text content to type",
                       "type": "string"
@@ -3145,10 +3003,6 @@
                       "enum": [
                         "keyboard:hotkey"
                       ]
-                    },
-                    "callId": {
-                      "description": "Optional call identifier",
-                      "type": "string"
                     },
                     "keys": {
                       "description": "Hotkey combination, in xdotool key syntax. Examples: \"a\", \"Return\", \"alt+Tab\", \"ctrl+s\", \"Up\", \"KP_0\" (for the numpad 0 key).",
@@ -3177,10 +3031,6 @@
                       "enum": [
                         "screenshot"
                       ]
-                    },
-                    "callId": {
-                      "description": "Optional call identifier",
-                      "type": "string"
                     }
                   },
                   "required": [
@@ -3196,10 +3046,6 @@
                       "enum": [
                         "wait"
                       ]
-                    },
-                    "callId": {
-                      "description": "Optional call identifier",
-                      "type": "string"
                     },
                     "duration": {
                       "description": "Duration in milliseconds",
@@ -3221,10 +3067,6 @@
                         "finished"
                       ]
                     },
-                    "callId": {
-                      "description": "Optional call identifier",
-                      "type": "string"
-                    },
                     "message": {
                       "description": "Completion message",
                       "type": "string"
@@ -3244,10 +3086,6 @@
                         "failed"
                       ]
                     },
-                    "callId": {
-                      "description": "Optional call identifier",
-                      "type": "string"
-                    },
                     "message": {
                       "description": "Failure message",
                       "type": "string"
@@ -3266,21 +3104,68 @@
                       "enum": [
                         "client:user-takeover"
                       ]
-                    },
-                    "callId": {
-                      "description": "Optional call identifier",
-                      "type": "string"
                     }
                   },
                   "required": [
                     "type"
                   ]
+                },
+                {
+                  "description": "Press ONE key down, in xdotool key syntax. Only use this action if hotkey or type cannot satisfy your needs.",
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "key:down"
+                      ]
+                    },
+                    "key": {
+                      "description": "Key to press",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "key"
+                  ]
+                },
+                {
+                  "description": "Release ONE key, in xdotool key syntax. Only use this action if keydown cannot satisfy your needs and only after a key down.",
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "key:up"
+                      ]
+                    },
+                    "key": {
+                      "description": "Key to release",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "key"
+                  ]
                 }
-              ]
+              ],
+              "type": "object",
+              "properties": {
+                "callId": {
+                  "description": "Optional call identifier",
+                  "type": "string"
+                }
+              }
             }
           },
           "unknown": {
             "description": "Unknown text that is not thoughts nor actions, commonly due to the misformat of model output",
+            "type": "string"
+          },
+          "memory": {
+            "description": "Memory that is not parsed",
             "type": "string"
           },
           "thoughts": {
@@ -3290,6 +3175,18 @@
         },
         "required": [
           "actions"
+        ]
+      },
+      "ComputerUseParseTextRequestDto": {
+        "type": "object",
+        "properties": {
+          "textContent": {
+            "description": "The text content to parse",
+            "type": "string"
+          }
+        },
+        "required": [
+          "textContent"
         ]
       },
       "StatsResponseDto": {
