@@ -146,6 +146,7 @@ type Mcp interface {
 	//	If no service is specified, it defaults to "computer-use".
 	CallTools(ctx context.Context, args map[string]any, service *string) (*mcp.CallToolResult, error)
 
+	GetTools(ctx context.Context) ([]*mcp.Tool, error)
 	// Close releases any resources held by the MCP client
 	Close() error
 }

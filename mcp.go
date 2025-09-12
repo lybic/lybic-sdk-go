@@ -161,3 +161,10 @@ func (m *mcpClient) CallTools(ctx context.Context, args map[string]any, service 
 	}
 	return response, nil
 }
+func (m *mcpClient) GetTools(ctx context.Context) ([]*mcp.Tool, error) {
+	tools, err := m.session.ListTools(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+	return tools.Tools, nil
+}
