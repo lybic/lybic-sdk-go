@@ -6,7 +6,7 @@ require (
 	github.com/anthropics/anthropic-sdk-go v1.12.0
 	github.com/modelcontextprotocol/go-sdk v0.5.0
 	github.com/openai/openai-go v1.12.0
-	github.com/sashabaranov/go-openai v1.41.1
+	github.com/sashabaranov/go-openai v1.41.2
 )
 
 require (
