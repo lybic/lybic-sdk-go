@@ -94,6 +94,9 @@ func unmarshalMousePointActionBase(value map[string]interface{}) (*mousePointAct
 			return nil, err
 		}
 	}
+	if v, ok := value["relative"]; ok {
+		base.Relative = v.(bool)
+	}
 	if v, ok := value["holdKey"].(string); ok {
 		base.HoldKey = &v
 	}
@@ -164,10 +167,11 @@ func (PixelLength) _internalLength() {}
 func (m MouseClickAction) MarshalJSON() ([]byte, error) {
 	var toSerialize map[string]interface{}
 	toSerialize = map[string]interface{}{
-		"type":   "mouse:click",
-		"x":      m.X,
-		"y":      m.Y,
-		"button": m.Button,
+		"type":     "mouse:click",
+		"x":        m.X,
+		"y":        m.Y,
+		"relative": m.Relative,
+		"button":   m.Button,
 	}
 	if m.HoldKey != nil {
 		toSerialize["holdKey"] = *m.HoldKey
@@ -194,6 +198,7 @@ func (m *MouseClickAction) UnmarshalJSON(src []byte) error {
 	m.Y = base.Y
 	m.HoldKey = base.HoldKey
 	m.CallId = base.CallId
+	m.Relative = base.Relative
 	if v, ok := value["button"].(float64); ok {
 		m.Button = int(v)
 	}
@@ -202,13 +207,57 @@ func (m *MouseClickAction) UnmarshalJSON(src []byte) error {
 
 func (MouseClickAction) _internalComputerUseActionDtoActionOneOf() {}
 
+func (m MouseTripleClickAction) MarshalJSON() ([]byte, error) {
+	var toSerialize map[string]interface{}
+	toSerialize = map[string]interface{}{
+		"type":     "mouse:tripleClick",
+		"x":        m.X,
+		"y":        m.Y,
+		"relative": m.Relative,
+		"button":   m.Button,
+	}
+	if m.HoldKey != nil {
+		toSerialize["holdKey"] = *m.HoldKey
+	}
+	if m.CallId != nil {
+		toSerialize["callId"] = *m.CallId
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (m MouseTripleClickAction) UnmarshalJSON(src []byte) error {
+	var value map[string]interface{}
+	if err := json.Unmarshal(src, &value); err != nil {
+		return err
+	}
+	if v, ok := value["type"].(string); ok {
+		m.Type = v
+	}
+	base, err := unmarshalMousePointActionBase(value)
+	if err != nil {
+		return err
+	}
+	m.X = base.X
+	m.Y = base.Y
+	m.HoldKey = base.HoldKey
+	m.CallId = base.CallId
+	m.Relative = base.Relative
+	if v, ok := value["button"].(float64); ok {
+		m.Button = int(v)
+	}
+	return nil
+}
+
+func (MouseTripleClickAction) _internalComputerUseActionDtoActionOneOf() {}
+
 func (m MouseDoubleClickAction) MarshalJSON() ([]byte, error) {
 	var toSerialize map[string]interface{}
 	toSerialize = map[string]interface{}{
-		"type":   "mouse:doubleClick",
-		"x":      m.X,
-		"y":      m.Y,
-		"button": m.Button,
+		"type":     "mouse:doubleClick",
+		"x":        m.X,
+		"y":        m.Y,
+		"relative": m.Relative,
+		"button":   m.Button,
 	}
 	if m.HoldKey != nil {
 		toSerialize["holdKey"] = *m.HoldKey
@@ -235,6 +284,7 @@ func (m *MouseDoubleClickAction) UnmarshalJSON(src []byte) error {
 	m.Y = base.Y
 	m.HoldKey = base.HoldKey
 	m.CallId = base.CallId
+	m.Relative = base.Relative
 	if v, ok := value["button"].(float64); ok {
 		m.Button = int(v)
 	}
@@ -246,9 +296,10 @@ func (MouseDoubleClickAction) _internalComputerUseActionDtoActionOneOf() {}
 func (m MouseMoveAction) MarshalJSON() ([]byte, error) {
 	var toSerialize map[string]interface{}
 	toSerialize = map[string]interface{}{
-		"type": "mouse:move",
-		"x":    m.X,
-		"y":    m.Y,
+		"type":     "mouse:move",
+		"x":        m.X,
+		"y":        m.Y,
+		"relative": m.Relative,
 	}
 	if m.HoldKey != nil {
 		toSerialize["holdKey"] = *m.HoldKey
@@ -275,6 +326,7 @@ func (m *MouseMoveAction) UnmarshalJSON(src []byte) error {
 	m.Y = base.Y
 	m.HoldKey = base.HoldKey
 	m.CallId = base.CallId
+	m.Relative = base.Relative
 	return nil
 }
 
@@ -286,6 +338,7 @@ func (m MouseScrollAction) MarshalJSON() ([]byte, error) {
 		"type":           "mouse:scroll",
 		"x":              m.X,
 		"y":              m.Y,
+		"relative":       m.Relative,
 		"stepVertical":   m.StepVertical,
 		"stepHorizontal": m.StepHorizontal,
 	}
@@ -314,6 +367,7 @@ func (m *MouseScrollAction) UnmarshalJSON(src []byte) error {
 	m.Y = base.Y
 	m.HoldKey = base.HoldKey
 	m.CallId = base.CallId
+	m.Relative = base.Relative
 	if v, ok := value["stepVertical"].(float64); ok {
 		m.StepVertical = int(v)
 	}
@@ -328,11 +382,13 @@ func (MouseScrollAction) _internalComputerUseActionDtoActionOneOf() {}
 func (m MouseDragAction) MarshalJSON() ([]byte, error) {
 	var toSerialize map[string]interface{}
 	toSerialize = map[string]interface{}{
-		"type":   "mouse:drag",
-		"startX": m.StartX,
-		"startY": m.StartY,
-		"endX":   m.EndX,
-		"endY":   m.EndY,
+		"type":          "mouse:drag",
+		"startX":        m.StartX,
+		"startY":        m.StartY,
+		"endX":          m.EndX,
+		"endY":          m.EndY,
+		"startRelative": m.StartRelative,
+		"endRelative":   m.EndRelative,
 	}
 	if m.HoldKey != nil {
 		toSerialize["holdKey"] = *m.HoldKey
@@ -378,6 +434,12 @@ func (m *MouseDragAction) UnmarshalJSON(src []byte) error {
 			return err
 		}
 		m.EndY = endY
+	}
+	if v, ok := value["startRelative"].(bool); ok {
+		m.StartRelative = v
+	}
+	if v, ok := value["endRelative"].(bool); ok {
+		m.EndRelative = v
 	}
 	if v, ok := value["holdKey"].(string); ok {
 		m.HoldKey = &v
@@ -599,6 +661,8 @@ func rawMessageToComputerUseActionDtoActionOneOf(rawAction json.RawMessage) (Com
 	switch base.Type {
 	case "mouse:click":
 		action = &MouseClickAction{}
+	case "mouse:tripleClick":
+		action = &MouseTripleClickAction{}
 	case "mouse:doubleClick":
 		action = &MouseDoubleClickAction{}
 	case "mouse:move":

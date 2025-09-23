@@ -32,6 +32,8 @@ import (
 //
 // # MouseClickAction
 //
+// # MouseTripleClickAction
+//
 // # MouseDoubleClickAction
 //
 // # MouseMoveAction
@@ -107,10 +109,11 @@ func NewFractionalLength(numerator int, denominator int) *FractionalLength {
 
 // Common fields for actions involving a single point and hold keys
 type mousePointActionBase struct {
-	X       Length  `json:"x"`
-	Y       Length  `json:"y"`
-	HoldKey *string `json:"holdKey,omitempty"`
-	CallId  *string `json:"callId,omitempty"`
+	X        Length  `json:"x"`
+	Y        Length  `json:"y"`
+	Relative bool    `json:"relative,omitempty"` // Whether the coordinates are relative to the current mouse position
+	HoldKey  *string `json:"holdKey,omitempty"`
+	CallId   *string `json:"callId,omitempty"`
 }
 
 type MouseClickAction struct {
@@ -139,6 +142,23 @@ type MouseDoubleClickAction struct {
 func NewMouseDoubleClickAction(x Length, y Length, button int) *MouseDoubleClickAction {
 	return &MouseDoubleClickAction{
 		Type: "mouse:doubleClick",
+		mousePointActionBase: mousePointActionBase{
+			X: x,
+			Y: y,
+		},
+		Button: button,
+	}
+}
+
+type MouseTripleClickAction struct {
+	Type   string `json:"type"`   // set to mouse:tripleClick
+	Button int    `json:"button"` // Mouse button flag combination. 1: left, 2: right, 4: middle, 8: back, 16: forward; add them together to press multiple buttons at once.
+	mousePointActionBase
+}
+
+func NewMouseTripleClickAction(x Length, y Length, button int) *MouseTripleClickAction {
+	return &MouseTripleClickAction{
+		Type: "mouse:tripleClick",
 		mousePointActionBase: mousePointActionBase{
 			X: x,
 			Y: y,
@@ -182,22 +202,26 @@ func NewMouseScrollAction(x Length, y Length, stepVertical int, stepHorizontal i
 }
 
 type MouseDragAction struct {
-	Type    string  `json:"type"` // set to mouse:drag
-	StartX  Length  `json:"startX"`
-	StartY  Length  `json:"startY"`
-	EndX    Length  `json:"endX"`
-	EndY    Length  `json:"endY"`
-	HoldKey *string `json:"holdKey,omitempty"` // Key to hold down during click, in xdotool key syntax. Example: "ctrl", "alt", "alt+shift"
-	CallId  *string `json:"callId,omitempty"`
+	Type          string  `json:"type"` // set to mouse:drag
+	StartX        Length  `json:"startX"`
+	StartY        Length  `json:"startY"`
+	EndX          Length  `json:"endX"`
+	EndY          Length  `json:"endY"`
+	StartRelative bool    `json:"startRelative,omitempty"` // Whether the start coordinates are relative to the current mouse position.
+	EndRelative   bool    `json:"endRelative,omitempty"`   // Whether the end coordinates are relative to the start coordinates of the drag. If false, they are absolute screen coordinates.
+	Button        int     `json:"button"`                  // Mouse button flag combination. 1: left, 2: right, 4: middle, 8: back, 16: forward; add them together to press multiple buttons at once.
+	HoldKey       *string `json:"holdKey,omitempty"`       // Key to hold down during drag, in xdotool key syntax. Example: "ctrl", "alt", "alt+shift"
+	CallId        *string `json:"callId,omitempty"`
 }
 
-func NewMouseDragAction(startX Length, startY Length, endX Length, endY Length) *MouseDragAction {
+func NewMouseDragAction(startX Length, startY Length, endX Length, endY Length, button int) *MouseDragAction {
 	return &MouseDragAction{
 		Type:   "mouse:drag",
 		StartX: startX,
 		StartY: startY,
 		EndX:   endX,
 		EndY:   endY,
+		Button: button,
 	}
 }
 
