@@ -225,7 +225,7 @@ func (m MouseTripleClickAction) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-func (m MouseTripleClickAction) UnmarshalJSON(src []byte) error {
+func (m *MouseTripleClickAction) UnmarshalJSON(src []byte) error {
 	var value map[string]interface{}
 	if err := json.Unmarshal(src, &value); err != nil {
 		return err
