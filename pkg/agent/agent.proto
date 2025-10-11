@@ -9,7 +9,7 @@ syntax = "proto3";
 
 package lybic.agent;
 
-option go_package = "github.com/lybic/lybic-sdk-go/pkg/agent";
+option go_package = "github.com/lybic/lybic-sdk-go/agent";
 option java_package = "com.lybic.agent";
 option java_multiple_files = true;
 option java_outer_classname = "AgentProto";
@@ -84,7 +84,7 @@ message Sandbox {
   // sandbox description
   string description = 3;
   // sandbox shape
-  optional string shapeName = 4;
+  string shapeName = 4;
   // is hardware accelerated encoding
   bool hardwareAcceleratedEncoding = 5;
   // sandbox os type
@@ -103,9 +103,9 @@ enum SandboxOS {
 }
 
 message Authorization {
-    string orgID = 1;
-    string apiKey = 2;
-    optional string apiEndpoint = 3; // default https://api.lybic.cn
+  string orgID = 1;
+  string apiKey = 2;
+  optional string apiEndpoint = 3; // default https://api.lybic.cn
 }
 
 message LLMConfig {
@@ -197,4 +197,5 @@ message TaskStream{
   string taskId = 1;
   string stage = 2;
   string message = 3;
+  float ts = 4;
 }
