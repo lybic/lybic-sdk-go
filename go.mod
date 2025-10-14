@@ -7,6 +7,8 @@ require (
 	github.com/modelcontextprotocol/go-sdk v1.0.0
 	github.com/openai/openai-go v1.12.0
 	github.com/sashabaranov/go-openai v1.41.2
+	google.golang.org/grpc v1.64.1
+	google.golang.org/protobuf v1.34.2
 )
 
 require (
@@ -16,4 +18,8 @@ require (
 	github.com/tidwall/pretty v1.2.1 // indirect
 	github.com/tidwall/sjson v1.2.5 // indirect
 	github.com/yosida95/uritemplate/v3 v3.0.2 // indirect
+	golang.org/x/net v0.41.0 // indirect
+	golang.org/x/sys v0.34.0 // indirect
+	golang.org/x/text v0.27.0 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20240722135656-d784300faade // indirect
 )

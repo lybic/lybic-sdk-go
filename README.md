@@ -187,6 +187,12 @@ defer mcpClient.Close()
 - `DeleteMcpServer(ctx, mcpServerId)`: Delete an MCP server.
 - `SetMcpServerToSandbox(ctx, mcpServerId, dto)`: Associate an MCP server with a sandbox.
 
+## 🤖 Using the Agent Client
+
+The Lybic Go SDK also provides a client for interacting with the Lybic Agent Cluster, which allows for more advanced control and automation of your GUI-based AI agents.
+
+For detailed instructions and code examples, please see the [Agent Service Documentation](docs/agent-services.md).
+
 ## 📝 Logging
 
 The SDK uses a flexible logging interface that allows you to integrate your own preferred logging library. Any logger that implements the `lybic.Logger` interface is supported. The interface is compatible with popular libraries like `zap (SugaredLogger)`, `logrus`, `zerolog`, and `slog`.
