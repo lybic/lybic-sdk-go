@@ -36,6 +36,7 @@ const (
 	Agent_RunAgentInstructionAsync_FullMethodName    = "/lybic.agent.Agent/RunAgentInstructionAsync"
 	Agent_GetAgentTaskStream_FullMethodName          = "/lybic.agent.Agent/GetAgentTaskStream"
 	Agent_QueryTaskStatus_FullMethodName             = "/lybic.agent.Agent/QueryTaskStatus"
+	Agent_CancelTask_FullMethodName                  = "/lybic.agent.Agent/CancelTask"
 )
 
 // AgentClient is the client API for Agent service.
@@ -61,6 +62,8 @@ type AgentClient interface {
 	GetAgentTaskStream(ctx context.Context, in *GetAgentTaskStreamRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[GetAgentTaskStreamResponse], error)
 	// query task status
 	QueryTaskStatus(ctx context.Context, in *QueryTaskStatusRequest, opts ...grpc.CallOption) (*QueryTaskStatusResponse, error)
+	// cancel task
+	CancelTask(ctx context.Context, in *CancelTaskRequest, opts ...grpc.CallOption) (*CancelTaskResponse, error)
 }
 
 type agentClient struct {
@@ -199,6 +202,16 @@ func (c *agentClient) QueryTaskStatus(ctx context.Context, in *QueryTaskStatusRe
 	return out, nil
 }
 
+func (c *agentClient) CancelTask(ctx context.Context, in *CancelTaskRequest, opts ...grpc.CallOption) (*CancelTaskResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CancelTaskResponse)
+	err := c.cc.Invoke(ctx, Agent_CancelTask_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AgentServer is the server API for Agent service.
 // All implementations must embed UnimplementedAgentServer
 // for forward compatibility.
@@ -222,6 +235,8 @@ type AgentServer interface {
 	GetAgentTaskStream(*GetAgentTaskStreamRequest, grpc.ServerStreamingServer[GetAgentTaskStreamResponse]) error
 	// query task status
 	QueryTaskStatus(context.Context, *QueryTaskStatusRequest) (*QueryTaskStatusResponse, error)
+	// cancel task
+	CancelTask(context.Context, *CancelTaskRequest) (*CancelTaskResponse, error)
 	mustEmbedUnimplementedAgentServer()
 }
 
@@ -264,6 +279,9 @@ func (UnimplementedAgentServer) GetAgentTaskStream(*GetAgentTaskStreamRequest, g
 }
 func (UnimplementedAgentServer) QueryTaskStatus(context.Context, *QueryTaskStatusRequest) (*QueryTaskStatusResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method QueryTaskStatus not implemented")
+}
+func (UnimplementedAgentServer) CancelTask(context.Context, *CancelTaskRequest) (*CancelTaskResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CancelTask not implemented")
 }
 func (UnimplementedAgentServer) mustEmbedUnimplementedAgentServer() {}
 func (UnimplementedAgentServer) testEmbeddedByValue()               {}
@@ -470,6 +488,24 @@ func _Agent_QueryTaskStatus_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Agent_CancelTask_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CancelTaskRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AgentServer).CancelTask(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Agent_CancelTask_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AgentServer).CancelTask(ctx, req.(*CancelTaskRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Agent_ServiceDesc is the grpc.ServiceDesc for Agent service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -512,6 +548,10 @@ var Agent_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "QueryTaskStatus",
 			Handler:    _Agent_QueryTaskStatus_Handler,
+		},
+		{
+			MethodName: "CancelTask",
+			Handler:    _Agent_CancelTask_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
