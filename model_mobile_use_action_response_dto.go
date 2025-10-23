@@ -24,6 +24,31 @@ type MobileUseActionResponseDto struct {
 	Thoughts *string `json:"thoughts,omitempty"`
 }
 
+func (m *MobileUseActionResponseDto) UnmarshalJSON(data []byte) error {
+	var temp struct {
+		Actions  []json.RawMessage `json:"actions"`
+		Unknown  *string           `json:"unknown,omitempty"`
+		Memory   *string           `json:"memory,omitempty"`
+		Thoughts *string           `json:"thoughts,omitempty"`
+	}
+
+	if err := json.Unmarshal(data, &temp); err != nil {
+		return err
+	}
+	for _, tempAction := range temp.Actions {
+		var action MobileUseActionResponseDtoActionsOneOf
+		if err := json.Unmarshal(tempAction, &action); err != nil {
+			return err
+		}
+		m.Actions = append(m.Actions, action)
+	}
+	m.Unknown = temp.Unknown
+	m.Memory = temp.Memory
+	m.Thoughts = temp.Thoughts
+
+	return nil
+}
+
 // NewMobileUseActionResponseDto instantiates a new MobileUseActionResponseDto object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
