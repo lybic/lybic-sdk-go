@@ -42,10 +42,10 @@ type Client interface {
 	GetConfig() *Config
 
 	// ListSandboxes retrieves a list of all available sandboxes
-	ListSandboxes(ctx context.Context) ([]GetSandboxResponseDtoSandbox, error)
+	ListSandboxes(ctx context.Context) ([]CreateSandboxResponseDto, error)
 
 	// CreateSandbox creates a new sandbox with the specified configuration
-	CreateSandbox(ctx context.Context, dto CreateSandboxDto) (*GetSandboxResponseDtoSandbox, error)
+	CreateSandbox(ctx context.Context, dto CreateSandboxDto) (*CreateSandboxResponseDto, error)
 
 	// GetSandbox retrieves detailed information about a specific sandbox
 	GetSandbox(ctx context.Context, sandboxId string) (*GetSandboxResponseDto, error)
@@ -57,6 +57,7 @@ type Client interface {
 	ExtendSandbox(ctx context.Context, sandboxId string, dto ExtendSandboxDto) error
 
 	// ExecuteComputerUseAction performs a specified action on a sandbox
+	//  Deprecated: Use ExecuteSandboxAction instead.
 	ExecuteComputerUseAction(ctx context.Context, sandboxId string, dto ComputerUseActionDto) (*SandboxActionResponseDto, error)
 
 	// PreviewSandbox generates a preview of the sandbox state
@@ -75,7 +76,13 @@ type Client interface {
 	GetStats(ctx context.Context) (*StatsResponseDto, error)
 
 	// ParseComputerUse parses and validates computer use actions
-	ParseComputerUse(ctx context.Context, dto ComputerUseParseRequestDto) (*ComputerUseActionResponseDto, error)
+	ParseComputerUse(ctx context.Context, model string, dto ParseTextRequestDto) (*ComputerUseActionResponseDto, error)
+
+	// ParseMobileUseModelTextOutput parses and validates mobile use actions from text input
+	ParseMobileUseModelTextOutput(ctx context.Context, modelType string, dto ParseTextRequestDto) (*MobileUseActionResponseDto, error)
+
+	// ExecuteSandboxAction performs a generic action on a sandbox
+	ExecuteSandboxAction(ctx context.Context, sandboxId string, dto ExecuteSandboxActionDto) (*SandboxActionResponseDto, error)
 }
 
 // NewClient creates a new instance of the Lybic client with the provided configuration.

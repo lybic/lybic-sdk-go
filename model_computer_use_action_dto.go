@@ -16,7 +16,7 @@ import (
 
 // ComputerUseActionDto struct for ComputerUseActionDto
 type ComputerUseActionDto struct {
-	// All possible computer use actions
+	// All possible computer use actions, with optional callId
 	Action ComputerUseActionDtoActionOneOf `json:"action"`
 	// Whether to include the screenshot url after action in the response
 	IncludeScreenShot *bool `json:"includeScreenShot,omitempty"`
