@@ -449,6 +449,32 @@ func rawMessageToMobileUseActionDtoActionOneOf(rawAction json.RawMessage) (Mobil
 	return action, nil
 }
 
+func (m *MobileUseActionResponseDto) UnmarshalJSON(data []byte) error {
+	var temp struct {
+		Actions  []json.RawMessage `json:"actions"`
+		Unknown  *string           `json:"unknown,omitempty"`
+		Memory   *string           `json:"memory,omitempty"`
+		Thoughts *string           `json:"thoughts,omitempty"`
+	}
+
+	if err := json.Unmarshal(data, &temp); err != nil {
+		return err
+	}
+	m.Actions = make([]MobileUseActionResponseDtoActionsOneOf, len(temp.Actions))
+	for i, tempAction := range temp.Actions {
+		action, err := rawMessageToMobileUseActionDtoActionOneOf(tempAction)
+		if err != nil {
+			return err
+		}
+		m.Actions[i] = MobileUseActionResponseDtoActionsOneOf{MobileUseActionResponseDtoActionsOneOfInterface: action}
+	}
+	m.Unknown = temp.Unknown
+	m.Memory = temp.Memory
+	m.Thoughts = temp.Thoughts
+
+	return nil
+}
+
 func (MobileTapAction) _internalSandboxUseActionDtoActionOneOf() {}
 
 func (MobileDoubleTapAction) _internalSandboxUseActionDtoActionOneOf()  {}
