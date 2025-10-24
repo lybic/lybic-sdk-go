@@ -693,3 +693,15 @@ func rawMessageToComputerUseActionDtoActionOneOf(rawAction json.RawMessage) (Com
 	}
 	return action, nil
 }
+func (MouseClickAction) _internalSandboxUseActionDtoActionOneOf()       {}
+func (MouseTripleClickAction) _internalSandboxUseActionDtoActionOneOf() {}
+func (MouseDoubleClickAction) _internalSandboxUseActionDtoActionOneOf() {}
+func (MouseMoveAction) _internalSandboxUseActionDtoActionOneOf()        {}
+func (MouseScrollAction) _internalSandboxUseActionDtoActionOneOf()      {}
+func (MouseDragAction) _internalSandboxUseActionDtoActionOneOf()        {}
+func (KeyboardTypeAction) _internalSandboxUseActionDtoActionOneOf()     {}
+func (KeyboardHotkeyAction) _internalSandboxUseActionDtoActionOneOf()   {}
+func (FinishedAction) _internalSandboxUseActionDtoActionOneOf()         {}
+func (ScreenshotAction) _internalSandboxUseActionDtoActionOneOf()       {}
+func (WaitAction) _internalSandboxUseActionDtoActionOneOf()             {}
+func (FailedAction) _internalSandboxUseActionDtoActionOneOf()           {}

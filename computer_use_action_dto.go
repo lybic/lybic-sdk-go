@@ -59,6 +59,8 @@ type ComputerUseActionDtoActionOneOf interface {
 
 	// _internalComputerUseActionDtoActionOneOf is a dummy method to prevent external implementations
 	_internalComputerUseActionDtoActionOneOf()
+	// _internalSandboxUseActionDtoActionOneOf is a dummy method to prevent external implementations
+	_internalSandboxUseActionDtoActionOneOf()
 }
 
 func TryUnmarshalToComputerUseActionDtoActionOneOf(data map[string]any) (ComputerUseActionDtoActionOneOf, error) {

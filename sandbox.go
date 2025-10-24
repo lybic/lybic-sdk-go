@@ -29,7 +29,7 @@ import (
 )
 
 // ListSandboxes returns a list of sandboxes for the organization.
-func (c *client) ListSandboxes(ctx context.Context) ([]GetSandboxResponseDtoSandbox, error) {
+func (c *client) ListSandboxes(ctx context.Context) ([]CreateSandboxResponseDto, error) {
 	c.config.Logger.Info("Listing sandboxes")
 
 	url := fmt.Sprintf("/api/orgs/%s/sandboxes", c.config.OrgId)
@@ -38,8 +38,8 @@ func (c *client) ListSandboxes(ctx context.Context) ([]GetSandboxResponseDtoSand
 		return nil, err
 	}
 
-	var sandboxes []GetSandboxResponseDtoSandbox
-	if err := tryToGetDto[[]GetSandboxResponseDtoSandbox](resp, &sandboxes); err != nil {
+	var sandboxes []CreateSandboxResponseDto
+	if err := tryToGetDto[[]CreateSandboxResponseDto](resp, &sandboxes); err != nil {
 		return nil, err
 	}
 
@@ -47,7 +47,7 @@ func (c *client) ListSandboxes(ctx context.Context) ([]GetSandboxResponseDtoSand
 }
 
 // CreateSandbox creates a new sandbox.
-func (c *client) CreateSandbox(ctx context.Context, dto CreateSandboxDto) (*GetSandboxResponseDtoSandbox, error) {
+func (c *client) CreateSandbox(ctx context.Context, dto CreateSandboxDto) (*CreateSandboxResponseDto, error) {
 	c.config.Logger.Info("Creating sandbox", "dto:", dto)
 
 	url := fmt.Sprintf("/api/orgs/%s/sandboxes", c.config.OrgId)
@@ -56,8 +56,8 @@ func (c *client) CreateSandbox(ctx context.Context, dto CreateSandboxDto) (*GetS
 		return nil, err
 	}
 
-	var sandbox GetSandboxResponseDtoSandbox
-	if err := tryToGetDto[GetSandboxResponseDtoSandbox](resp, &sandbox); err != nil {
+	var sandbox CreateSandboxResponseDto
+	if err := tryToGetDto[CreateSandboxResponseDto](resp, &sandbox); err != nil {
 		return nil, err
 	}
 
@@ -109,6 +109,8 @@ func (c *client) ExtendSandbox(ctx context.Context, sandboxId string, dto Extend
 }
 
 // ExecuteComputerUseAction executes a computer use action on the sandbox.
+//
+//	Deprecated: Use ExecuteSandboxAction instead.
 func (c *client) ExecuteComputerUseAction(ctx context.Context, sandboxId string, dto ComputerUseActionDto) (*SandboxActionResponseDto, error) {
 	c.config.Logger.Info("Executing computer use action", "sandboxId:", sandboxId)
 
@@ -142,4 +144,20 @@ func (c *client) PreviewSandbox(ctx context.Context, sandboxId string) (*Sandbox
 	}
 
 	return &preview, nil
+}
+func (c *client) ExecuteSandboxAction(ctx context.Context, sandboxId string, dto ExecuteSandboxActionDto) (*SandboxActionResponseDto, error) {
+	c.config.Logger.Info("Executes a computer use or mobile use action on the sandbox", "sandboxId:", sandboxId)
+
+	url := fmt.Sprintf("/api/orgs/%s/sandboxes/%s/actions/execute", c.config.OrgId, sandboxId)
+	resp, err := c.request(ctx, http.MethodPost, url, nil, dto)
+	if err != nil {
+		return nil, err
+	}
+
+	var actionResponse SandboxActionResponseDto
+	if err := tryToGetDto[SandboxActionResponseDto](resp, &actionResponse); err != nil {
+		return nil, err
+	}
+
+	return &actionResponse, nil
 }

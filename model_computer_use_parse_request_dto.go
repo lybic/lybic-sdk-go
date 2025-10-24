@@ -15,6 +15,8 @@ import (
 )
 
 // ComputerUseParseRequestDto struct for ComputerUseParseRequestDto
+//
+//	Deprecated: This DTO is deprecated. Use `ParseTextRequestDto` and pass the model as a separate argument instead.
 type ComputerUseParseRequestDto struct {
 	// The model to parse the input for
 	Model string `json:"model"`
