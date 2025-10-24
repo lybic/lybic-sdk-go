@@ -59,7 +59,7 @@ type ComputerUseActionDtoActionOneOf interface {
 
 	// _internalComputerUseActionDtoActionOneOf is a dummy method to prevent external implementations
 	_internalComputerUseActionDtoActionOneOf()
-	// _internalComputerUseActionDtoActionOneOf is a dummy method to prevent external implementations
+	// _internalSandboxUseActionDtoActionOneOf is a dummy method to prevent external implementations
 	_internalSandboxUseActionDtoActionOneOf()
 }
 

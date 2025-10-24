@@ -43,7 +43,11 @@ func (c *client) ParseMobileUseModelTextOutput(ctx context.Context, modelType st
 	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusCreated {
 		c.config.Logger.Errorf("failed to parse mobile use: %s", resp.Status)
 		// Log the response body for debugging purposes
-		body, _ := io.ReadAll(resp.Body)
+		body, err := io.ReadAll(resp.Body)
+		if err != nil {
+			c.config.Logger.Errorf("failed to read response body: %v", err)
+			return nil, fmt.Errorf("failed to parse mobile use: %s", resp.Status)
+		}
 		c.config.Logger.Errorf("Response body: %s", body)
 		return nil, fmt.Errorf("failed to parse mobile use: %s", resp.Status)
 	}

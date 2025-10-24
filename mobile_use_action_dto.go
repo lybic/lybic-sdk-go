@@ -57,7 +57,7 @@ type MobileUseActionDtoActionOneOf interface {
 
 	// __internalMobileUseActionDtoActionOneOf is a dummy method to prevent external implementations
 	__internalMobileUseActionDtoActionOneOf()
-	// _internalComputerUseActionDtoActionOneOf is a dummy method to prevent external implementations
+	// _internalSandboxUseActionDtoActionOneOf is a dummy method to prevent external implementations
 	_internalSandboxUseActionDtoActionOneOf()
 }
 
