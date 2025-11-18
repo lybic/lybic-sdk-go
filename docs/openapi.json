@@ -260,6 +260,106 @@
         ]
       }
     },
+    "/api/orgs/{orgId}/sandboxes/{sandboxId}/file/copy": {
+      "post": {
+        "operationId": "copyFilesWithSandbox",
+        "parameters": [
+          {
+            "name": "sandboxId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "orgId",
+            "required": true,
+            "in": "path",
+            "description": "The organization ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SandboxFileCopyRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SandboxFileCopyResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "copy files with sandbox",
+        "tags": [
+          "Sandbox"
+        ]
+      }
+    },
+    "/api/orgs/{orgId}/sandboxes/{sandboxId}/process": {
+      "post": {
+        "operationId": "execSandboxProcess",
+        "parameters": [
+          {
+            "name": "sandboxId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "orgId",
+            "required": true,
+            "in": "path",
+            "description": "The organization ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SandboxProcessRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SandboxProcessResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Execute a process inside sandbox",
+        "tags": [
+          "Sandbox"
+        ]
+      }
+    },
     "/api/orgs/{orgId}/sandboxes/{sandboxId}": {
       "delete": {
         "description": "Deletes a sandbox by its ID.",
@@ -1161,6 +1261,353 @@
           "shapeName"
         ]
       },
+      "SandboxFileCopyRequestDto": {
+        "type": "object",
+        "properties": {
+          "files": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "description": "Single file copy item",
+              "type": "object",
+              "properties": {
+                "id": {
+                  "description": "A caller-defined unique identifier for this item. The value is included in the response to associate results with their corresponding requests",
+                  "type": "string"
+                },
+                "src": {
+                  "description": "Copy file source",
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "sandboxFileLocation"
+                          ]
+                        },
+                        "path": {
+                          "description": "File path in sandbox",
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "path"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "httpPutLocation"
+                          ]
+                        },
+                        "url": {
+                          "description": "PUT upload URL",
+                          "type": "string",
+                          "format": "uri"
+                        },
+                        "headers": {
+                          "description": "Optional HTTP headers",
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "url"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "httpGetLocation"
+                          ]
+                        },
+                        "url": {
+                          "description": "GET download URL",
+                          "type": "string",
+                          "format": "uri"
+                        },
+                        "headers": {
+                          "description": "Optional HTTP headers",
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "url"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "httpPostFormLocation"
+                          ]
+                        },
+                        "url": {
+                          "description": "POST form upload URL",
+                          "type": "string",
+                          "format": "uri"
+                        },
+                        "form": {
+                          "description": "Form fields",
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "string"
+                          }
+                        },
+                        "fileField": {
+                          "description": "File field name in form",
+                          "type": "string",
+                          "default": "file"
+                        },
+                        "headers": {
+                          "description": "Optional HTTP headers",
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "url",
+                        "form"
+                      ]
+                    }
+                  ]
+                },
+                "dest": {
+                  "description": "Copy file destination",
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "sandboxFileLocation"
+                          ]
+                        },
+                        "path": {
+                          "description": "File path in sandbox",
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "path"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "httpPutLocation"
+                          ]
+                        },
+                        "url": {
+                          "description": "PUT upload URL",
+                          "type": "string",
+                          "format": "uri"
+                        },
+                        "headers": {
+                          "description": "Optional HTTP headers",
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "url"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "httpGetLocation"
+                          ]
+                        },
+                        "url": {
+                          "description": "GET download URL",
+                          "type": "string",
+                          "format": "uri"
+                        },
+                        "headers": {
+                          "description": "Optional HTTP headers",
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "url"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "httpPostFormLocation"
+                          ]
+                        },
+                        "url": {
+                          "description": "POST form upload URL",
+                          "type": "string",
+                          "format": "uri"
+                        },
+                        "form": {
+                          "description": "Form fields",
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "string"
+                          }
+                        },
+                        "fileField": {
+                          "description": "File field name in form",
+                          "type": "string",
+                          "default": "file"
+                        },
+                        "headers": {
+                          "description": "Optional HTTP headers",
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "url",
+                        "form"
+                      ]
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "src",
+                "dest"
+              ]
+            }
+          }
+        },
+        "required": [
+          "files"
+        ]
+      },
+      "SandboxFileCopyResponseDto": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "description": "Single file copy result",
+              "type": "object",
+              "properties": {
+                "id": {
+                  "description": "unique identifier of the files item from the request",
+                  "type": "string"
+                },
+                "success": {
+                  "description": "Whether the operation succeeded",
+                  "type": "boolean"
+                },
+                "error": {
+                  "description": "Error message if failed",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "success"
+              ]
+            }
+          }
+        },
+        "required": [
+          "results"
+        ]
+      },
+      "SandboxProcessRequestDto": {
+        "type": "object",
+        "properties": {
+          "executable": {
+            "description": "Executable path",
+            "type": "string",
+            "minLength": 1
+          },
+          "args": {
+            "description": "Arguments",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "default": []
+          },
+          "workingDirectory": {
+            "description": "Working directory",
+            "type": "string"
+          },
+          "stdinBase64": {
+            "description": "Optional stdin as base64-encoded bytes",
+            "type": "string"
+          }
+        },
+        "required": [
+          "executable"
+        ]
+      },
+      "SandboxProcessResponseDto": {
+        "type": "object",
+        "properties": {
+          "stdoutBase64": {
+            "description": "stdout as base64-encoded bytes",
+            "type": "string",
+            "default": ""
+          },
+          "stderrBase64": {
+            "description": "stderr as base64-encoded bytes",
+            "type": "string",
+            "default": ""
+          },
+          "exitCode": {
+            "description": "Exit code",
+            "type": "number"
+          }
+        },
+        "required": [
+          "exitCode"
+        ]
+      },
       "ExtendSandboxDto": {
         "type": "object",
         "properties": {
@@ -1321,21 +1768,28 @@
                         "QUIC",
                         "WEB_TRANSPORT",
                         "WEBSOCKET",
+                        "WEBSOCKET_SECURE",
                         4,
                         5,
                         6,
-                        7
+                        7,
+                        8
                       ],
                       "x-enumNames": [
                         "4",
                         "5",
                         "6",
                         "7",
+                        "8",
                         "KCP",
                         "QUIC",
                         "WEB_TRANSPORT",
-                        "WEBSOCKET"
+                        "WEBSOCKET",
+                        "WEBSOCKET_SECURE"
                       ]
+                    },
+                    "path": {
+                      "type": "string"
                     }
                   },
                   "required": [
@@ -4450,6 +4904,21 @@
                     ]
                   },
                   {
+                    "description": "List all installed apps",
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "os:listApps"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "type"
+                    ]
+                  },
+                  {
                     "description": "Start an app by its package name",
                     "type": "object",
                     "properties": {
@@ -6564,6 +7033,21 @@
                       "type": "string",
                       "enum": [
                         "android:home"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "type"
+                  ]
+                },
+                {
+                  "description": "List all installed apps",
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "os:listApps"
                       ]
                     }
                   },
