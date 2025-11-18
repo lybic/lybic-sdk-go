@@ -83,6 +83,12 @@ type Client interface {
 
 	// ExecuteSandboxAction performs a generic action on a sandbox
 	ExecuteSandboxAction(ctx context.Context, sandboxId string, dto ExecuteSandboxActionDto) (*SandboxActionResponseDto, error)
+
+	// CopyFilesWithSandbox copies files to/from the sandbox
+	CopyFilesWithSandbox(ctx context.Context, sandboxId string, dto SandboxFileCopyRequestDto) (*SandboxFileCopyResponseDto, error)
+
+	// ExecSandboxProcess executes a process inside the sandbox
+	ExecSandboxProcess(ctx context.Context, sandboxId string, dto SandboxProcessRequestDto) (*SandboxProcessResponseDto, error)
 }
 
 // NewClient creates a new instance of the Lybic client with the provided configuration.

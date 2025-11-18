@@ -468,9 +468,15 @@ func (m *MobileUseActionResponseDto) UnmarshalJSON(data []byte) error {
 		}
 		m.Actions[i] = MobileUseActionResponseDtoActionsOneOf{MobileUseActionResponseDtoActionsOneOfInterface: action}
 	}
-	m.Unknown = temp.Unknown
-	m.Memory = temp.Memory
-	m.Thoughts = temp.Thoughts
+	if temp.Unknown != nil {
+		m.Unknown = temp.Unknown
+	}
+	if temp.Memory != nil {
+		m.Memory = temp.Memory
+	}
+	if temp.Thoughts != nil {
+		m.Thoughts = temp.Thoughts
+	}
 
 	return nil
 }
