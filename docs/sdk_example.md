@@ -351,6 +351,214 @@ if err != nil {
 fmt.Println("Sandbox deleted successfully.")
 ```
 
+#### Copy Files With Sandbox
+
+Transfer files to/from the sandbox using multiple protocols (sandbox file paths, HTTP PUT/GET, HTTP POST forms).
+
+**Example 1: Copy a file from sandbox to HTTP endpoint**
+
+```go
+import "encoding/base64"
+
+// Define the source (sandbox file) and destination (HTTP PUT upload)
+dto := lybic.SandboxFileCopyRequestDto{
+    Files: []lybic.SandboxFileCopyRequestDtoFiles{
+        {
+            Id: "file-1", // Optional ID to track this operation in the response
+            Src: map[string]interface{}{
+                "type": "sandboxFileLocation",
+                "path": "/home/user/output.txt",
+            },
+            Dest: map[string]interface{}{
+                "type": "httpPutLocation",
+                "url":  "https://storage.example.com/upload",
+                "headers": map[string]string{
+                    "Authorization": "Bearer your-token",
+                },
+            },
+        },
+    },
+}
+
+resp, err := client.CopyFilesWithSandbox(ctx, "sandbox-id", dto)
+if err != nil {
+    fmt.Printf("Error copying files: %v\n", err)
+    return
+}
+
+// Check results
+for _, result := range resp.Results {
+    if result.Success {
+        fmt.Printf("File %s copied successfully\n", result.Id)
+    } else {
+        fmt.Printf("File %s failed: %s\n", result.Id, result.Error)
+    }
+}
+```
+
+**Example 2: Upload a file from HTTP to sandbox**
+
+```go
+dto := lybic.SandboxFileCopyRequestDto{
+    Files: []lybic.SandboxFileCopyRequestDtoFiles{
+        {
+            Id: "download-1",
+            Src: map[string]interface{}{
+                "type": "httpGetLocation",
+                "url":  "https://example.com/data.csv",
+            },
+            Dest: map[string]interface{}{
+                "type": "sandboxFileLocation",
+                "path": "/home/user/data.csv",
+            },
+        },
+    },
+}
+
+resp, err := client.CopyFilesWithSandbox(ctx, "sandbox-id", dto)
+if err != nil {
+    fmt.Printf("Error downloading file to sandbox: %v\n", err)
+    return
+}
+fmt.Println("File downloaded to sandbox successfully")
+```
+
+**Example 3: Copy multiple files in one request**
+
+```go
+dto := lybic.SandboxFileCopyRequestDto{
+    Files: []lybic.SandboxFileCopyRequestDtoFiles{
+        {
+            Id: "file-1",
+            Src: map[string]interface{}{
+                "type": "sandboxFileLocation",
+                "path": "/home/user/report.pdf",
+            },
+            Dest: map[string]interface{}{
+                "type": "httpPutLocation",
+                "url":  "https://storage.example.com/reports/report.pdf",
+            },
+        },
+        {
+            Id: "file-2",
+            Src: map[string]interface{}{
+                "type": "sandboxFileLocation",
+                "path": "/home/user/data.json",
+            },
+            Dest: map[string]interface{}{
+                "type": "httpPutLocation",
+                "url":  "https://storage.example.com/data/data.json",
+            },
+        },
+    },
+}
+
+resp, err := client.CopyFilesWithSandbox(ctx, "sandbox-id", dto)
+if err != nil {
+    fmt.Printf("Error copying files: %v\n", err)
+    return
+}
+
+// Check which files succeeded
+for _, result := range resp.Results {
+    fmt.Printf("File %s: success=%v\n", result.Id, result.Success)
+}
+```
+
+#### Execute Process in Sandbox
+
+Run commands and scripts inside the sandbox, with support for arguments, working directory, stdin, and capturing stdout/stderr.
+
+**Example 1: Execute a simple command**
+
+```go
+processDto := lybic.SandboxProcessRequestDto{
+    Executable: "python3",
+    Args:       []string{"-c", "print('Hello from sandbox!')"},
+}
+
+result, err := client.ExecSandboxProcess(ctx, "sandbox-id", processDto)
+if err != nil {
+    fmt.Printf("Error executing process: %v\n", err)
+    return
+}
+
+// Decode and print stdout
+stdoutBytes, _ := base64.StdEncoding.DecodeString(result.StdoutBase64)
+fmt.Printf("Output: %s\n", string(stdoutBytes))
+fmt.Printf("Exit code: %d\n", result.ExitCode)
+```
+
+**Example 2: Execute with working directory and arguments**
+
+```go
+processDto := lybic.SandboxProcessRequestDto{
+    Executable:       "/usr/bin/ls",
+    Args:             []string{"-la"},
+    WorkingDirectory: "/home/user",
+}
+
+result, err := client.ExecSandboxProcess(ctx, "sandbox-id", processDto)
+if err != nil {
+    fmt.Printf("Error executing ls: %v\n", err)
+    return
+}
+
+// Decode stdout to see the directory listing
+stdoutBytes, _ := base64.StdEncoding.DecodeString(result.StdoutBase64)
+fmt.Printf("Directory listing:\n%s\n", string(stdoutBytes))
+```
+
+**Example 3: Execute a script with stdin input**
+
+```go
+import "encoding/base64"
+
+// Prepare stdin data
+stdinData := "line1\nline2\nline3"
+stdinBase64 := base64.StdEncoding.EncodeToString([]byte(stdinData))
+
+processDto := lybic.SandboxProcessRequestDto{
+    Executable:       "python3",
+    Args:             []string{"-c", "import sys; print(f'Read {len(sys.stdin.readlines())} lines')"},
+    WorkingDirectory: "/tmp",
+    StdinBase64:      stdinBase64,
+}
+
+result, err := client.ExecSandboxProcess(ctx, "sandbox-id", processDto)
+if err != nil {
+    fmt.Printf("Error executing process: %v\n", err)
+    return
+}
+
+stdoutBytes, _ := base64.StdEncoding.DecodeString(result.StdoutBase64)
+fmt.Printf("Process output: %s\n", string(stdoutBytes))
+fmt.Printf("Exit code: %d\n", result.ExitCode)
+```
+
+**Example 4: Handle errors from process execution**
+
+```go
+processDto := lybic.SandboxProcessRequestDto{
+    Executable: "false", // Command that always fails with exit code 1
+}
+
+result, err := client.ExecSandboxProcess(ctx, "sandbox-id", processDto)
+if err != nil {
+    fmt.Printf("Error calling API: %v\n", err)
+    return
+}
+
+// Check exit code to determine success/failure
+if result.ExitCode != 0 {
+    stderrBytes, _ := base64.StdEncoding.DecodeString(result.StderrBase64)
+    fmt.Printf("Process failed with exit code %d\n", result.ExitCode)
+    fmt.Printf("Error output: %s\n", string(stderrBytes))
+} else {
+    fmt.Println("Process executed successfully")
+}
+```
+
 ### Project Management
 
 Organize your work into projects.

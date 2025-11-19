@@ -161,3 +161,39 @@ func (c *client) ExecuteSandboxAction(ctx context.Context, sandboxId string, dto
 
 	return &actionResponse, nil
 }
+
+// CopyFilesWithSandbox copies files to/from the sandbox.
+func (c *client) CopyFilesWithSandbox(ctx context.Context, sandboxId string, dto SandboxFileCopyRequestDto) (*SandboxFileCopyResponseDto, error) {
+	c.config.Logger.Info("Copying files with sandbox", "sandboxId:", sandboxId)
+
+	url := fmt.Sprintf("/api/orgs/%s/sandboxes/%s/file/copy", c.config.OrgId, sandboxId)
+	resp, err := c.request(ctx, http.MethodPost, url, nil, dto)
+	if err != nil {
+		return nil, err
+	}
+
+	var copyResponse SandboxFileCopyResponseDto
+	if err := tryToGetDto[SandboxFileCopyResponseDto](resp, &copyResponse); err != nil {
+		return nil, err
+	}
+
+	return &copyResponse, nil
+}
+
+// ExecSandboxProcess executes a process inside the sandbox.
+func (c *client) ExecSandboxProcess(ctx context.Context, sandboxId string, dto SandboxProcessRequestDto) (*SandboxProcessResponseDto, error) {
+	c.config.Logger.Info("Executing process in sandbox", "sandboxId:", sandboxId)
+
+	url := fmt.Sprintf("/api/orgs/%s/sandboxes/%s/process", c.config.OrgId, sandboxId)
+	resp, err := c.request(ctx, http.MethodPost, url, nil, dto)
+	if err != nil {
+		return nil, err
+	}
+
+	var processResponse SandboxProcessResponseDto
+	if err := tryToGetDto[SandboxProcessResponseDto](resp, &processResponse); err != nil {
+		return nil, err
+	}
+
+	return &processResponse, nil
+}
