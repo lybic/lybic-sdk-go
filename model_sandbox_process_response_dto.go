@@ -8,6 +8,7 @@
  */
 
 package lybic
+
 // SandboxProcessResponseDto struct for SandboxProcessResponseDto
 type SandboxProcessResponseDto struct {
 	// stdout as base64-encoded bytes
@@ -15,5 +16,5 @@ type SandboxProcessResponseDto struct {
 	// stderr as base64-encoded bytes
 	StderrBase64 string `json:"stderrBase64,omitempty"`
 	// Exit code
-	ExitCode float32 `json:"exitCode"`
+	ExitCode int `json:"exitCode"`
 }
