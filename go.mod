@@ -8,7 +8,7 @@ require (
 	github.com/openai/openai-go v1.12.0
 	github.com/sashabaranov/go-openai v1.41.2
 	google.golang.org/grpc v1.64.1
-	google.golang.org/protobuf v1.36.10
+	google.golang.org/protobuf v1.36.11
 )
 
 require (
