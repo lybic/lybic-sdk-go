@@ -8,6 +8,7 @@
  */
 
 package lybic
+
 // SandboxActionResponseDtoCursorPosition struct for SandboxActionResponseDtoCursorPosition
 type SandboxActionResponseDtoCursorPosition struct {
 	// The x position of the cursor.

@@ -8,6 +8,7 @@
  */
 
 package lybic
+
 // SandboxProcessRequestDto struct for SandboxProcessRequestDto
 type SandboxProcessRequestDto struct {
 	// Executable path

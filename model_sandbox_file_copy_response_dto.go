@@ -8,6 +8,7 @@
  */
 
 package lybic
+
 // SandboxFileCopyResponseDto struct for SandboxFileCopyResponseDto
 type SandboxFileCopyResponseDto struct {
 	Results []SandboxFileCopyResponseDtoResults `json:"results"`

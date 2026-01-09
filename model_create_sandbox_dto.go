@@ -8,6 +8,7 @@
  */
 
 package lybic
+
 // CreateSandboxDto struct for CreateSandboxDto
 type CreateSandboxDto struct {
 	// The name of the sandbox.

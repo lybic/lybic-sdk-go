@@ -92,6 +92,9 @@ func newClient(config *Config) (*client, error) {
 		return nil, ErrNeedOrgId
 	}
 
+	if config.Timeout <= 0 {
+		config.Timeout = defaultTimeout
+	}
 	// Remove trailing slash from endpoint
 	config.Endpoint = strings.TrimSuffix(config.Endpoint, "/")
 

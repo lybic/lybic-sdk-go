@@ -8,10 +8,11 @@
  */
 
 package lybic
+
 // SingleProjectResponseDto struct for SingleProjectResponseDto
 type SingleProjectResponseDto struct {
-	Id string `json:"id"`
-	Name string `json:"name"`
-	CreatedAt string `json:"createdAt"`
-	DefaultProject bool `json:"defaultProject"`
+	Id             string `json:"id"`
+	Name           string `json:"name"`
+	CreatedAt      string `json:"createdAt"`
+	DefaultProject bool   `json:"defaultProject"`
 }

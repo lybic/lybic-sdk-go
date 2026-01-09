@@ -8,6 +8,7 @@
  */
 
 package lybic
+
 // ParseRequestDto struct for ParseRequestDto
 type ParseRequestDto struct {
 	// The model to parse the input for

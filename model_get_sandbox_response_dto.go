@@ -8,8 +8,9 @@
  */
 
 package lybic
+
 // GetSandboxResponseDto struct for GetSandboxResponseDto
 type GetSandboxResponseDto struct {
-	Sandbox GetSandboxResponseDtoSandbox `json:"sandbox"`
+	Sandbox        GetSandboxResponseDtoSandbox        `json:"sandbox"`
 	ConnectDetails GetSandboxResponseDtoConnectDetails `json:"connectDetails"`
 }

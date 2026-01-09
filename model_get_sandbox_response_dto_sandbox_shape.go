@@ -8,15 +8,16 @@
  */
 
 package lybic
+
 // GetSandboxResponseDtoSandboxShape struct for GetSandboxResponseDtoSandboxShape
 type GetSandboxResponseDtoSandboxShape struct {
-	Name string `json:"name"`
-	Description string `json:"description"`
-	HardwareAcceleratedEncoding bool `json:"hardwareAcceleratedEncoding"`
+	Name                        string `json:"name"`
+	Description                 string `json:"description"`
+	HardwareAcceleratedEncoding bool   `json:"hardwareAcceleratedEncoding"`
 	// This price acts as a multiplier, e.g. if it is set to 0.5, each hour of usage will be billed as 0.5 hours.
-	PricePerHour float32 `json:"pricePerHour"`
+	PricePerHour     float32 `json:"pricePerHour"`
 	RequiredPlanTier float32 `json:"requiredPlanTier"`
-	Os string `json:"os"`
-	Virtualization string `json:"virtualization"`
-	Architecture string `json:"architecture"`
+	Os               string  `json:"os"`
+	Virtualization   string  `json:"virtualization"`
+	Architecture     string  `json:"architecture"`
 }

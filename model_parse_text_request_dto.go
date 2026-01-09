@@ -8,6 +8,7 @@
  */
 
 package lybic
+
 // ParseTextRequestDto struct for ParseTextRequestDto
 type ParseTextRequestDto struct {
 	// The text content to parse

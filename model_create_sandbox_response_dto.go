@@ -8,17 +8,21 @@
  */
 
 package lybic
+
 import (
 	"time"
 )
+
 // CreateSandboxResponseDto struct for CreateSandboxResponseDto
 type CreateSandboxResponseDto struct {
-	Id string `json:"id"`
+	Id   string `json:"id"`
 	Name string `json:"name"`
-	// Deprecated, use `expiresAt` instead.
+	// Deprecated,typo, use `expiresAt` instead.
 	ExpiredAt time.Time `json:"expiredAt"`
 	ExpiresAt time.Time `json:"expiresAt"`
 	CreatedAt time.Time `json:"createdAt"`
-	ProjectId string `json:"projectId"`
-	ShapeName string `json:"shapeName"`
+	ProjectId string    `json:"projectId"`
+	ShapeName string    `json:"shapeName"`
+	// Current sandbox status
+	Status *string `json:"status,omitempty"`
 }

@@ -8,6 +8,7 @@
  */
 
 package lybic
+
 // SetMcpServerToSandboxResponseDto struct for SetMcpServerToSandboxResponseDto
 type SetMcpServerToSandboxResponseDto struct {
 	// The ID of the sandbox to connect the MCP server to.

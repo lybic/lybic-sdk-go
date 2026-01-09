@@ -8,6 +8,7 @@
  */
 
 package lybic
+
 // McpServerResponseDto struct for McpServerResponseDto
 type McpServerResponseDto struct {
 	// ID of the MCP server.
@@ -19,8 +20,8 @@ type McpServerResponseDto struct {
 	// Whether this is the default MCP server for the organization.
 	DefaultMcpServer bool `json:"defaultMcpServer"`
 	// Project ID to which the MCP server belongs.
-	ProjectId string `json:"projectId"`
-	Policy McpServerResponseDtoPolicy `json:"policy"`
+	ProjectId string                     `json:"projectId"`
+	Policy    McpServerResponseDtoPolicy `json:"policy"`
 	// ID of the currently connected sandbox.
 	CurrentSandboxId *string `json:"currentSandboxId"`
 }

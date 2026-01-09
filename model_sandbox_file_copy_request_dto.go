@@ -8,6 +8,7 @@
  */
 
 package lybic
+
 // SandboxFileCopyRequestDto struct for SandboxFileCopyRequestDto
 type SandboxFileCopyRequestDto struct {
 	Files []SandboxFileCopyRequestDtoFiles `json:"files"`

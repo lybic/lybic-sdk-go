@@ -197,3 +197,41 @@ func (c *client) ExecSandboxProcess(ctx context.Context, sandboxId string, dto S
 
 	return &processResponse, nil
 }
+
+// CreateSandboxFromImage creates a new sandbox from a machine image.
+func (c *client) CreateSandboxFromImage(ctx context.Context, dto CreateSandboxFromImageDto) (*CreateSandboxFromImageResponseDto, error) {
+	c.config.Logger.Info("Creating sandbox from image", "dto:", dto)
+	if dto.MaxLifeSeconds <= 0 {
+		c.config.Logger.Warn("maxLifeSeconds is invalid, set to 3600")
+		dto.MaxLifeSeconds = 3600
+	}
+
+	url := fmt.Sprintf("/api/orgs/%s/sandboxes/from-image", c.config.OrgId)
+	resp, err := c.request(ctx, http.MethodPost, url, nil, dto)
+	if err != nil {
+		return nil, err
+	}
+	var sandbox CreateSandboxFromImageResponseDto
+	if err := tryToGetDto[CreateSandboxFromImageResponseDto](resp, &sandbox); err != nil {
+		return nil, err
+	}
+
+	return &sandbox, nil
+}
+
+// GetSandboxStatus returns the status of a sandbox (PENDING/RUNNING/STOPPED/ERROR).
+func (c *client) GetSandboxStatus(ctx context.Context, sandboxId string) (*SandboxStatusDto, error) {
+	c.config.Logger.Info("Getting sandbox status", "sandboxId:", sandboxId)
+
+	url := fmt.Sprintf("/api/orgs/%s/sandboxes/%s/status", c.config.OrgId, sandboxId)
+	resp, err := c.request(ctx, http.MethodGet, url, nil, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var status SandboxStatusDto
+	if err := tryToGetDto[SandboxStatusDto](resp, &status); err != nil {
+		return nil, err
+	}
+	return &status, nil
+}

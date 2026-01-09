@@ -8,6 +8,7 @@
  */
 
 package lybic
+
 // SandboxFileCopyResponseDtoResults Single file copy result
 type SandboxFileCopyResponseDtoResults struct {
 	// unique identifier of the files item from the request

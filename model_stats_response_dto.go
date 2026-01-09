@@ -8,6 +8,7 @@
  */
 
 package lybic
+
 // StatsResponseDto struct for StatsResponseDto
 type StatsResponseDto struct {
 	// Number of MCP servers

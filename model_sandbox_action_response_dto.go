@@ -8,10 +8,11 @@
  */
 
 package lybic
+
 // SandboxActionResponseDto struct for SandboxActionResponseDto
 type SandboxActionResponseDto struct {
 	// The screenshot of the sandbox after the action is executed.
-	ScreenShot string `json:"screenShot,omitempty"`
+	ScreenShot     string                                 `json:"screenShot,omitempty"`
 	CursorPosition SandboxActionResponseDtoCursorPosition `json:"cursorPosition,omitempty"`
 	// The result of the action. Schema is based on the action type and there's no guarantee on the schema. Pass it directly to the LLM if it exists.
 	ActionResult interface{} `json:"actionResult,omitempty"`

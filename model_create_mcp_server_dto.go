@@ -8,6 +8,7 @@
  */
 
 package lybic
+
 // CreateMcpServerDto struct for CreateMcpServerDto
 type CreateMcpServerDto struct {
 	// Name of the MCP server.

@@ -8,12 +8,13 @@
  */
 
 package lybic
+
 // GetSandboxResponseDtoConnectDetailsGatewayAddresses struct for GetSandboxResponseDtoConnectDetailsGatewayAddresses
 type GetSandboxResponseDtoConnectDetailsGatewayAddresses struct {
-	Address string `json:"address"`
-	Port float32 `json:"port"`
-	Name string `json:"name"`
+	Address            string   `json:"address"`
+	Port               float32  `json:"port"`
+	Name               string   `json:"name"`
 	PreferredProviders []string `json:"preferredProviders"`
-	GatewayType string `json:"gatewayType"`
-	Path string `json:"path,omitempty"`
+	GatewayType        string   `json:"gatewayType"`
+	Path               string   `json:"path,omitempty"`
 }

@@ -89,14 +89,29 @@ type Client interface {
 
 	// ExecSandboxProcess executes a process inside the sandbox
 	ExecSandboxProcess(ctx context.Context, sandboxId string, dto SandboxProcessRequestDto) (*SandboxProcessResponseDto, error)
+
+	// CreateSandboxFromImage creates a new sandbox from a machine image
+	CreateSandboxFromImage(ctx context.Context, dto CreateSandboxFromImageDto) (*CreateSandboxFromImageResponseDto, error)
+
+	// GetSandboxStatus returns the status of a sandbox (PENDING/RUNNING/STOPPED/ERROR)
+	GetSandboxStatus(ctx context.Context, sandboxId string) (*SandboxStatusDto, error)
+
+	// CreateMachineImage creates a new machine image from a sandbox
+	CreateMachineImage(ctx context.Context, dto CreateMachineImageDto) (*MachineImageResponseDto, error)
+
+	// ListMachineImages returns a list of all available machine images
+	ListMachineImages(ctx context.Context) (*MachineImagesResponseDto, error)
+
+	// DeleteMachineImage removes a specific machine image by its ID
+	DeleteMachineImage(ctx context.Context, imageId string) error
 }
 
 // NewClient creates a new instance of the Lybic client with the provided configuration.
 // It returns an error if the configuration is invalid or the client cannot be initialized.
 //
 //	if config is nil, it initializes a new Config with default values and environment variables.
-func NewClient(config *Config) (Client, error) {
-	return newClient(config)
+func NewClient(optionalConfig *Config) (Client, error) {
+	return newClient(optionalConfig)
 }
 
 // Config holds the configuration parameters for the Lybic client.

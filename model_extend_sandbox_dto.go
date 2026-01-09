@@ -8,6 +8,7 @@
  */
 
 package lybic
+
 // ExtendSandboxDto struct for ExtendSandboxDto
 type ExtendSandboxDto struct {
 	// The new max life time of the sandbox (relative to the current time) in seconds. Should not less than 30 seconds or more than 24 hours. Note that the total maximum lifetime of a sandbox should not longer than 13 days.

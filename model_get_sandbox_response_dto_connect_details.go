@@ -8,10 +8,11 @@
  */
 
 package lybic
+
 // GetSandboxResponseDtoConnectDetails struct for GetSandboxResponseDtoConnectDetails
 type GetSandboxResponseDtoConnectDetails struct {
-	GatewayAddresses []GetSandboxResponseDtoConnectDetailsGatewayAddresses `json:"gatewayAddresses"`
-	CertificateHashBase64 string `json:"certificateHashBase64"`
-	EndUserToken string `json:"endUserToken"`
-	RoomId string `json:"roomId"`
+	GatewayAddresses      []GetSandboxResponseDtoConnectDetailsGatewayAddresses `json:"gatewayAddresses"`
+	CertificateHashBase64 string                                                `json:"certificateHashBase64"`
+	EndUserToken          string                                                `json:"endUserToken"`
+	RoomId                string                                                `json:"roomId"`
 }

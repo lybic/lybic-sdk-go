@@ -8,6 +8,7 @@
  */
 
 package lybic
+
 // McpServerResponseDtoPolicy struct for McpServerResponseDtoPolicy
 type McpServerResponseDtoPolicy struct {
 	// The shape of the sandbox created by the MCP server.

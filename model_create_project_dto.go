@@ -8,6 +8,7 @@
  */
 
 package lybic
+
 // CreateProjectDto struct for CreateProjectDto
 type CreateProjectDto struct {
 	// Name of the project.
