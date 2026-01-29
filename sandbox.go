@@ -246,3 +246,73 @@ func (c *client) Restart(ctx context.Context, sandboxId string) error {
 	}
 	return tryToGetDto[any](resp, nil)
 }
+
+// CreateHttpPortMapping creates an HTTP port mapping for a sandbox.
+func (c *client) CreateHttpPortMapping(ctx context.Context, sandboxId string, targetEndpoint string) (*CreateHttpMappingResponseDto, error) {
+	c.config.Logger.Info("Creating HTTP port mapping for sandbox", "sandboxId:", sandboxId, "targetEndpoint:", targetEndpoint)
+
+	dto := CreateHttpMappingDto{
+		TargetEndpoint: targetEndpoint,
+	}
+	url := fmt.Sprintf("/api/orgs/%s/sandboxes/%s/mappings", c.config.OrgId, sandboxId)
+	resp, err := c.request(ctx, http.MethodPost, url, nil, dto)
+	if err != nil {
+		return nil, err
+	}
+
+	var mapping CreateHttpMappingResponseDto
+	if err := tryToGetDto[CreateHttpMappingResponseDto](resp, &mapping); err != nil {
+		return nil, err
+	}
+
+	return &mapping, nil
+}
+
+// ListHttpPortMappings lists HTTP port mappings for a sandbox.
+func (c *client) ListHttpPortMappings(ctx context.Context, sandboxId string) ([]HttpMappingResponseDto, error) {
+	c.config.Logger.Info("Listing HTTP port mappings for sandbox", "sandboxId:", sandboxId)
+
+	url := fmt.Sprintf("/api/orgs/%s/sandboxes/%s/mappings", c.config.OrgId, sandboxId)
+	resp, err := c.request(ctx, http.MethodGet, url, nil, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var mappings []HttpMappingResponseDto
+	if err := tryToGetDto[[]HttpMappingResponseDto](resp, &mappings); err != nil {
+		return nil, err
+	}
+
+	return mappings, nil
+}
+
+// DeleteHttpPortMapping deletes an HTTP port mapping for a sandbox.
+func (c *client) DeleteHttpPortMapping(ctx context.Context, sandboxId string, targetEndpoint string) error {
+	c.config.Logger.Info("Deleting HTTP port mapping for sandbox", "sandboxId:", sandboxId, "targetEndpoint:", targetEndpoint)
+
+	url := fmt.Sprintf("/api/orgs/%s/sandboxes/%s/mappings/%s", c.config.OrgId, sandboxId, targetEndpoint)
+	resp, err := c.request(ctx, http.MethodDelete, url, nil, nil)
+	if err != nil {
+		return err
+	}
+
+	return tryToGetDto[any](resp, nil)
+}
+
+// GetHttpPortMapping retrieves an HTTP port mapping for a sandbox.
+func (c *client) GetHttpPortMapping(ctx context.Context, sandboxId string, targetEndpoint string) (*GetHttpMappingResponseDto, error) {
+	c.config.Logger.Info("Deleting HTTP port mapping for sandbox", "sandboxId:", sandboxId, "targetEndpoint:", targetEndpoint)
+
+	url := fmt.Sprintf("/api/orgs/%s/sandboxes/%s/mappings/%s", c.config.OrgId, sandboxId, targetEndpoint)
+	resp, err := c.request(ctx, http.MethodGet, url, nil, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var mapping GetHttpMappingResponseDto
+	if err := tryToGetDto[GetHttpMappingResponseDto](resp, &mapping); err != nil {
+		return nil, err
+	}
+
+	return &mapping, nil
+}

@@ -107,6 +107,12 @@ type Client interface {
 
 	// DeleteMachineImage removes a specific machine image by its ID
 	DeleteMachineImage(ctx context.Context, imageId string) error
+
+	// HTTP Port Mapping APIs
+	CreateHttpPortMapping(ctx context.Context, sandboxId string, targetEndpoint string) (*CreateHttpMappingResponseDto, error)
+	GetHttpPortMapping(ctx context.Context, sandboxId string, targetEndpoint string) (*GetHttpMappingResponseDto, error)
+	ListHttpPortMappings(ctx context.Context, sandboxId string) ([]HttpMappingResponseDto, error)
+	DeleteHttpPortMapping(ctx context.Context, sandboxId string, targetEndpoint string) error
 }
 
 // NewClient creates a new instance of the Lybic client with the provided configuration.
