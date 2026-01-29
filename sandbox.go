@@ -235,3 +235,14 @@ func (c *client) GetSandboxStatus(ctx context.Context, sandboxId string) (*Sandb
 	}
 	return &status, nil
 }
+
+func (c *client) Restart(ctx context.Context, sandboxId string) error {
+	c.config.Logger.Info("Restarting sandbox", "sandboxId:", sandboxId)
+
+	url := fmt.Sprintf("/api/orgs/%s/sandboxes/%s/restart", c.config.OrgId, sandboxId)
+	resp, err := c.request(ctx, http.MethodPost, url, nil, nil)
+	if err != nil {
+		return err
+	}
+	return tryToGetDto[any](resp, nil)
+}

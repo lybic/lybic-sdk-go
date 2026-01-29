@@ -99,6 +99,9 @@ type Client interface {
 	// CreateMachineImage creates a new machine image from a sandbox
 	CreateMachineImage(ctx context.Context, dto CreateMachineImageDto) (*MachineImageResponseDto, error)
 
+	// Restart restarts a specific sandbox by its ID
+	Restart(ctx context.Context, sandboxId string) error
+
 	// ListMachineImages returns a list of all available machine images
 	ListMachineImages(ctx context.Context) (*MachineImagesResponseDto, error)
 
