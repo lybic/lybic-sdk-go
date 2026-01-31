@@ -3,7 +3,7 @@ module github.com/lybic/lybic-sdk-go
 go 1.23.0
 
 require (
-	github.com/anthropics/anthropic-sdk-go v1.19.0
+	github.com/anthropics/anthropic-sdk-go v1.20.0
 	github.com/modelcontextprotocol/go-sdk v1.2.0
 	github.com/openai/openai-go v1.12.0
 	github.com/sashabaranov/go-openai v1.41.2
