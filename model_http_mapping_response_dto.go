@@ -17,10 +17,6 @@ type HttpMappingResponseDto struct {
 	TargetEndpoint string `json:"targetEndpoint"`
 	// Access token for the HTTP mapping
 	AccessToken string `json:"accessToken"`
-	// Gateway ID associated with the HTTP mapping
-	GatewayId string `json:"gatewayId"`
-	// Creation timestamp of the HTTP mapping
-	CreatedAt string `json:"createdAt"`
 }
 
 type CreateHttpMappingResponseDto = HttpMappingResponseDto
