@@ -316,3 +316,78 @@ func (c *client) GetHttpPortMapping(ctx context.Context, sandboxId string, targe
 
 	return &mapping, nil
 }
+
+// CreateSandboxShellCommand creates a new shell session in the sandbox.
+func (c *client) CreateSandboxShellCommand(ctx context.Context, sandboxId string, dto SandboxShellCommandCreateRequestDto) (*SandboxShellCommandCreateResponseDto, error) {
+	c.config.Logger.Info("Creating sandbox shell command", "sandboxId:", sandboxId)
+
+	url := fmt.Sprintf("/api/orgs/%s/sandboxes/%s/shell", c.config.OrgId, sandboxId)
+	resp, err := c.request(ctx, http.MethodPost, url, nil, dto)
+	if err != nil {
+		return nil, err
+	}
+
+	var shellResponse SandboxShellCommandCreateResponseDto
+	if err := tryToGetDto[SandboxShellCommandCreateResponseDto](resp, &shellResponse); err != nil {
+		return nil, err
+	}
+
+	return &shellResponse, nil
+}
+
+// WriteSandboxShellCommand writes text to a shell session.
+func (c *client) WriteSandboxShellCommand(ctx context.Context, sandboxId string, shellId string, dto SandboxShellCommandWriteRequestDto) error {
+	c.config.Logger.Info("Writing to sandbox shell command", "sandboxId:", sandboxId, "shellId:", shellId)
+
+	url := fmt.Sprintf("/api/orgs/%s/sandboxes/%s/shell/%s", c.config.OrgId, sandboxId, shellId)
+	resp, err := c.request(ctx, http.MethodPost, url, nil, dto)
+	if err != nil {
+		return err
+	}
+
+	return tryToGetDto[any](resp, nil)
+}
+
+// FinishSandboxShellCommand finishes writing to a shell session.
+func (c *client) FinishSandboxShellCommand(ctx context.Context, sandboxId string, shellId string) error {
+	c.config.Logger.Info("Finishing sandbox shell command", "sandboxId:", sandboxId, "shellId:", shellId)
+
+	url := fmt.Sprintf("/api/orgs/%s/sandboxes/%s/shell/%s/finish", c.config.OrgId, sandboxId, shellId)
+	resp, err := c.request(ctx, http.MethodPut, url, nil, nil)
+	if err != nil {
+		return err
+	}
+
+	return tryToGetDto[any](resp, nil)
+}
+
+// ReadSandboxShellCommand reads output from a shell session.
+func (c *client) ReadSandboxShellCommand(ctx context.Context, sandboxId string, shellId string) (*SandboxShellCommandReadResponseDto, error) {
+	c.config.Logger.Info("Reading sandbox shell command output", "sandboxId:", sandboxId, "shellId:", shellId)
+
+	url := fmt.Sprintf("/api/orgs/%s/sandboxes/%s/shell/%s/read", c.config.OrgId, sandboxId, shellId)
+	resp, err := c.request(ctx, http.MethodPost, url, nil, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var readResponse SandboxShellCommandReadResponseDto
+	if err := tryToGetDto[SandboxShellCommandReadResponseDto](resp, &readResponse); err != nil {
+		return nil, err
+	}
+
+	return &readResponse, nil
+}
+
+// TerminateSandboxShellCommand terminates a shell session.
+func (c *client) TerminateSandboxShellCommand(ctx context.Context, sandboxId string, shellId string) error {
+	c.config.Logger.Info("Terminating sandbox shell command", "sandboxId:", sandboxId, "shellId:", shellId)
+
+	url := fmt.Sprintf("/api/orgs/%s/sandboxes/%s/shell/%s", c.config.OrgId, sandboxId, shellId)
+	resp, err := c.request(ctx, http.MethodDelete, url, nil, nil)
+	if err != nil {
+		return err
+	}
+
+	return tryToGetDto[any](resp, nil)
+}
