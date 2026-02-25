@@ -103,7 +103,10 @@ type Client interface {
 	Restart(ctx context.Context, sandboxId string) error
 
 	// ListMachineImages returns a list of all available machine images
-	ListMachineImages(ctx context.Context) (*MachineImagesResponseDto, error)
+	//  scope: The scope of machine images to list. Can be "org" for
+	//  organization-level images, "public" for public images,
+	//  or "all" for all images. Defaults to "org".
+	ListMachineImages(ctx context.Context, scope string) (*MachineImagesResponseDto, error)
 
 	// DeleteMachineImage removes a specific machine image by its ID
 	DeleteMachineImage(ctx context.Context, imageId string) error

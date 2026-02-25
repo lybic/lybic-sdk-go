@@ -9,16 +9,5 @@
 
 package lybic
 
-import (
-	"time"
-)
-
 // MachineImageResponseDto struct for MachineImageResponseDto
-type MachineImageResponseDto struct {
-	Id          string    `json:"id"`
-	Name        string    `json:"name"`
-	Description *string   `json:"description"`
-	CreatedAt   time.Time `json:"createdAt"`
-	ShapeName   string    `json:"shapeName"`
-	Status      string    `json:"status"`
-}
+type MachineImageResponseDto = MachineImagesResponseDtoImages

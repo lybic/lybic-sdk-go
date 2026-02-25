@@ -26,6 +26,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strings"
 )
 
 // CreateMachineImage creates a new machine image from a sandbox.
@@ -47,10 +48,13 @@ func (c *client) CreateMachineImage(ctx context.Context, dto CreateMachineImageD
 }
 
 // ListMachineImages returns a list of all machine images.
-func (c *client) ListMachineImages(ctx context.Context) (*MachineImagesResponseDto, error) {
+func (c *client) ListMachineImages(ctx context.Context, scope string) (*MachineImagesResponseDto, error) {
 	c.config.Logger.Info("Listing machine images")
 
-	url := fmt.Sprintf("/api/orgs/%s/machine-images", c.config.OrgId)
+	if strings.TrimSpace(scope) == "" {
+		scope = "org"
+	}
+	url := fmt.Sprintf("/api/orgs/%s/machine-images?scope=%s", c.config.OrgId, scope)
 	resp, err := c.request(ctx, http.MethodGet, url, nil, nil)
 	if err != nil {
 		return nil, err

@@ -21,12 +21,14 @@ type MachineImagesResponseDto struct {
 
 // MachineImagesResponseDtoImages struct for MachineImagesResponseDtoImages
 type MachineImagesResponseDtoImages struct {
-	Id          string    `json:"id"`
-	Name        string    `json:"name"`
-	Description *string   `json:"description"`
-	CreatedAt   time.Time `json:"createdAt"`
-	ShapeName   string    `json:"shapeName"`
-	Status      string    `json:"status"`
+	Id                  string    `json:"id"`
+	Name                string    `json:"name"`
+	Description         *string   `json:"description,omitempty"`
+	CreatedAt           time.Time `json:"createdAt"`
+	ShapeName           string    `json:"shapeName"`
+	RequiredFeatureFlag *string   `json:"requiredFeatureFlag,omitempty"`
+	Scope               string    `json:"scope"`  // one of "ORG", "PUBLIC"
+	Status              string    `json:"status"` // one of "CREATING", "READY", "ERROR"
 }
 
 // MachineImagesResponseDtoQuota struct for MachineImagesResponseDtoQuota
