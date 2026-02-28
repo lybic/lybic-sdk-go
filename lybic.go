@@ -116,6 +116,14 @@ type Client interface {
 	GetHttpPortMapping(ctx context.Context, sandboxId string, targetEndpoint string) (*GetHttpMappingResponseDto, error)
 	ListHttpPortMappings(ctx context.Context, sandboxId string) ([]HttpMappingResponseDto, error)
 	DeleteHttpPortMapping(ctx context.Context, sandboxId string, targetEndpoint string) error
+
+	// Sandbox Shell Command APIs
+	CreateSandboxShellCommand(ctx context.Context, sandboxId string, dto SandboxShellCommandCreateRequestDto) (*SandboxShellCommandCreateResponseDto, error)
+	CreateSandboxShellCommandStream(ctx context.Context, sandboxId string, dto SandboxShellCommandStreamCreateRequestDto) (<-chan SandboxShellStreamEvent, error)
+	WriteSandboxShellCommand(ctx context.Context, sandboxId string, shellId string, dto SandboxShellCommandWriteRequestDto) error
+	FinishSandboxShellCommand(ctx context.Context, sandboxId string, shellId string) error
+	ReadSandboxShellCommand(ctx context.Context, sandboxId string, shellId string) (*SandboxShellCommandReadResponseDto, error)
+	TerminateSandboxShellCommand(ctx context.Context, sandboxId string, shellId string) error
 }
 
 // NewClient creates a new instance of the Lybic client with the provided configuration.
