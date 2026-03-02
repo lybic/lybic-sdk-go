@@ -28,7 +28,7 @@ jobs:
     if: github.event_name != 'pull_request' || (!github.event.pull_request.draft && !contains(github.event.pull_request.title, 'WIP'))
     strategy:
       matrix:
-        go: [ '1.23', '1.24', '1.25' ]
+        go: [ '1.24', '1.25', '1.26' ]
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - uses: actions/setup-go@v6
@@ -42,4 +42,4 @@ jobs:
         uses: golangci/golangci-lint-action@v9
         with:
           args: --timeout=5m
-          version: v2.1
+          version: v2.10
