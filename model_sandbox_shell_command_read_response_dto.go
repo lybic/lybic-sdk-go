@@ -9,12 +9,37 @@
 
 package lybic
 
+import "github.com/lybic/lybic-sdk-go/pkg/json"
+
 // SandboxShellCommandReadResponseDto struct for SandboxShellCommandReadResponseDto
 type SandboxShellCommandReadResponseDto struct {
 	// Accumulated output parts from the shell session.
-	Output []SandboxShellCommandOutput `json:"output"`
+	Outputs []SandboxShellCommandOutput `json:"outputs"`
 	// Whether the shell session is still running.
 	IsRunning bool `json:"isRunning"`
+}
+
+// sandboxShellOutputItem is used internally to unwrap the "output" envelope in JSON.
+type sandboxShellOutputItem struct {
+	Output SandboxShellCommandOutput `json:"output"`
+}
+
+// UnmarshalJSON unwraps each element's "output" envelope before populating Output.
+func (r *SandboxShellCommandReadResponseDto) UnmarshalJSON(data []byte) error {
+	type alias struct {
+		Output    []sandboxShellOutputItem `json:"outputs"`
+		IsRunning bool                     `json:"isRunning"`
+	}
+	var tmp alias
+	if err := json.Unmarshal(data, &tmp); err != nil {
+		return err
+	}
+	r.IsRunning = tmp.IsRunning
+	r.Outputs = make([]SandboxShellCommandOutput, len(tmp.Output))
+	for i, item := range tmp.Output {
+		r.Outputs[i] = item.Output
+	}
+	return nil
 }
 
 // SandboxShellCommandOutput represents a discriminated union for shell output
