@@ -139,7 +139,7 @@ func parseSSEEvent(data []byte) (SandboxShellStreamEvent, error) {
 		}
 
 		return SandboxShellStreamEvent{
-			Type: strings.TrimSpace(eventType),
+			Type: SandboxShellStreamEventType(strings.TrimSpace(eventType)),
 			Data: decodedData,
 		}, nil
 	}

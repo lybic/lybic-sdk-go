@@ -9,10 +9,26 @@
 
 package lybic
 
+// SandboxShellStreamEventType defines the type of a shell stream event.
+type SandboxShellStreamEventType string
+
+const (
+	// SandboxShellStreamEventStdout indicates standard output data.
+	SandboxShellStreamEventStdout SandboxShellStreamEventType = "stdout"
+	// SandboxShellStreamEventStderr indicates standard error data.
+	SandboxShellStreamEventStderr SandboxShellStreamEventType = "stderr"
+	// SandboxShellStreamEventWaiting indicates the command has completed.
+	SandboxShellStreamEventWaiting SandboxShellStreamEventType = "waiting"
+	// SandboxShellStreamEventTimeout indicates the command timed out.
+	SandboxShellStreamEventTimeout SandboxShellStreamEventType = "timeout"
+	// SandboxShellStreamEventEnd indicates the end of the stream.
+	SandboxShellStreamEventEnd SandboxShellStreamEventType = "end"
+)
+
 // SandboxShellStreamEvent represents an event from the shell stream (SSE)
 type SandboxShellStreamEvent struct {
 	// Type of the event: stdout, stderr, waiting, timeout, end
-	Type string
+	Type SandboxShellStreamEventType
 	// Data content (base64 decoded for stdout/stderr/timeout, empty for waiting/end)
 	Data string
 }

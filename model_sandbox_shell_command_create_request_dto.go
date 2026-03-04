@@ -10,17 +10,4 @@
 package lybic
 
 // SandboxShellCommandCreateRequestDto struct for SandboxShellCommandCreateRequestDto
-type SandboxShellCommandCreateRequestDto struct {
-	// The command to execute in the shell.
-	Command string `json:"command"`
-	// Whether to use a TTY for the shell session.
-	UseTty bool `json:"useTty,omitempty"`
-	// Optional timeout for the shell session in seconds.
-	TimeoutSeconds *int32 `json:"timeoutSeconds,omitempty"`
-	// Optional working directory for the shell session.
-	WorkingDirectory *string `json:"workingDirectory,omitempty"`
-	// Number of rows for TTY (if useTty is true).
-	TtyRows *int32 `json:"ttyRows,omitempty"`
-	// Number of columns for TTY (if useTty is true).
-	TtyCols *int32 `json:"ttyCols,omitempty"`
-}
+type SandboxShellCommandCreateRequestDto = SandboxShellCommandStreamCreateRequestDto
